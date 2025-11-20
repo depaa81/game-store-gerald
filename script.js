@@ -72,4 +72,52 @@ function buy(gameName) {
     let id = "ORD" + Math.random().toString(36).substring(2, 12).toUpperCase();
     document.getElementById("orderId").innerText = id;
 }
+document.getElementById("sendProofBtn").addEventListener("click", async () => {
+    const fileInput = document.getElementById("proofFile");
+    const file = fileInput.files[0];
 
+    if (!file) {
+        alert("Silakan upload bukti transfer terlebih dahulu.");
+        return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) { 
+        alert("Ukuran file maksimal 10MB.");
+        return;
+    }
+
+    const orderId = document.getElementById("orderId").innerText;
+    const productName = document.getElementById("pName").innerText;
+
+    let formData = new FormData();
+    formData.append("chat_id", TELEGRAM_CHAT_ID);
+    formData.append("caption", `📦 Bukti Transfer\nProduk: ${productName}\nID Pesanan: ${orderId}`);
+    formData.append("photo", file);
+
+    try {
+        const send = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
+            method: "POST",
+            body: formData
+        });
+
+        if (send.ok) {
+            alert("Bukti transfer berhasil dikirim ke bot Telegram!");
+
+            // Tampilkan tombol WhatsApp
+            document.getElementById("whatsappBtn").classList.remove("hidden");
+
+            // Atur link WhatsApp
+            document.getElementById("whatsappBtn").onclick = () => {
+                const msg = `Halo Admin, saya sudah upload bukti transfer.\nID Pesanan: ${orderId}`;
+                window.open(`https://wa.me/62895420181353?text=${encodeURIComponent(msg)}`);
+            };
+
+        } else {
+            alert("Gagal mengirim bukti. Coba lagi.");
+        }
+
+    } catch (error) {
+        alert("Error: Tidak dapat mengirim bukti.");
+    }
+});
+        
