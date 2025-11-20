@@ -2,54 +2,58 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Game Store Premium</title>
-<link rel="stylesheet" href="styles.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Premium Game Store</title>
+
+<!-- LINK CSS -->
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-<div class="header">
+
+<div class="container">
     <h1>🔥 Premium Game Store</h1>
-    <p class="subtitle">Pilihan akun game premium dengan stok real-time</p>
-</div>
+    <p class="sub">Pilihan akun game premium dengan stok real-time</p>
 
-<div id="gameList" class="game-grid"></div>
+    <div class="game-list" id="gameList"></div>
 
-<div id="paymentSection" class="hidden payment-box">
-    <h2>Pembayaran</h2>
+    <!-- Payment Section -->
+    <div id="paymentSection" class="payment-box hidden">
 
-    <p>Pilih metode pembayaran:</p>
-    <div class="wallet-grid">
-        <div class="wallet-card">DANA<br><span>0895420181353</span></div>
-        <div class="wallet-card">OVO<br><span>0895420181353</span></div>
-        <div class="wallet-card">ShopeePay<br><span>0895420181353</span></div>
-        <div class="wallet-card">GoPay<br><span>0895420181353</span></div>
+        <h2>Pembayaran</h2>
+        <p>Pilih metode pembayaran:</p>
+
+        <div class="wallet-buttons">
+            <div class="wallet-btn" onclick="setWallet('DANA')">DANA<br><small>0895420181353</small></div>
+            <div class="wallet-btn" onclick="setWallet('OVO')">OVO<br><small>0895420181353</small></div>
+            <div class="wallet-btn" onclick="setWallet('ShopeePay')">ShopeePay<br><small>0895420181353</small></div>
+            <div class="wallet-btn" onclick="setWallet('GoPay')">GoPay<br><small>0895420181353</small></div>
+        </div>
+
+        <br>
+
+        <p>ID Pesanan Anda:</p>
+        <div style="display:flex; gap:10px;">
+            <div id="orderId" class="order-box"></div>
+            <button onclick="copyOrderId()" class="copy-btn">Copy</button>
+        </div>
+
+        <p id="copiedAlert">ID Pesanan berhasil disalin!</p>
+
+        <div class="upload-box">
+            <label>Upload Bukti Transfer (Max 10MB)</label>
+            <input type="file" id="fileInput" accept="image/*">
+        </div>
+
+        <button class="btn-main" onclick="sendToTelegram()">Kirim Bukti ke Bot Telegram</button>
+        <button class="btn-wa" onclick="chatWA()">Chat Admin WhatsApp</button>
+
     </div>
-    
-<div id="productDetails" class="product-details-box" style="margin-bottom:15px; display:none;">
-    <h3>Produk yang Dibeli:</h3>
-    <p><strong>Nama:</strong> <span id="pdName"></span></p>
-    <p><strong>Harga:</strong> <span id="pdPrice"></span></p>
-    <p><strong>Stok Tersisa:</strong> <span id="pdStock"></span></p>
-</div>
-    
-    <p style="margin-top:20px;">ID Pesanan Anda:</p>
-    <div class="order-row">
-        <h2 id="orderId" class="order-id"></h2>
-        <button class="copy-btn" onclick="copyOrderId()">Copy</button>
-    </div>
-    
-    <h3>Upload Bukti Transfer</h3>
-    <label class="file-upload" for="proofFile">📤 Upload File (Max 10MB)</label>
-    <input type="file" id="proofFile" accept="image/*" />
 
-    <button id="sendProofBtn" class="send-btn">Kirim Bukti ke Bot Telegram</button>
-
-    <button id="whatsappBtn" class="hidden whatsapp-btn">
-        Chat Admin WhatsApp
-    </button>
 </div>
 
-<div id="copiedAlert">Copied!</div>
-
+<!-- JS -->
 <script src="script.js"></script>
+
 </body>
 </html>
