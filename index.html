@@ -44,14 +44,20 @@
     </div>
 
     <h3>Upload Bukti Transfer</h3>
+
+<form id="uploadForm" enctype="multipart/form-data">
     <label class="file-upload" for="proofFile">📤 Upload File (Max 10MB)</label>
-    <input type="file" id="proofFile" accept="image/*">
+    <input type="file" id="proofFile" name="proofFile" accept="image/*">
 
-    <button id="sendProofBtn" class="send-btn">Kirim Bukti ke Bot Telegram</button>
-
-    <button id="whatsappBtn" class="hidden whatsapp-btn">
-        Chat Admin WhatsApp
+    <button id="sendProofBtn" type="button" class="send-btn">
+        Kirim Bukti ke Bot Telegram
     </button>
+</form>
+
+<button id="whatsappBtn" class="hidden whatsapp-btn">
+    Chat Admin WhatsApp
+</button>
+
 
 </div>
 
