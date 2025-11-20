@@ -6,7 +6,7 @@ const games = [
         name: "Item/Ikan fish it", 
         price: 25.000, 
         stock: 12, 
-        img:"https://files.catbox.moe/1wui0o.jpg",
+        img:"https://ibb.co.com/fYpYg3ys",
         spec:"https://i.imgur.com/eN5c5q4.jpeg"
     },
     { 
