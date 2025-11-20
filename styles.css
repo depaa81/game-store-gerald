@@ -231,4 +231,64 @@ input[type="file"] {
         height: 200px;
     }
                      }
+
+/* ====== BASE RESPONSIVE ====== */
+* {
+    box-sizing: border-box;
+}
+
+/* Tampilan Mobile (max 768px) */
+@media (max-width: 768px) {
+
+    /* Container produk agar kebawah */
+    .product-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .product-card {
+        width: 100%;
+    }
+
+    /* Checkout section */
+    #paymentSection {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .payment-methods {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .payment-box {
+        width: 100%;
+    }
+
+    /* Detail pesanan */
+    .product-summary {
+        width: 100%;
+        padding: 15px;
+    }
+
+    /* Input top-up / form */
+    .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    input, select {
+        width: 100%;
+    }
+
+    /* Header & logo */
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
                                       
