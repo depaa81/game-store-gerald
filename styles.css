@@ -1,19 +1,26 @@
+/* -----------------------------------------
+   GLOBAL STYLE
+----------------------------------------- */
 body {
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(135deg, #0e0e0e, #1a1a1a);
     margin: 0;
     color: white;
+    padding-bottom: 40px;
 }
 
 .header {
     text-align: center;
-    padding: 40px 10px;
+    padding: 40px 20px;
 }
 
 .subtitle {
     opacity: 0.7;
 }
 
+/* -----------------------------------------
+   GAME GRID RESPONSIVE
+----------------------------------------- */
 .game-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -39,8 +46,11 @@ body {
     border-radius: 12px;
 }
 
+/* -----------------------------------------
+   PAYMENT SECTION
+----------------------------------------- */
 .payment-box {
-    margin: 30px;
+    margin: 20px;
     padding: 20px;
     background: rgba(255,255,255,0.08);
     border-radius: 16px;
@@ -67,9 +77,12 @@ body {
     opacity: 0.7;
 }
 
+/* -----------------------------------------
+   BUTTONS & UPLOAD
+----------------------------------------- */
 .file-upload {
-    margin-top: 10px;
-    padding: 12px;
+    margin-top: 15px;
+    padding: 15px;
     display: block;
     text-align: center;
     background: #333;
@@ -80,33 +93,33 @@ body {
 .send-btn {
     margin-top: 15px;
     width: 100%;
-    padding: 12px;
+    padding: 14px;
     background: #2196f3;
     border-radius: 12px;
     color: white;
+    font-size: 16px;
 }
 
 .whatsapp-btn {
     margin-top: 15px;
     width: 100%;
-    padding: 12px;
+    padding: 14px;
     background: #25d366;
     border-radius: 12px;
     color: white;
+    font-size: 16px;
 }
 
 .copy-btn {
-    padding: 5px 10px;
+    padding: 7px 12px;
     background: #444;
     border-radius: 8px;
 }
 
-.hidden { display: none; }
-
 .order-row {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
 }
 
 #copiedAlert {
@@ -117,4 +130,81 @@ body {
     background: limegreen;
     padding: 10px 20px;
     border-radius: 10px;
+}
+
+/* -----------------------------------------
+   MOBILE RESPONSIVE
+----------------------------------------- */
+@media (max-width: 480px) {
+
+    .header h1 {
+        font-size: 24px;
+    }
+
+    .game-grid {
+        grid-template-columns: 1fr;
+        padding: 10px;
+    }
+
+    .payment-box {
+        margin: 10px;
+        padding: 15px;
+    }
+
+    .wallet-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .send-btn,
+    .whatsapp-btn {
+        font-size: 14px;
+        padding: 12px;
+    }
+
+    .copy-btn {
+        padding: 6px 10px;
+    }
+
+    .order-id {
+        font-size: 16px;
+    }
+}
+
+/* -----------------------------------------
+   TABLET RESPONSIVE
+----------------------------------------- */
+@media (min-width: 481px) and (max-width: 1024px) {
+
+    .game-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .payment-box {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    .wallet-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* -----------------------------------------
+   DESKTOP RESPONSIVE
+----------------------------------------- */
+@media (min-width: 1025px) {
+
+    .game-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .payment-box {
+        width: 70%;
+        margin: 20px auto;
+    }
+
+    .wallet-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
 }
