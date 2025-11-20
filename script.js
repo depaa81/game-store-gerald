@@ -6,21 +6,21 @@ const games = [
         name: "Item/Ikan fish it", 
         price: 25.000, 
         stock: 12, 
-        img:"https://freeimage.host/i/f20nU9n",
+        img:"https://deposit.pictures/p/ddd39fc63ba94e248c7b080398c1b803",
         spec:"https://i.imgur.com/eN5c5q4.jpeg"
     },
     { 
         name: "Akun Roblox", 
         price: 100.000, 
         stock: 1, 
-        img:"https://files.catbox.moe/xpjea7.jpg",
+        img:"https://deposit.pictures/p/ea6d88457ca245c3a4722faf66875c90",
         spec:"https://i.imgur.com/iYg4y7x.jpeg"
     },
     { 
         name: "Roblox Keren", 
         price: 150.000, 
         stock: 1, 
-        img:"https://files.catbox.moe/xpjea7.jpg",
+        img:"https://deposit.pictures/p/ea6d88457ca245c3a4722faf66875c90",
         spec:"https://i.imgur.com/VNkscQk.jpeg"
     }
 ];
