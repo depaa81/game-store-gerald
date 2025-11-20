@@ -54,3 +54,22 @@ function copyOrderId(){
     alert.style.display="block";
     setTimeout(()=>alert.style.display="none",1500);
 }
+
+function buy(gameName) {
+    const game = games.find(g => g.name === gameName);
+
+    if (!game) return;
+
+    // Menampilkan box pembayaran
+    document.getElementById("paymentSection").classList.remove("hidden");
+
+    // Mengisi deskripsi pesanan
+    document.getElementById("pName").innerText = game.name;
+    document.getElementById("pPrice").innerText = "Rp " + game.price.toLocaleString();
+    document.getElementById("pTotal").innerText = "Rp " + game.price.toLocaleString();
+
+    // Generate ID
+    let id = "ORD" + Math.random().toString(36).substring(2, 12).toUpperCase();
+    document.getElementById("orderId").innerText = id;
+}
+
