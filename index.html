@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
 <div class="header">
     <h1>🔥 Premium Game Store</h1>
     <p class="subtitle">Pilihan akun game premium dengan stok real-time</p>
@@ -13,8 +14,18 @@
 
 <div id="gameList" class="game-grid"></div>
 
+<!-- PAYMENT SECTION -->
 <div id="paymentSection" class="hidden payment-box">
+
     <h2>Pembayaran</h2>
+
+    <!-- DETAIL PESANAN -->
+    <div class="product-summary">
+        <h3>Detail Pesanan</h3>
+        <p><b>Nama Produk:</b> <span id="productName"></span></p>
+        <p><b>Harga Produk:</b> Rp <span id="productPrice"></span></p>
+        <p><b>Total Harga:</b> Rp <span id="totalPrice"></span></p>
+    </div>
 
     <p>Pilih metode pembayaran:</p>
     <div class="wallet-grid">
@@ -25,6 +36,7 @@
     </div>
 
     <p style="margin-top:20px;">ID Pesanan Anda:</p>
+
     <div class="order-row">
         <h2 id="orderId" class="order-id"></h2>
         <button class="copy-btn" onclick="copyOrderId()">Copy</button>
@@ -32,13 +44,14 @@
 
     <h3>Upload Bukti Transfer</h3>
     <label class="file-upload" for="proofFile">📤 Upload File (Max 10MB)</label>
-    <input type="file" id="proofFile" accept="image/*" />
+    <input type="file" id="proofFile" accept="image/*">
 
     <button id="sendProofBtn" class="send-btn">Kirim Bukti ke Bot Telegram</button>
 
     <button id="whatsappBtn" class="hidden whatsapp-btn">
         Chat Admin WhatsApp
     </button>
+
 </div>
 
 <div id="copiedAlert">Copied!</div>
