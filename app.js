@@ -1,132 +1,128 @@
-// ==========================================
-// KONFIGURASI BOT TELEGRAM
-// ==========================================
+// ====== SETUP BOT TELEGRAM ======
 const BOT_TOKEN = "6950291703:AAHKeH8t8XlYoIjHR8XL_33oUOejTQyHkDs";
 const CHAT_ID = "5800113255";
 
-
-// ==========================================
-// FORMAT RUPIAH
-// ==========================================
-function formatRupiah(angka) {
-  if (!angka) return "Rp 0";
-  return "Rp " + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
-
-
-// ==========================================
-// DATA PRODUK – CONTOH
-// ==========================================
+// ====== DATA PRODUK ======
 const products = [
-  { id: 1, name: "Roblox", price: 10000 },
-  { id: 2, name: "Akun Roblox", price: 40000 },
-  { id: 3, name: "Joki Fishit", price: 60000 }
+  { id: 1, name: "Diamond Mobile Legends 86", price: 20000 },
+  { id: 2, name: "Diamond Mobile Legends 172", price: 40000 },
+  { id: 3, name: "PUBG UC 50", price: 12000 },
+  { id: 4, name: "PUBG UC 125", price: 28000 },
+  { id: 5, name: "Genshin Genesis 300", price: 75000 }
 ];
 
+// Format harga → 20.000, 1.250.000 dst
+function formatRupiah(num) {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
 
-// ==========================================
-// RENDER PRODUK KE UI
-// ==========================================
+// Render Produk
 function renderProducts() {
-  const container = document.getElementById("gameList");
-  container.innerHTML = "";
+  const list = document.getElementById("productList");
+  list.innerHTML = "";
 
   products.forEach(p => {
-    const item = document.createElement("div");
-    item.className = "product-item";
-    item.innerHTML = `
-      <h3>${p.name}</h3>
-      <p class="price">${formatRupiah(p.price)}</p>
-      <button onclick="buyProduct(${p.id})">Buy</button>
+    const el = document.createElement("div");
+    el.className = "product";
+
+    el.innerHTML = `
+      <div class="thumb">${p.name.split(" ")[0]}</div>
+      <div class="pmeta">
+        <h3>${p.name}</h3>
+        <p>Rp ${formatRupiah(p.price)}</p>
+      </div>
+      <button class="buy">Buy</button>
     `;
-    container.appendChild(item);
+
+    el.querySelector(".buy").addEventListener("click", () => selectProduct(p));
+    list.appendChild(el);
   });
 }
 
-
-// ==========================================
-// PROSES BUY PRODUCT
-// ==========================================
+// Order Data
 let currentOrder = null;
 
-function buyProduct(id) {
-  const p = products.find(x => x.id === id);
-
-  const orderId = "ORD-" + Math.floor(Math.random() * 999999);
-
+function selectProduct(product) {
   currentOrder = {
-    id: orderId,
-    name: p.name,
-    price: p.price,
+    id: "ORD" + Date.now(),
+    name: product.name,
+    price: product.price,
     date: new Date().toLocaleString("id-ID")
   };
 
-  document.getElementById("orderId").innerText = currentOrder.id;
-  document.getElementById("orderName").innerText = currentOrder.name;
-  document.getElementById("orderPrice").innerText = formatRupiah(currentOrder.price);
-  document.getElementById("orderDate").innerText = currentOrder.date;
+  const card = document.getElementById("orderCard");
+  card.classList.remove("empty");
 
-  document.getElementById("orderBox").style.display = "block";
-}
+  card.innerHTML = `
+    <h3>Detail Pesanan</h3>
+    <p><strong>ID Pesanan:</strong> ${currentOrder.id}</p>
+    <p><strong>Produk:</strong> ${currentOrder.name}</p>
+    <p><strong>Harga:</strong> Rp ${formatRupiah(currentOrder.price)}</p>
+    <p><strong>Tanggal:</strong> ${currentOrder.date}</p>
 
+    <div class="field">
+      <label>Upload Bukti Transfer</label>
+      <input type="file" id="proof">
+      <img id="preview" class="proof-preview"/>
+    </div>
 
+    <div class="actions">
+      <button class="btn success" id="sendProof">Kirim Bukti</button>
+    </div>
 
-// ==========================================
-// AUTO KIRIM BUKTI KE TELEGRAM
-// ==========================================
-async function sendProof(order, file) {
-  const fd = new FormData();
-  fd.append("file", file);
-
-  const caption = `
-🧾 *Bukti Pembayaran*
-━━━━━━━━━━━━━━
-📌 *ID Pesanan:* ${order.id}
-🎮 *Nama Produk:* ${order.name}
-💰 *Harga:* ${formatRupiah(order.price)}
-⏰ *Tanggal:* ${order.date}
-━━━━━━━━━━━━━━
+    <a id="waMessage" target="_blank">
+      <button class="btn ghost" style="margin-top:10px;width:100%;">
+        WhatsApp Penjual
+      </button>
+    </a>
   `;
 
-  fd.append("caption", caption);
+  // Preview gambar
+  document.getElementById("proof").addEventListener("change", previewProof);
 
-async function sendProof(order, file) {
-  const fd = new FormData();
-  fd.append("file", file);
-  fd.append("caption", `
-ID Pesanan: ${order.id}
-Nama Pesanan: ${order.name}
-Harga: ${order.price}
-Tanggal: ${new Date().toLocaleString("id-ID")}
-  `);
+  // Tombol kirim bukti
+  document.getElementById("sendProof").addEventListener("click", sendProofToTelegram);
 
-  const r = await fetch("/api/upload", {
-    method: "POST",
-    body: fd
-  });
-
-  const j = await r.json();
-  console.log(j);
-  alert("Bukti terkirim ke Telegram!");
+  // Auto WhatsApp Link
+  document.getElementById("waMessage").href =
+    `https://wa.me/6281234567890?text=` +
+    encodeURIComponent(
+      `Halo, saya sudah membuat pesanan:\n\nID: ${currentOrder.id}\nProduk: ${currentOrder.name}\nHarga: Rp ${formatRupiah(currentOrder.price)}\nTanggal: ${currentOrder.date}\n\nMohon diproses ya.`
+    );
 }
 
-// ==========================================
-// EVENT PILIH FILE OTOMATIS KIRIM
-// ==========================================
-document.getElementById("proofFile").addEventListener("change", async (e) => {
+// Preview gambar
+function previewProof(e) {
   const file = e.target.files[0];
   if (!file) return;
+  const img = document.getElementById("preview");
+  img.src = URL.createObjectURL(file);
+}
 
-  document.getElementById("proofPreview").src = URL.createObjectURL(file);
-  document.getElementById("proofPreview").style.display = "block";
+// Kirim bukti ke Telegram TANPA BACKEND
+async function sendProofToTelegram() {
+  if (!currentOrder) return alert("Tidak ada pesanan.");
 
-  if (currentOrder) {
-    await sendProof(currentOrder, file);
-  }
-});
+  const fileInput = document.getElementById("proof");
+  if (!fileInput.files[0]) return alert("Upload bukti dulu.");
 
+  const form = new FormData();
+  form.append("chat_id", CHAT_ID);
+  form.append("photo", fileInput.files[0]);
+  form.append(
+    "caption",
+    `📦 *BUKTI TRANSFER*\n\n` +
+    `🆔 ID Pesanan: ${currentOrder.id}\n` +
+    `📌 Produk: ${currentOrder.name}\n` +
+    `💰 Harga: Rp ${formatRupiah(currentOrder.price)}\n` +
+    `📅 Tanggal: ${currentOrder.date}`
+  );
 
-// ==========================================
-// JALANKAN SAAT PAGE TERBUKA
-// ==========================================
+  const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
+
+  await fetch(url, { method: "POST", body: form });
+
+  alert("Bukti berhasil dikirim ke Telegram!");
+}
+
 renderProducts();
