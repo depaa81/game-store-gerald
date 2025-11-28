@@ -1,114 +1,321 @@
 :root{
-  --bg:#f5f7fb;
-  --card:#ffffff;
-  --muted:#6b7280;
-  --accent:#6d28d9;
-  --accent-2:#7c3aed;
-  --success:#10b981;
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --accent: #6d28d9;
+  --accent-2: #7c3aed;
+  --success: #10b981;
 }
 
 /* Global */
-*{
-  box-sizing:border-box;
-  font-family:Inter,system-ui,Arial;
+* {
+  box-sizing: border-box;
+  font-family: Inter, system-ui, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
-body{
-  margin:0;
-  background:linear-gradient(180deg,var(--bg),#eef2ff);
-  color:#0f172a;
-  min-height:100vh;
+body {
+  margin: 0;
+  background: linear-gradient(180deg, var(--bg), #eef2ff);
+  color: #0f172a;
+  min-height: 100vh;
 }
 
-.container{
-  max-width:920px;
-  margin:18px auto;
-  padding:14px;
+.container {
+  max-width: 920px;
+  margin: 18px auto;
+  padding: 14px;
 }
 
 /* Header */
-.topbar{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:12px;
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
 }
 
-.brand{
-  font-weight:800;
-  color:var(--accent);
-  font-size:1.25rem;
-  padding:6px 10px;
-  border-radius:8px;
-  background:linear-gradient(90deg,rgba(124,58,237,0.12),transparent);
+.brand {
+  font-weight: 800;
+  color: var(--accent);
+  font-size: 1.25rem;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(124,58,237,0.12), transparent);
 }
 
 /* Layout */
-.layout{
-  display:grid;
-  grid-template-columns:1fr 360px;
-  gap:14px;
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 14px;
 }
-@media (max-width:780px){
-  .layout{
-    grid-template-columns:1fr;
+
+@media (max-width: 780px) {
+  .layout {
+    grid-template-columns: 1fr;
   }
 }
 
-.panel{
-  background:var(--card);
-  padding:14px;
-  border-radius:12px;
-  box-shadow:0 8px 24px rgba(15,23,42,0.06);
+.panel {
+  background: var(--card);
+  padding: 14px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(15,23,42,0.06);
 }
 
 /* Produk list */
-.product-list{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+.product-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.product{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:10px;
-  border-radius:10px;
-  border:1px solid #eef2ff;
+.product {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #eef2ff;
 }
 
-.thumb{
-  width:64px;
-  height:44px;
-  border-radius:8px;
-  background:linear-gradient(180deg,#eef2ff,#e9d5ff);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:700;
-  color:var(--accent);
+.thumb {
+  width: 64px;
+  height: 44px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #eef2ff, #e9d5ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--accent);
 }
 
-.pmeta{
-  flex:1;
+.pmeta {
+  flex: 1;
 }
 
-.pmeta h3{
-  margin:0;
-  font-size:1rem;
+.pmeta h3 {
+  margin: 0;
+  font-size: 1rem;
 }
 
-.pmeta p{
-  margin:6px 0 0;
-  color:var(--muted);
-  font-size:0.9rem;
+.pmeta p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 
-.buy{
-  background:var(--accent);
-  color:white;
-  padding:8px 10px;
+.buy {
+  background: var(--accent);
+  color: white;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 0;
+  cursor: pointer;
+}
+
+/* Order panel */
+.card.empty {
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+}
+
+.order .field {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+}
+
+.field label {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+input[type="file"] {
+  padding: 6px;
+}
+
+.proof-preview {
+  max-width: 100%;
+  margin-top: 8px;
+  border-radius: 8px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.btn {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 0;
+  cursor: pointer;
+}
+
+.btn.ghost {
+  background: transparent;
+  border: 1px solid rgba(15,23,42,0.06);
+}
+
+.btn.success {
+  background: var(--success);
+  color: white;
+}
+
+/* Note footer */
+.note {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Premium mode */
+.premium body {
+  background: linear-gradient(180deg, #0b1220, #071027);
+}
+
+.premium .panel {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+  border: 1px solid rgba(124,58,237,0.08);
+  box-shadow: 0 10px 40px rgba(124,58,237,0.08);
+  color: #e6eef8;
+}
+
+.premium .brand {
+  background: linear-gradient(90deg, var(--accent), #06b6d4);
+  color: white;
+}
+
+/* =========================
+   WhatsApp Floating Button
+   Bulat hijau penuh & white icon
+   Pojok kanan bawah
+   ========================= */
+
+/* Floating WA CS button — bulat hijau, pojok kanan bawah */
+.wa-floating-cs {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;                /* posisi: pojok kanan bawah */
+  width: 60px;
+  height: 60px;
+  background: #25D366;        /* hijau WhatsApp */
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  cursor: pointer;
+  z-index: 9999;
+  transition: transform .15s ease-in-out;
+}
+
+.wa-floating-cs:hover {
+  transform: scale(1.08);
+}
+
+.wa-floating-cs img {
+  width: 34px;
+  height: 34px;
+  filter: brightness(0) invert(1); /* memastikan ikon menjadi putih */
+}
+
+/* Popup background */
+.wa-popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  animation: fadeIn .25s ease-out;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Popup box */
+.wa-popup-box {
+  background: white;
+  width: 90%;
+  max-width: 330px;
+  padding: 20px;
+  border-radius: 14px;
+  text-align: center;
+  animation: popIn .25s ease-out;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+}
+
+.wa-title {
+  margin: 0 0 12px 0;
+}
+
+.wa-avatar {
+  width: 80px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.wa-name {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.wa-status {
+  margin: 4px 0 16px;
+  color: #10b981;
+  font-weight: 600;
+}
+
+.wa-status .dot {
+  width: 10px;
+  height: 10px;
+  background: #10b981;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+  animation: pulse 1s infinite ease-in-out;
+}
+
+.wa-btn {
+  background: #25D366;
+  color: white;
+  border: 0;
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes popIn {
+  from { transform: scale(0.75); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: .4; }
+  100% { opacity: 1; }
+}
   border-radius:8px;
   border:0;
   cursor:pointer;
