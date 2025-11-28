@@ -85,7 +85,7 @@ function selectProduct(product) {
 
   // Auto WhatsApp Link
   document.getElementById("waMessage").href =
-    `https://wa.me/6281234567890?text=` +
+    `https://wa.me/62856935420220?text=` +
     encodeURIComponent(
       `Halo, saya sudah membuat pesanan:\n\nID: ${currentOrder.id}\nProduk: ${currentOrder.name}\nHarga: Rp ${formatRupiah(currentOrder.price)}\nTanggal: ${currentOrder.date}\n\nMohon diproses ya.`
     );
