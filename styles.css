@@ -168,109 +168,7 @@ input[type=file]{
   color:white;
 }
 
-/* Note footer */
-.note{
-  margin-top:12px;
-  color:var(--muted);
-  font-size:0.9rem;
-}
-
-/* Premium mode */
-.premium body{
-  background:linear-gradient(180deg,#0b1220,#071027);
-}
-
-.premium .panel{
-  background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);
-  border:1px solid rgba(124,58,237,0.08);
-  box-shadow:0 10px 40px rgba(124,58,237,0.08);
-  color:#e6eef8;
-}
-
-.premium .brand{
-  background:linear-gradient(90deg,var(--accent),#06b6d4);
-  color:white;
-}
-
-/* Floating WA CS button */
-.wa-floating-cs {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  width: 60px;
-  height: 60px;
-  background: #1d9bf0;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-  cursor: pointer;
-  z-index: 9999;
-}
-
-.wa-floating-cs img {
-  width: 32px;
-}
-
-/* Popup background */
-.wa-popup {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.45);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  backdrop-filter: blur(4px);
-  z-index: 10000;
-  animation: fadeIn .25s ease-out;
-}
-
-.hidden {
-  display: none;
-}
-
-/* Popup box */
-.wa-popup-box {
-  background: white;
-  width: 90%;
-  max-width: 330px;
-  padding: 20px;
-  border-radius: 14px;
-  text-align: center;
-  animation: popIn .25s ease-out;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-}
-
-.wa-title {
-  margin: 0 0 12px 0;
-}
-
-.wa-avatar {
-  width: 80px;
-  border-radius: 50%;
-  margin-bottom: 10px;
-}
-
-.wa-name {
-  font-size: 1.1rem;
-  font-weight: bold;
-}
-
-.wa-status {
-  margin: 4px 0 16px;
-  color: #10b981;
-  font-weight: 600;
-}
-
-.wa-status .dot {
-  width: 10px;
-  height: 10px;
-  background: #10b981;
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 6px;
-  animation: pulse 1s infinite ease-in-out;
+/* Note footer *1qse-in-out;
 }
 
 .wa-btn {
@@ -299,4 +197,31 @@ input[type=file]{
   0% { opacity: 1; }
   50% { opacity: .4; }
   100% { opacity: 1; }
+}
+/* Floating WA CS button — bulat hijau, logo putih, pojok kanan bawah */
+.wa-floating-cs {
+  position: fixed;
+  bottom: 20px;
+  right: 20px; /* ← pindah ke pojok kanan bawah */
+  width: 60px;
+  height: 60px;
+  background: #25D366; /* hijau WhatsApp */
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  cursor: pointer;
+  z-index: 9999;
+  transition: transform .15s ease-in-out;
+}
+
+.wa-floating-cs:hover {
+  transform: scale(1.08);
+}
+
+.wa-floating-cs img {
+  width: 34px;
+  height: 34px;
+  filter: brightness(0) invert(1); /* ubah ikon jadi putih */
 }
