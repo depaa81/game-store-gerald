@@ -90,7 +90,16 @@ async function sendProof(order, file) {
 
   fd.append("caption", caption);
 
-  // Jika backend berjalan di vercel
+async function sendProof(order, file) {
+  const fd = new FormData();
+  fd.append("file", file);
+  fd.append("caption", `
+ID Pesanan: ${order.id}
+Nama Pesanan: ${order.name}
+Harga: ${order.price}
+Tanggal: ${new Date().toLocaleString("id-ID")}
+  `);
+
   const r = await fetch("/api/upload", {
     method: "POST",
     body: fd
@@ -98,9 +107,8 @@ async function sendProof(order, file) {
 
   const j = await r.json();
   console.log(j);
-  alert("Bukti berhasil dikirim ke Telegram!");
+  alert("Bukti terkirim ke Telegram!");
 }
-
 
 // ==========================================
 // EVENT PILIH FILE OTOMATIS KIRIM
