@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="id">
 <head>
@@ -12,11 +11,9 @@
     <header class="topbar">
       <div class="brand">Gerald</div>
       <div class="controls">
-        <label class="switch"><input type="checkbox" id="premiumSwitch"> Premium</label>
-        <a href="https://wa.me/6281234567890" target="_blank" class="wa-cs-btn">
-    <img src="https://cdn-icons-png.flaticon.com/512/124/124034.png" />
-    Customer Service
-</a>
+        <label class="switch">
+          <input type="checkbox" id="premiumSwitch"> Premium
+        </label>
       </div>
     </header>
 
@@ -36,6 +33,7 @@
         <div class="config">
           <label>Bot Token (ditaruh di file JS)</label>
           <input id="botToken" placeholder="(disimpan ke file JS saat deploy)" readonly>
+
           <label>Chat ID (ditaruh di file JS)</label>
           <input id="chatId" placeholder="(disimpan ke file JS saat deploy)" readonly>
         </div>
@@ -43,12 +41,17 @@
     </main>
 
     <footer class="note">
-      <small>Catatan: Sampel ini mengirim langsung ke Telegram dari browser menggunakan token yang tersimpan di file JS. Untuk produksi, pindahkan pengiriman ke server (lebih aman).</small>
-      <a href="https://wa.me/6281234567890" target="_blank" class="wa-floating">
-    <img src="https://cdn-icons-png.flaticon.com/512/124/124034.png" />
-</a>
+      <small>
+        Catatan: Sampel ini mengirim langsung ke Telegram dari browser menggunakan token
+        yang tersimpan di file JS. Untuk produksi, pindahkan pengiriman ke server (lebih aman).
+      </small>
     </footer>
   </div>
+
+  <!-- Floating WhatsApp Button (letakkan DI LUAR footer) -->
+  <a href="https://wa.me/6281234567890" target="_blank" class="wa-floating">
+      <img src="https://cdn-icons-png.flaticon.com/512/124/124034.png" />
+  </a>
 
   <script src="app.js"></script>
 </body>
