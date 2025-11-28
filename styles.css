@@ -192,60 +192,19 @@ input[type=file]{
   color:white;
 }
 
-/* Floating WhatsApp Button */
-.wa-floating {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #25D366;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  z-index: 9999;
-}
-
-.wa-floating img {
-  width: 35px;
-  height: 35px;
-}
-/* Floating WA CS button */
+/* Floating WA CS button – Bulat Hijau, Pojok Kanan Bawah */
 .wa-floating-cs {
   position: fixed;
   bottom: 20px;
-  left: 20px;
+  right: 20px;          /* ← DIPINDAHKAN KE KANAN */
   width: 60px;
   height: 60px;
-  background: #1d9bf0;
+  background: #25D366;  /* Hijau WhatsApp */
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-  cursor: pointer;
-  z-index: 9999;
-}
-
-.wa-floating-cs img {
-  width: 32px;
-}
-
-/* WA Floating Button – Model 2 (Hijau Penuh dengan Logo Putih) */
-.wa-floating-cs {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  width: 65px;
-  height: 65px;
-  background: #25D366; /* hijau WhatsApp */
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.3);
   cursor: pointer;
   z-index: 9999;
   transition: 0.15s ease-in-out;
@@ -256,8 +215,7 @@ input[type=file]{
 }
 
 .wa-floating-cs img {
-  width: 38px;
-  height: 38px;
-  filter: brightness(0) invert(1); 
-  /* memastikan logo WA tetap putih */
+  width: 34px;
+  height: 34px;
+  filter: brightness(0) invert(1); /* Membuat logo jadi PUTIH */
 }
