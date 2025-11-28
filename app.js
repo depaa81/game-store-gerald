@@ -126,3 +126,27 @@ async function sendProofToTelegram() {
 }
 
 renderProducts();
+
+// ====== WA Customer Service Popup ======
+const waBtn = document.getElementById("waFloatingBtn");
+const popup = document.getElementById("waPopup");
+const waCSLink = document.getElementById("waCSLink");
+
+// Template pesan CS
+const csText = encodeURIComponent(
+  "Halo kak, saya ingin bertanya mengenai layanan Gerald Store.\n\n• Nama:\n• Pertanyaan:"
+);
+
+// Tekan tombol bulat → tampil popup
+waBtn.addEventListener("click", () => {
+  popup.classList.remove("hidden");
+});
+
+// Tekan luar popup → tutup popup
+popup.addEventListener("click", (e) => {
+  if (e.target === popup) popup.classList.add("hidden");
+});
+
+// Tombol di popup → buka WhatsApp
+waCSLink.href = "https://wa.me/62856935420228?text=" + csText;
+
