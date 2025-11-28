@@ -4,55 +4,63 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Gerald — Game Store</title>
-  <link rel="stylesheet" href="styles.css">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+
   <div class="container" id="app">
+
+    <!-- Top Bar -->
     <header class="topbar">
       <div class="brand">Gerald</div>
+
       <div class="controls">
         <label class="switch">
-          <input type="checkbox" id="premiumSwitch"> Premium
+          <input type="checkbox" id="premiumSwitch">
+          <span>Premium</span>
         </label>
       </div>
     </header>
 
-    <!-- Two stacked sections on mobile: Product list then Order panel -->
+    <!-- Layout -->
     <main class="layout">
+
+      <!-- Produk -->
       <section class="panel products">
-        <h2>Produk</h2>
+        <h2>Daftar Produk</h2>
         <div id="productList" class="product-list"></div>
       </section>
 
+      <!-- Pesanan -->
       <section class="panel order">
         <h2>Panel Pesanan</h2>
+
         <div id="orderCard" class="card empty">
-          <p>Belum ada pesanan. Pilih produk lalu tekan <strong>Buy</strong>.</p>
-        </div>
-
-        <div class="config">
-          <label>Bot Token (ditaruh di file JS)</label>
-          <input id="botToken" placeholder="(disimpan ke file JS saat deploy)" readonly>
-
-          <label>Chat ID (ditaruh di file JS)</label>
-          <input id="chatId" placeholder="(disimpan ke file JS saat deploy)" readonly>
+          <p>Belum ada pesanan. Pilih produk lalu tekan <b>Buy</b>.</p>
         </div>
       </section>
+
     </main>
 
+    <!-- Catatan -->
     <footer class="note">
       <small>
-        Catatan: Sampel ini mengirim langsung ke Telegram dari browser menggunakan token
-        yang tersimpan di file JS. Untuk produksi, pindahkan pengiriman ke server (lebih aman).
+        Sistem ini mengirim bukti langsung ke Telegram tanpa backend. 
+        Token dapat terlihat oleh publik, gunakan dengan bijak.
       </small>
     </footer>
+
   </div>
 
-  <!-- Floating WhatsApp Button (letakkan DI LUAR footer) -->
+  <!-- Floating WhatsApp Button -->
   <a href="https://wa.me/6281234567890" target="_blank" class="wa-floating">
       <img src="https://cdn-icons-png.flaticon.com/512/124/124034.png" />
   </a>
 
+  <!-- Script utama -->
   <script src="app.js"></script>
+
 </body>
 </html>
