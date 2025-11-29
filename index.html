@@ -32,46 +32,16 @@
         <h2>Daftar Produk</h2>
         <div id="productList" class="product-list"></div>
       </section>
-
-      <!-- Pesanan / Keranjang -->
+<!-- Pesanan -->
 <section class="panel order">
-
   <h2>Panel Pesanan</h2>
 
-  <!-- KERANJANG -->
-  <div id="orderBox">
-    <div class="card empty">Keranjang Kosong</div>
-  </div>
-
-  <!-- PANEL PEMBAYARAN (MUNCUL SETELAH CHECKOUT) -->
-  <div id="paymentSection" class="hidden" style="margin-top:16px;">
-
-    <h3>ID Pesanan: <span id="orderIdDisplay"></span></h3>
-
-    <pre id="detailDisplay"
-      style="
-        background:#f3f4f6;
-        padding:10px;
-        border-radius:8px;
-        white-space:pre-wrap;
-        margin-top:10px;
-      ">
-    </pre>
-
-    <div class="field" style="margin-top:14px;">
-      <label>Upload Bukti Pembayaran</label>
-      <input type="file" id="proofInput">
-    </div>
-
-    <button class="btn success" id="sendProof" style="margin-top:14px;">
-      Kirim Bukti ke Telegram
-    </button>
-
+  <div id="orderCard" class="card empty">
+    <p>Belum ada pesanan. Pilih produk lalu tekan <b>Buy</b>.</p>
   </div>
 
 </section>
     </main>
-
     <!-- Catatan -->
     <footer class="note">
       <small>
