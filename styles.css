@@ -462,7 +462,6 @@ input[type=file]{
 .modal-bg.hidden {
   display: none;
 }
-
 /* WA INFO POPUP */
 .wa-info-bg {
   position: fixed;
@@ -513,6 +512,4 @@ input[type=file]{
 
 .hidden {
   display: none;
-  }
-  
-
+}
