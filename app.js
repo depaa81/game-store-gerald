@@ -194,34 +194,3 @@ waInfoPopup.addEventListener("click", (e) => {
     localStorage.setItem("waInfoSeen", "true");
   }
 });
-document.addEventListener("DOMContentLoaded", () => {
-
-  const waInfoPopup = document.getElementById("waInfoPopup");
-  const closeWaInfo = document.getElementById("closeWaInfo");
-
-  // Jika popup atau tombol tidak ditemukan → berhenti
-  if (!waInfoPopup || !closeWaInfo) return;
-
-  // Cek apakah user pernah melihat
-  if (!localStorage.getItem("waInfoSeen")) {
-    setTimeout(() => {
-      waInfoPopup.classList.remove("hidden");
-    }, 600);
-  }
-
-  // Tombol "Mengerti"
-  closeWaInfo.addEventListener("click", () => {
-    waInfoPopup.classList.add("hidden");
-    localStorage.setItem("waInfoSeen", "true");
-  });
-
-  // Klik area luar menutup popup
-  waInfoPopup.addEventListener("click", (e) => {
-    if (e.target === waInfoPopup) {
-      waInfoPopup.classList.add("hidden");
-      localStorage.setItem("waInfoSeen", "true");
-    }
-  });
-
-});
-
