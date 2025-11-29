@@ -149,3 +149,20 @@ popup.addEventListener("click", (e) => {
 
 // Tombol di popup → buka WhatsApp
 waCSLink.href = "https://wa.me/62856935420228?text=" + csText;
+
+// =====================
+// MODAL PEMBAYARAN
+// =====================
+const paymentBtn = document.getElementById("openPaymentInfo");
+const paymentModal = document.getElementById("paymentModal");
+
+paymentBtn.addEventListener("click", () => {
+  paymentModal.classList.remove("hidden");
+});
+
+// Klik luar modal → tutup
+paymentModal.addEventListener("click", (e) => {
+  if (e.target === paymentModal) {
+    paymentModal.classList.add("hidden");
+  }
+});
