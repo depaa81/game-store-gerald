@@ -174,18 +174,24 @@ paymentModal.addEventListener("click", (e) => {
 const waInfoPopup = document.getElementById("waInfoPopup");
 const closeWaInfo = document.getElementById("closeWaInfo");
 
-// Muncul otomatis jika user belum pernah melihat
-if (!localStorage.getItem("waInfoSeen")) {
-  setTimeout(() => {
-    waInfoPopup.classList.remove("hidden");
-  }, 600); // delay 0.6 detik agar lebih smooth
-}
+// Selalu muncul otomatis setiap buka halaman
+setTimeout(() => {
+  waInfoPopup.classList.remove("hidden");
+}, 600);
 
-// Jika klik tombol mengerti → sembunyikan + tandai sudah lihat
+// Klik tombol mengerti → hanya tutup popup tanpa menyimpan status
 closeWaInfo.addEventListener("click", () => {
   waInfoPopup.classList.add("hidden");
-  localStorage.setItem("waInfoSeen", "true");
 });
+
+// Klik area luar menutup popup
+waInfoPopup.addEventListener("click", (e) => {
+  const box = document.querySelector(".wa-info-box");
+  if (!box.contains(e.target)) {
+    waInfoPopup.classList.add("hidden");
+  }
+});
+
 
 // Klik area luar menutup popup
 waInfoPopup.addEventListener("click", (e) => {
