@@ -4,8 +4,8 @@ const CHAT_ID = "5800113255";
 
 // ====== DATA PRODUK ======
 const products = [
-  { id: 1, name: "Diamond Mobile Legends 86", price: 20000 },
-  { id: 2, name: "Diamond Mobile Legends 172", price: 40000 },
+  { id: 1, name: "FISH IT COIN PER 1M", price: 12000 },
+  { id: 2, name: "AKUN FISH IT (SPEK LANGSUNG KE WHATSAPP CS", price: 40000 },
   { id: 3, name: "PUBG UC 50", price: 12000 },
   { id: 4, name: "PUBG UC 125", price: 28000 },
   { id: 5, name: "Genshin Genesis 300", price: 75000 }
