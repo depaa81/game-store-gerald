@@ -166,23 +166,3 @@ paymentModal.addEventListener("click", (e) => {
     paymentModal.classList.add("hidden");
   }
 });
-
-// POPUP INFORMASI WA
-const waInfoPopup = document.getElementById("waInfoPopup");
-const closeWaInfo = document.getElementById("closeWaInfo");
-
-// Tombol untuk membuka popup
-document.getElementById("showWaInfoBtn")?.addEventListener("click", () => {
-  waInfoPopup.classList.remove("hidden");
-});
-
-// Klik tombol mengerti
-closeWaInfo.addEventListener("click", () => {
-  waInfoPopup.classList.add("hidden");
-});
-
-// Klik area luar menutup popup
-waInfoPopup.addEventListener("click", (e) => {
-  if (e.target === waInfoPopup) waInfoPopup.classList.add("hidden");
-});
-
