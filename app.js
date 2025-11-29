@@ -31,7 +31,7 @@ function renderProducts() {
         <h3>${p.name}</h3>
         <p>Rp ${formatRupiah(p.price)}</p>
       </div>
-      <button class="buy">Buy</button>
+      <button class="add-cart" data-id="...">Add to Cart</button>
     `;
 
     el.querySelector(".buy").addEventListener("click", () => selectProduct(p));
