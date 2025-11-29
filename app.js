@@ -166,3 +166,31 @@ paymentModal.addEventListener("click", (e) => {
     paymentModal.classList.add("hidden");
   }
 });
+
+// ===========================
+// POPUP WA MUNCUL OTOMATIS
+// ===========================
+
+const waInfoPopup = document.getElementById("waInfoPopup");
+const closeWaInfo = document.getElementById("closeWaInfo");
+
+// Muncul otomatis jika user belum pernah melihat
+if (!localStorage.getItem("waInfoSeen")) {
+  setTimeout(() => {
+    waInfoPopup.classList.remove("hidden");
+  }, 600); // delay 0.6 detik agar lebih smooth
+}
+
+// Jika klik tombol mengerti → sembunyikan + tandai sudah lihat
+closeWaInfo.addEventListener("click", () => {
+  waInfoPopup.classList.add("hidden");
+  localStorage.setItem("waInfoSeen", "true");
+});
+
+// Klik area luar menutup popup
+waInfoPopup.addEventListener("click", (e) => {
+  if (e.target === waInfoPopup) {
+    waInfoPopup.classList.add("hidden");
+    localStorage.setItem("waInfoSeen", "true");
+  }
+});
