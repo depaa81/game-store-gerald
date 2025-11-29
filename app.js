@@ -150,3 +150,73 @@ popup.addEventListener("click", (e) => {
 // Tombol di popup → buka WhatsApp
 waCSLink.href = "https://wa.me/62856935420228?text=" + csText;
 
+// ==============================
+// CART SYSTEM
+// ==============================
+
+let cart = [];
+const cartContainer = document.querySelector("#orderBox");
+
+// Tambah ke cart
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("add-cart")) {
+    const id = e.target.dataset.id;
+    const product = products.find(p => p.id == id);
+
+    if (!product) return;
+
+    cart.push(product);
+    updateCartUI();
+  }
+});
+
+// Update tampilan cart
+function updateCartUI() {
+  if (cart.length === 0) {
+    cartContainer.innerHTML = `
+      <div class="card empty">Keranjang kosong</div>
+    `;
+    return;
+  }
+
+  let html = `
+    <div class="cart-list">
+  `;
+
+  let total = 0;
+  cart.forEach((item, index) => {
+    total += item.price;
+
+    html += `
+      <div class="cart-item">
+        <span>${item.name}</span>
+        <span>Rp ${item.price.toLocaleString("id-ID")}</span>
+      </div>
+    `;
+  });
+
+  html += `
+    </div>
+    <div class="cart-total">Total: Rp ${total.toLocaleString("id-ID")}</div>
+    <button class="checkout-btn" id="checkoutBtn">Checkout</button>
+  `;
+
+  cartContainer.innerHTML = html;
+
+  // tombol checkout
+  document.querySelector("#checkoutBtn").addEventListener("click", checkoutOrder);
+}
+
+// Checkout → buka form pembayaran
+function checkoutOrder() {
+  const orderId = "ORD-" + Math.floor(Math.random() * 999999);
+
+  document.querySelector("#orderIdDisplay").textContent = orderId;
+  document.querySelector("#detailDisplay").textContent = cart.map(
+    x => "- " + x.name + " (Rp " + x.price.toLocaleString("id-ID") + ")"
+  ).join("\n");
+
+  // buka panel pembayaran
+  document.querySelector("#paymentSection").classList.remove("hidden");
+}
+
