@@ -432,3 +432,16 @@ input[type=file]{
   height: 34px;
   filter: brightness(0) invert(1); /* ubah ikon jadi putih */
 }
+.add-cart {
+  background: #6d28d9;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 0;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.add-cart:hover {
+  opacity: .85;
+}
