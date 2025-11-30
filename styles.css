@@ -1,10 +1,10 @@
 :root{
-  --bg: #f5f7fb;
-  --card: #ffffff;
-  --muted: #6b7280;
-  --accent: #6d28d9;
-  --accent-2: #7c3aed;
-  --success: #10b981;
+  --bg: #f5f7fb;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --accent: #6d28d9;
+  --accent-2: #7c3aed;
+  --success: #10b981;
 }
 
 /* Global */
@@ -13,41 +13,10 @@ body { background: linear-gradient(180deg, var(--bg), #eef2ff); color: #0f172a; 
 .container { max-width: 920px; margin: 18px auto; padding: 14px; }
 
 /* TOPBAR */
-.topbar {
-  background: #6d28d9;
-  color: white;
-  padding: 15px;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-/* Container kiri untuk tombol + nama store */
-.top-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* Nama store kecil dan kiri */
-.storeName {
-  font-size: 18px;
-  font-weight: bold;
-  margin: 0;
-  padding-top: 2px;
-}
-
-/* Tombol menu */
-#hamburgerBtn {
-  padding: 6px 12px;
-  font-size: 20px;
-  background: white;
-  color: #6d28d9;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
+.topbar { background: #6d28d9; color: white; padding: 15px; text-align: center; }
+.top-left { display: flex; align-items: center; gap: 10px; justify-content: center; }
+.storeName { font-size: 18px; font-weight: bold; }
+#hamburgerBtn { padding: 6px 12px; font-size: 20px; background: white; color: #6d28d9; border: none; border-radius: 6px; cursor: pointer; }
 
 /* LAYOUT */
 .layout { display: grid; grid-template-columns: 1fr 360px; gap: 14px; }
@@ -119,36 +88,30 @@ input[type=file]{ padding:6px; }
 
 /* Input Voucher Modern */
 .voucher-input {
-  width: 100%;
-  padding: 12px 14px;
-  border-radius: 12px;
-  font-size: 1rem;
-  border: 2px solid #e9d5ff;
-  background: #faf5ff;
-  color: #4c1d95;
-  outline: none;
-  transition: .2s ease;
-  font-weight: 500;
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 1rem;
+  border: 2px solid #e9d5ff;
+  background: #faf5ff;
+  color: #4c1d95;
+  outline: none;
+  transition: .2s ease;
+  font-weight: 500;
 }
 
 .voucher-input:focus {
-  border-color: #c084fc;
-  background: #f3e8ff;
-  box-shadow: 0 0 0 3px rgba(124,58,237,0.25);
+  border-color: #c084fc;
+  background: #f3e8ff;
+  box-shadow: 0 0 0 3px rgba(124,58,237,0.25);
 }
 
 #applyVoucherBtn {
-  background: #6d28d9;
-  color: white;
-  border-radius: 10px;
-  padding: 10px;
-  width: 100%;
-  font-size: 1rem;
-  cursor: pointer;
-  border: none;
-  transition: .2s;
-}
-
-#applyVoucherBtn:hover {
-  background: #5b21b6;
-}
+  background: #6d28d9;
+  color: white;
+  border-radius: 10px;
+  padding: 10px;
+  width: 100%;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
