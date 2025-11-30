@@ -118,38 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateWaSellerLink();
   }
 
-  function applyVoucher() {
-    const codeEl = document.getElementById("voucherInput");
-    const resultEl = document.getElementById("voucherResult");
-    if (!currentOrder || !codeEl || !resultEl) return;
-
-    const code = codeEl.value.trim().toUpperCase();
-    let voucher = null;
-    if (code === "DISKON10") voucher = { cut: 0.10, code: "DISKON10" };
-    if (code === "MEGA50" && currentOrder.price >= 50000) voucher = { cut: 0.50, code: "MEGA50" };
-
-    if (!voucher) {
-      showPopupNotif("Kode voucher tidak valid!");
-      resultEl.innerHTML = "";
-      currentOrder.finalPrice = currentOrder.price;
-      currentOrder.discount = 0;
-      currentOrder.voucher = null;
-      updateWaSellerLink();
-      return;
-    }
-
-    const pot = Math.round(currentOrder.price * voucher.cut);
-    const total = currentOrder.price - pot;
-    currentOrder.discount = pot;
-    currentOrder.finalPrice = total;
-    currentOrder.voucher = voucher;
-
-    resultEl.innerHTML = `
-      <p><b>Voucher:</b> ${voucher.code}</p>
-      <p>Potongan: Rp ${formatRupiah(pot)}</p>
-      <p><b>Total Bayar: Rp ${formatRupiah(total)}</b></p>
-    `;
-    updateWaSellerLink();
+  
     showPopupNotif("Voucher berhasil diterapkan!");
   }
 
@@ -160,7 +129,53 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function sendProofToTelegram() {
-    if (!currentOrder) { alert("Tidak ada pesanan."); return; }
+   function applyVoucher() {
+  const codeEl = document.getElementById("voucherInput");
+  const resultEl = document.getElementById("voucherResult");
+
+  if (!currentOrder || !codeEl) return;
+
+  const code = codeEl.value.trim().toUpperCase();
+
+  // cari voucher dari file voucher.js
+  const voucher = VOUCHERS.find(v => v.code === code);
+
+  if (!voucher) {
+    resultEl.innerHTML = "";
+    currentOrder.finalPrice = currentOrder.price;
+    currentOrder.discount = 0;
+    currentOrder.voucher = null;
+    showPopupNotif("Kode voucher tidak ditemukan!");
+    updateWaSellerLink();
+    return;
+  }
+
+  // cek minimal harga
+  if (currentOrder.price < voucher.min) {
+    showPopupNotif(
+      `Minimal pembelian Rp ${formatRupiah(voucher.min)} untuk menggunakan voucher ini`
+    );
+    return;
+  }
+
+  // hitung diskon
+  const pot = Math.round(currentOrder.price * voucher.cut);
+  const total = currentOrder.price - pot;
+
+  currentOrder.discount = pot;
+  currentOrder.finalPrice = total;
+  currentOrder.voucher = voucher;
+
+  resultEl.innerHTML = `
+    <p><b>Voucher:</b> ${voucher.code}</p>
+    <p>Potongan: Rp ${formatRupiah(pot)}</p>
+    <p><b>Total Bayar: Rp ${formatRupiah(total)}</b></p>
+  `;
+
+  showPopupNotif("Voucher berhasil diterapkan!");
+  updateWaSellerLink();
+}
+ if (!currentOrder) { alert("Tidak ada pesanan."); return; }
     const fileEl = document.getElementById("proof");
     if (!fileEl || !fileEl.files[0]) { alert("Upload bukti dulu."); return; }
 
