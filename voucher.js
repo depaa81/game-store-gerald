@@ -11,14 +11,14 @@ const VOUCHERS = [
     code: "MEGA04",
     cut: 0.04,        // 4%
     min: 35000,
-    allowedProducts: [2]
-    // berlaku dengan produk id 2
+    allowedProducts: [2, 4]
+    // berlaku dengan produk id 2&4
   },
   {
     code: "SUPER06",
     cut: 0.06,        // 6%
     min: 60000,
-    allowedProducts: [4]
-    // belaku dengan produk id 4
+    allowedProducts: [2, 4]
+    // belaku dengan produk id 2&4
   }
 ];
