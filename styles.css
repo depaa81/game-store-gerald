@@ -85,3 +85,21 @@ input[type=file]{ padding:6px; }
 @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
 @keyframes popIn{ from{opacity:0; transform:scale(.8);} to{opacity:1; transform:scale(1);} }
 @keyframes pulse{ 0%{opacity:1;} 50%{opacity:.4;} 100%{opacity:1;} }
+
+.voucher-input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-size: 1rem;
+  backdrop-filter: blur(8px);
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(255,255,255,0.35);
+  outline: none;
+  transition: .2s ease;
+}
+
+.voucher-input:focus {
+  background: rgba(255,255,255,0.85);
+  border-color: #c084fc;
+  box-shadow: 0 0 0 3px rgba(124,58,237,.25);
+}
