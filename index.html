@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="utf-8" />
@@ -13,104 +13,113 @@
   <div class="container" id="app">
 
     <!-- Top Bar -->
-    <div class="topbar">
-  <h2 class="storeName">Gerald Market</h2>
-  <div class="menuLabel">Menu</div>
-</div>
-
-
-      <div class="controls">
-        <label class="switch">
-          <input type="checkbox" id="premiumSwitch">
-          <span>Premium</span>
-        </label>
+    <header class="topbar">
+      <div class="top-left">
+        <h2 class="storeName">Gerald Market</h2>
+        <button id="hamburgerBtn">☰</button>
       </div>
     </header>
+
+    <div class="controls">
+      <label class="switch">
+        <input type="checkbox" id="premiumSwitch">
+        <span>Premium</span>
+      </label>
+    </div>
 
     <!-- Layout -->
     <main class="layout">
 
-      <!-- Produk -->
+      <!-- PRODUK -->
       <section class="panel products">
         <h2>Daftar Produk</h2>
         <div id="productList" class="product-list"></div>
       </section>
-<!-- Pesanan -->
-<section class="panel order">
-  <h2>Panel Pesanan</h2>
-  <div id="orderCard" class="card empty">
-    <p>Belum ada pesanan. Pilih produk lalu tekan <b>Buy</b>.</p>
-  </div>
-</section>
+
+      <!-- PESANAN -->
+      <section class="panel order">
+        <h2>Panel Pesanan</h2>
+        <div id="orderCard" class="card empty">
+          <p>Belum ada pesanan. Pilih produk lalu tekan <b>Buy</b>.</p>
+        </div>
+      </section>
+
+      <!-- Tombol Pembayaran -->
       <button class="btn ghost" id="openPaymentInfo">
-  Lihat Nomor Pembayaran
+        Lihat Nomor Pembayaran
       </button>
-      
+
     </main>
+
     <!-- Catatan -->
     <footer class="note">
       <small>
         Jika sudah mengirim bukti transaksi lewat bot telegram,
         Maka klik tombol WhatsApp penjual.
-        Jika ada kendala langsung ke Customer Service,klik ikon WhatsApp.
-        WhatsApp penjual dan WhatsApp Customer Service berbeda, penjual
-      khusus Melanjutkan transaksi jika sudah mengirim bukti transaksi. Dan WhatsApp
-        Customer Service khusus jika ada kendala atau menanyakan sesuatu.
+        Jika ada kendala langsung ke Customer Service, klik ikon WhatsApp.
+        WhatsApp penjual dan WhatsApp Customer Service berbeda: penjual khusus
+        melanjutkan transaksi setelah mengirim bukti, dan Customer Service
+        khusus untuk kendala atau pertanyaan.
       </small>
     </footer>
 
   </div>
 
-<!-- Floating WA CS Button -->
-<div id="waFloatingBtn" class="wa-floating-cs">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp">
-</div>
-
-
-<!-- Popup Customer Service -->
-<div id="waPopup" class="wa-popup hidden">
-  <div class="wa-popup-box">
-
-    <h3 class="wa-title">Customer Service</h3>
-
-    <img class="wa-avatar" 
-         src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png" />
-
-    <div class="wa-name">Gerald Store</div>
-    <div class="wa-status"><span class="dot"></span> Online</div>
-
-    <a id="waCSLink" target="_blank">
-      <button class="wa-btn">Hubungi via WhatsApp</button>
-    </a>
+  <!-- Floating WA CS Button -->
+  <div id="waFloatingBtn" class="wa-floating-cs">
+    <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp">
   </div>
-</div>
-<div id="paymentModal" class="hidden modal-bg">
-  <div class="modal-box">
-    <iframe src="payment-info.html" class="modal-frame"></iframe>
+
+  <!-- Popup Customer Service -->
+  <div id="waPopup" class="wa-popup hidden">
+    <div class="wa-popup-box">
+
+      <h3 class="wa-title">Customer Service</h3>
+
+      <img class="wa-avatar"
+        src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png" />
+
+      <div class="wa-name">Gerald Store</div>
+      <div class="wa-status"><span class="dot"></span> Online</div>
+
+      <a id="waCSLink" target="_blank">
+        <button class="wa-btn">Hubungi via WhatsApp</button>
+      </a>
+    </div>
   </div>
-</div>  
 
-  <!-- POPUP PENJELASAN WA -->
-<div id="waInfoPopup" class="hidden wa-info-bg">
-  <div class="wa-info-box">
-
-    <h2 class="wa-info-title">Informasi WhatsApp</h2>
-
-    <p class="wa-info-text">
-      Jika sudah mengirim bukti transaksi lewat bot Telegram,<br><br>
-      ➤ Maka klik tombol <b>WhatsApp Penjual</b>.<br><br>
-      
-      Jika ada kendala, langsung ke <b>Customer Service</b>, klik ikon WhatsApp di pojok kanan bawah.<br><br>
-
-      WhatsApp Penjual dan WhatsApp Customer Service berbeda:<br><br>
-      • <b>WhatsApp Penjual</b> khusus untuk melanjutkan transaksi setelah kirim bukti.<br>
-      • <b>WhatsApp Customer Service</b> khusus jika ada kendala atau menanyakan sesuatu.
-    </p>
-    <button id="closeWaInfo" class="wa-info-btn">Mengerti</button>
+  <!-- Modal Pembayaran -->
+  <div id="paymentModal" class="hidden modal-bg">
+    <div class="modal-box">
+      <iframe src="payment-info.html" class="modal-frame"></iframe>
+    </div>
   </div>
-</div>
-  
-  <!-- Script utama -->
-  <script src="app.js"></script>  
+
+  <!-- POPUP INFO WA -->
+  <div id="waInfoPopup" class="hidden wa-info-bg">
+    <div class="wa-info-box">
+
+      <h2 class="wa-info-title">Informasi WhatsApp</h2>
+
+      <p class="wa-info-text">
+        Jika sudah mengirim bukti transaksi lewat bot Telegram,<br><br>
+        ➤ Maka klik tombol <b>WhatsApp Penjual</b>.<br><br>
+
+        Jika ada kendala, langsung ke <b>Customer Service</b>,
+        klik ikon WhatsApp di pojok kanan bawah.<br><br>
+
+        WhatsApp Penjual dan WhatsApp Customer Service berbeda:<br><br>
+
+        • <b>WhatsApp Penjual</b> untuk melanjutkan transaksi setelah kirim bukti.<br>
+        • <b>WhatsApp Customer Service</b> untuk kendala atau pertanyaan.
+      </p>
+
+      <button id="closeWaInfo" class="wa-info-btn">Mengerti</button>
+    </div>
+  </div>
+
+  <!-- SCRIPT -->
+  <script src="app.js"></script>
+
 </body>
 </html>
