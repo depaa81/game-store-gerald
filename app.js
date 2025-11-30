@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       <div class="field">
         <label>Masukkan Voucher</label>
-        <input id="voucherInput" class="voucher-input" type="text" placeholder="contoh: GERALT10">
+        <input id="voucherInput" class="voucher-input" type="text" placeholder="Masukkan kode voucher...">
         <button class="btn" id="applyVoucherBtn" style="width:100%;margin-top:6px;">Terapkan Voucher</button>
       </div>
 
