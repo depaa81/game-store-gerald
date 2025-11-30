@@ -17,7 +17,7 @@ const VOUCHERS = [
   {
     code: "SUPER06",
     cut: 0.06,        // 6%
-    min: 0,
+    min: 60000,
     allowedProducts: [4]
     // belaku dengan produk id 4
   }
