@@ -4,18 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Gerald — Game Store</title>
-
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-
   <div class="container" id="app">
 
     <!-- TOPBAR -->
     <header class="topbar">
       <div class="top-left">
         <h2 class="storeName">Gerald Market</h2>
-        <button id="hamburgerBtn">☰</button>
+        <button id="hamburgerBtn" aria-label="Menu">☰</button>
       </div>
     </header>
 
@@ -47,7 +45,6 @@
 
     </main>
 
-    <!-- CATATAN -->
     <footer class="note">
       <small>
         Jika sudah mengirim bukti transaksi lewat bot Telegram,
@@ -57,25 +54,25 @@
   </div>
 
   <!-- FLOATING WA CS -->
-  <div id="waFloatingBtn" class="wa-floating-cs">
-    <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
+  <div id="waFloatingBtn" class="wa-floating-cs" role="button" aria-label="Customer Service">
+    <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WA">
   </div>
 
   <!-- POPUP CS -->
-  <div id="waPopup" class="wa-popup hidden">
+  <div id="waPopup" class="wa-popup hidden" aria-hidden="true">
     <div class="wa-popup-box">
       <h3 class="wa-title">Customer Service</h3>
-      <img class="wa-avatar" src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png" />
+      <img class="wa-avatar" src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png" alt="avatar" />
       <div class="wa-name">Gerald Store</div>
       <div class="wa-status"><span class="dot"></span> Online</div>
-      <a id="waCSLink" target="_blank">
+      <a id="waCSLink" target="_blank" rel="noopener noreferrer">
         <button class="wa-btn">Hubungi via WhatsApp</button>
       </a>
     </div>
   </div>
 
   <!-- POPUP INFO (SELALU MUNCUL) -->
-  <div id="waInfoPopup" class="wa-info-bg hidden">
+  <div id="waInfoPopup" class="wa-info-bg hidden" aria-hidden="true">
     <div class="wa-info-box">
       <h2 class="wa-info-title">Informasi WhatsApp</h2>
       <p class="wa-info-text">
@@ -92,9 +89,9 @@
   </div>
 
   <!-- POPUP PAYMENT -->
-  <div id="paymentModal" class="modal-bg hidden">
+  <div id="paymentModal" class="modal-bg hidden" aria-hidden="true">
     <div class="modal-box">
-      <iframe src="payment-info.html" class="modal-frame"></iframe>
+      <iframe src="payment-info.html" class="modal-frame" title="Payment info"></iframe>
     </div>
   </div>
 
