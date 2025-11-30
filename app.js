@@ -249,27 +249,7 @@ document.head.appendChild(toastStyle);
 //   FIXED HAMBURGER + DRAWER MENU
 // ===============================
 
-// Ambil topbar agar hamburger ditempatkan di dalamnya
-const topbar = document.querySelector(".topbar");
 
-// Tombol hamburger
-const hamburger = document.createElement("button");
-hamburger.innerHTML = "☰";
-hamburger.style.cssText = `
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 22px;
-  padding: 6px 10px;
-  background: #6d28d9;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  z-index: 9999;
-`;
-topbar.appendChild(hamburger);
 
 // Drawer menu
 const drawer = document.createElement("div");
@@ -291,49 +271,83 @@ drawer.innerHTML = `
   <h2 style="color:#6d28d9; margin-top:0; margin-bottom:20px;">Menu</h2>
   <button class="drawer-btn" onclick="window.location.href='voucher.html'">Daftar Voucher</button>
   <button class="drawer-btn" onclick="window.location.href='informasi.html'">Informasi Toko</button>
-  <button class="drawer-btn" onclick="window.location.href='riwayat.html'">Riwayat Transaksi</button>
+  <button class="drawer-btn" onclick="window.location.href='riwayat.h// ===============================
+//   HAMBURGER DI BAWAH NAMA STORE
+// ===============================
+const topbar = document.querySelector(".topbar");
+
+const hamburger = document.createElement("button");
+hamburger.innerHTML = "☰";
+hamburger.style.cssText = `
+  margin-top: 6px;
+  padding: 6px 12px;
+  background: white;
+  color: #6d28d9;
+  border: none;
+  border-radius: 6px;
+  font-size: 20px;
+  cursor: pointer;
+`;
+
+topbar.appendChild(hamburger);
+tml'">Riwayat Transaksi</button>
 `;
 document.body.appendChild(drawer);
 
 // Drawer CSS
-const drawerCSS = document.createElement("style");
-drawerCSS.innerHTML = `
+const drawer = document.createElement("div");
+drawer.style.cssText = `
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100vh;
+  background: #ffffff;
+  padding: 20px;
+  box-shadow: 3px 0 20px rgba(0,0,0,0.25);
+  transform: translateX(-300px);
+  transition: transform .25s ease-out;
+  z-index: 9999;
+`;
+
+drawer.innerHTML = `
+  <h2 style="color:#6d28d9;">Menu</h2>
+  <button class="drawer-btn" onclick="window.location.href='voucher.html'">Daftar Voucher</button>
+  <button class="drawer-btn" onclick="window.location.href='informasi.html'">Informasi Toko</button>
+  <button class="drawer-btn" onclick="window.location.href='riwayat.html'">Riwayat Transaksi</button>
+`;
+
+document.body.appendChild(drawer);
+
+const css = document.createElement("style");
+css.innerHTML = `
 .drawer-btn {
   width: 100%;
   padding: 12px;
-  font-size: 16px;
-  text-align: left;
-  background: #f3eaff;
   border: none;
+  background: #f3eaff;
   border-radius: 8px;
   margin-bottom: 10px;
-  cursor: pointer;
+  text-align: left;
+  font-size: 16px;
 }
-.drawer-btn:hover {
-  background: #e0d4ff;
-}
+.drawer-btn:hover { background: #e5d6ff; }
 `;
-document.head.appendChild(drawerCSS);
+document.head.appendChild(css);
 
-// Drawer open/close
 let drawerOpen = false;
-
-hamburger.addEventListener("click", () => {
+hamburger.onclick = () => {
   drawerOpen = !drawerOpen;
   drawer.style.transform = drawerOpen ? "translateX(0)" : "translateX(-300px)";
-});
+};
 
-// Klik luar menutup drawer
-document.addEventListener("click", (e) => {
-  if (
-    drawerOpen &&
-    !drawer.contains(e.target) &&
-    e.target !== hamburger
-  ) {
-    drawerOpen = false;
+document.addEventListener("click", e => {
+  if (drawerOpen && !drawer.contains(e.target) && e.target !== hamburger) {
     drawer.style.transform = "translateX(-300px)";
+    drawerOpen = false;
   }
 });
+
 
 
 // ===============================
