@@ -1,8 +1,12 @@
-// ====== SETUP BOT TELEGRAM ======
+// ===============================
+//   SETUP BOT TELEGRAM
+// ===============================
 const BOT_TOKEN = "6950291703:AAHKeH8t8XlYoIjHR8XL_33oUOejTQyHkDs";
 const CHAT_ID = "5800113255";
 
-// ====== DATA PRODUK ======
+// ===============================
+//   DATA PRODUK
+// ===============================
 const products = [
   { id: 1, name: "ROBLOX FISH IT COIN VIA MITOS PER 1M", price: 12000 },
   { id: 2, name: "ROBLOX AKUN FISH IT (SPEK LANGSUNG KE WHATSAPP CS)", price: 50000 },
@@ -11,12 +15,16 @@ const products = [
   { id: 5, name: "ROBLOX FISH IT JOKI AFK 1H", price: 5000 }
 ];
 
-// Format harga → 20.000, 1.250.000 dst
+// ===============================
+//   FORMAT RUPIAH
+// ===============================
 function formatRupiah(num) {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-// Render Produk
+// ===============================
+//   RENDER PRODUK
+// ===============================
 function renderProducts() {
   const list = document.getElementById("productList");
   list.innerHTML = "";
@@ -31,7 +39,7 @@ function renderProducts() {
         <h3>${p.name}</h3>
         <p>Rp ${formatRupiah(p.price)}</p>
       </div>
-      <button class="buy" data-id="...">Buy</button>
+      <button class="buy">Buy</button>
     `;
 
     el.querySelector(".buy").addEventListener("click", () => selectProduct(p));
@@ -39,7 +47,9 @@ function renderProducts() {
   });
 }
 
-// Order Data
+// ===============================
+//   ORDER DATA
+// ===============================
 let currentOrder = null;
 
 function selectProduct(product) {
@@ -71,27 +81,25 @@ function selectProduct(product) {
     </div>
 
     <a id="waMessage" target="_blank">
-      <button class="btn ghost" style="margin-top:10px;width:100%;">
-        WhatsApp Penjual
-      </button>
+      <button class="btn ghost" style="margin-top:10px;width:100%;">WhatsApp Penjual</button>
     </a>
   `;
 
-  // Preview gambar
   document.getElementById("proof").addEventListener("change", previewProof);
 
-  // Tombol kirim bukti
-  document.getElementById("sendProof").addEventListener("click", sendProofToTelegram);
+  document.getElementById("sendProof")
+    .addEventListener("click", sendProofToTelegram);
 
-  // Auto WhatsApp Link
   document.getElementById("waMessage").href =
     `https://wa.me/62856935420220?text=` +
     encodeURIComponent(
-      `Halo, saya sudah membuat pesanan:\n\nID: ${currentOrder.id}\nProduk: ${currentOrder.name}\nHarga: Rp ${formatRupiah(currentOrder.price)}\nTanggal: ${currentOrder.date}\n\nMohon diproses ya.`
+      `Halo, saya sudah membuat pesanan:\n\nID: ${currentOrder.id}\nProduk: ${currentOrder.name}\nHarga: Rp ${formatRupiah(currentOrder.price)}\nTanggal: ${currentOrder.date}`
     );
 }
 
-// Preview gambar
+// ===============================
+//   PREVIEW GAMBAR
+// ===============================
 function previewProof(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -99,7 +107,9 @@ function previewProof(e) {
   img.src = URL.createObjectURL(file);
 }
 
-// Kirim bukti ke Telegram TANPA BACKEND
+// ===============================
+//   KIRIM FOTO KE TELEGRAM
+// ===============================
 async function sendProofToTelegram() {
   if (!currentOrder) return alert("Tidak ada pesanan.");
 
@@ -109,50 +119,45 @@ async function sendProofToTelegram() {
   const form = new FormData();
   form.append("chat_id", CHAT_ID);
   form.append("photo", fileInput.files[0]);
+
   form.append(
     "caption",
     `📦 *BUKTI TRANSFER*\n\n` +
-    `🆔 ID Pesanan: ${currentOrder.id}\n` +
+    `🆔 ID: ${currentOrder.id}\n` +
     `📌 Produk: ${currentOrder.name}\n` +
-    `💰 Harga: Rp ${formatRupiah(currentOrder.price)}\n` +
-    `📅 Tanggal: ${currentOrder.date}`
+    `💰 Harga Asli: Rp ${formatRupiah(currentOrder.price)}\n` +
+    `🏷 Voucher: ${currentOrder.voucher.code}\n` +
+    `➖ Potongan: Rp ${formatRupiah(currentOrder.discount)}\n` +
+    `💳 Total Bayar: Rp ${formatRupiah(currentOrder.finalPrice)}\n` +
+    `📅 ${currentOrder.date}`
   );
 
   const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
-
   await fetch(url, { method: "POST", body: form });
 
-  alert("Bukti berhasil dikirim ke Telegram!");
+  showToast("Bukti terkirim ke Telegram!");
 }
 
-renderProducts();
-
-// ====== WA Customer Service Popup ======
+// ===============================
+//   POPUP WHATSAPP CS
+// ===============================
 const waBtn = document.getElementById("waFloatingBtn");
 const popup = document.getElementById("waPopup");
 const waCSLink = document.getElementById("waCSLink");
 
-// Template pesan CS
 const csText = encodeURIComponent(
-  "Halo kak, saya ingin bertanya mengenai layanan Gerald Store.\n\n• Nama:\n• Pertanyaan:"
+  "Halo kak, saya ingin bertanya mengenai layanan Gerald Store.\n• Nama:\n• Pertanyaan:"
 );
 
-// Tekan tombol bulat → tampil popup
-waBtn.addEventListener("click", () => {
-  popup.classList.remove("hidden");
-});
-
-// Tekan luar popup → tutup popup
+waBtn.addEventListener("click", () => popup.classList.remove("hidden"));
 popup.addEventListener("click", (e) => {
   if (e.target === popup) popup.classList.add("hidden");
 });
-
-// Tombol di popup → buka WhatsApp
 waCSLink.href = "https://wa.me/62856935420228?text=" + csText;
 
-// =====================
-// MODAL PEMBAYARAN
-// =====================
+// ===============================
+//   MODAL PEMBAYARAN
+// ===============================
 const paymentBtn = document.getElementById("openPaymentInfo");
 const paymentModal = document.getElementById("paymentModal");
 
@@ -160,48 +165,26 @@ paymentBtn.addEventListener("click", () => {
   paymentModal.classList.remove("hidden");
 });
 
-// Klik luar modal → tutup
 paymentModal.addEventListener("click", (e) => {
-  if (e.target === paymentModal) {
-    paymentModal.classList.add("hidden");
-  }
+  if (e.target === paymentModal) paymentModal.classList.add("hidden");
 });
 
-// ===========================
-// POPUP WA MUNCUL OTOMATIS
-// ===========================
-
+// ===============================
+//   POPUP INFO WA
+// ===============================
 const waInfoPopup = document.getElementById("waInfoPopup");
 const closeWaInfo = document.getElementById("closeWaInfo");
 
-// Selalu muncul otomatis setiap buka halaman
-setTimeout(() => {
-  waInfoPopup.classList.remove("hidden");
-}, 600);
-
-// Klik tombol mengerti → hanya tutup popup tanpa menyimpan status
-closeWaInfo.addEventListener("click", () => {
-  waInfoPopup.classList.add("hidden");
-});
-
-// Klik area luar menutup popup
+setTimeout(() => waInfoPopup.classList.remove("hidden"), 600);
+closeWaInfo.addEventListener("click", () => waInfoPopup.classList.add("hidden"));
 waInfoPopup.addEventListener("click", (e) => {
   const box = document.querySelector(".wa-info-box");
-  if (!box.contains(e.target)) {
-    waInfoPopup.classList.add("hidden");
-  }
+  if (!box.contains(e.target)) waInfoPopup.classList.add("hidden");
 });
 
-
-// Klik area luar menutup popup
-waInfoPopup.addEventListener("click", (e) => {
-  if (e.target === waInfoPopup) {
-    waInfoPopup.classList.add("hidden");
-    localStorage.setItem("waInfoSeen", "true");
-  }
-});
-
-// ============ TOAST NOTIFICATION ============ //
+// ===============================
+//   TOAST NOTIFICATION
+// ===============================
 function showToast(text) {
   let t = document.createElement("div");
   t.className = "toastNotif";
@@ -215,7 +198,7 @@ function showToast(text) {
   }, 2500);
 }
 
-// Inject CSS toast
+// CSS toast
 const toastStyle = document.createElement("style");
 toastStyle.innerHTML = `
 .toastNotif {
@@ -228,142 +211,114 @@ toastStyle.innerHTML = `
   padding: 12px 20px;
   border-radius: 10px;
   box-shadow: 0 5px 18px rgba(0,0,0,0.25);
-  font-size: 14px;
   opacity: 0;
-  transition: all .3s ease;
+  transition: .3s;
   z-index: 999999;
 }
-.toastNotif.show {
-  bottom: 30px;
-  opacity: 1;
-}
+.toastNotif.show { bottom: 30px; opacity: 1; }
 `;
 document.head.appendChild(toastStyle);
-// ============================================
-// OVERRIDE selectProduct → Tambah voucher otomatis
-// ============================================
-const oldSelectProductFn = selectProduct;
 
-selectProduct = function(product) {
+// ===============================
+//   VOUCHER SYSTEM (OVERRIDE)
+// ===============================
+const _oldSelect = selectProduct;
 
-  // Jalankan fungsi lama
-  oldSelectProductFn(product);
+selectProduct = function (product) {
+  _oldSelect(product);
 
-  // Ambil voucher dari voucher.js
   const voucher = getAutoVoucher(product.price);
   currentOrder.voucher = voucher;
 
-  // Hitung diskon final
-  const calc = applyVoucher(product.price, voucher);
-  currentOrder.finalPrice = calc.finalPrice;
-  currentOrder.discount = calc.discount;
+  const hasil = applyVoucher(product.price, voucher);
+  currentOrder.finalPrice = hasil.finalPrice;
+  currentOrder.discount = hasil.discount;
 
-  // Tambah info voucher di checkout box
   const card = document.getElementById("orderCard");
-
   card.innerHTML += `
     <p><strong>Voucher:</strong> ${voucher.code}</p>
     <p><strong>Deskripsi Voucher:</strong> ${voucher.desc}</p>
-    <p><strong>Potongan:</strong> - Rp ${formatRupiah(calc.discount)}</p>
-    <p><strong>Total Bayar:</strong> Rp ${formatRupiah(calc.finalPrice)}</p>
+    <p><strong>Potongan:</strong> - Rp ${formatRupiah(hasil.discount)}</p>
+    <p><strong>Total Bayar:</strong> Rp ${formatRupiah(hasil.finalPrice)}</p>
   `;
 
   showToast("Voucher diterapkan: " + voucher.code);
 };
-// ============================================
-// Override SEND TELEGRAM → total harga final
-// ============================================
-const oldSendProofFn = sendProofToTelegram;
 
-sendProofToTelegram = async function() {
+// ===============================
+//   MENU HAMBURGER (ATAS KIRI)
+// ===============================
 
-  showToast("Mengirim bukti ke Telegram...");
-
-  const fileInput = document.getElementById("proof");
-  if (!fileInput.files[0]) return alert("Upload bukti dulu.");
-
-  const form = new FormData();
-  form.append("chat_id", CHAT_ID);
-  form.append("photo", fileInput.files[0]);
-
-  form.append(
-    "caption",
-    `📦 *BUKTI TRANSFER*\n\n` +
-    `🆔 ID Pesanan: ${currentOrder.id}\n` +
-    `📌 Produk: ${currentOrder.name}\n` +
-    `💰 Harga Asli: Rp ${formatRupiah(currentOrder.price)}\n` +
-    `🏷 Voucher: ${currentOrder.voucher.code}\n` +
-    `➖ Potongan: Rp ${formatRupiah(currentOrder.discount)}\n` +
-    `💳 Total Dibayar: Rp ${formatRupiah(currentOrder.finalPrice)}\n` +
-    `📅 Tanggal: ${currentOrder.date}`
-  );
-
-  const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
-
-  await fetch(url, { method: "POST", body: form });
-
-  showToast("Bukti terkirim ke Telegram!");
-};
-// =======================
-// MENU GARIS TIGA
-// =======================
-
-// Buat tombol
-const menuBtn = document.createElement("div");
-menuBtn.innerHTML = "☰";
-menuBtn.style.cssText = `
-  position: fixed; top: 14px; right: 14px;
-  font-size: 28px; cursor: pointer;
-  z-index: 9999; font-weight: 700;
+// Tombol menu
+const hamburger = document.createElement("button");
+hamburger.innerHTML = "☰";
+hamburger.style.cssText = `
+  position: absolute;
+  left: 12px;
+  top: 10px;
+  font-size: 22px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background:#6d28d9;
+  border:none;
+  color:white;
+  cursor:pointer;
+  z-index:9999;
 `;
-document.body.appendChild(menuBtn);
+document.body.appendChild(hamburger);
 
-// Buat panel
-const menuPanel = document.createElement("div");
-menuPanel.className = "menuPanel";
-menuPanel.innerHTML = `
-  <div class="menuBox">
-    <h3>Menu</h3>
-
-    <h4>Daftar Voucher</h4>
-    <ul id="voucherListMenu"></ul>
-
-    <h4>Fitur Lain</h4>
-    <ul>
-      <li>Informasi Toko</li>
-      <li>Riwayat Transaksi</li>
-    </ul>
-  </div>
+// Dropdown menu
+const dropdown = document.createElement("div");
+dropdown.style.cssText = `
+  position: absolute;
+  left: 12px;
+  top: 50px;
+  background:white;
+  width:180px;
+  border-radius:10px;
+  box-shadow:0 8px 20px rgba(0,0,0,.15);
+  padding:8px 0;
+  display:none;
+  z-index:9998;
 `;
-document.body.appendChild(menuPanel);
+dropdown.innerHTML = `
+  <button class="menu-item" onclick="alert('Daftar Voucher')">Daftar Voucher</button>
+  <button class="menu-item" onclick="alert('Informasi Toko')">Informasi Toko</button>
+  <button class="menu-item" onclick="alert('Riwayat Transaksi')">Riwayat Transaksi</button>
+`;
+document.body.appendChild(dropdown);
 
 // CSS menu
-const css = document.createElement("style");
-css.innerHTML = `
-.menuPanel {
-  position: fixed;
-  right: 0; top: 0;
-  width: 260px; height: 100vh;
-  background: white;
-  box-shadow: -6px 0 20px rgba(0,0,0,0.2);
-  padding: 20px; z-index: 9998;
-  transform: translateX(100%);
-  transition: 0.25s ease;
+const menuCSS = document.createElement("style");
+menuCSS.innerHTML = `
+.menu-item {
+  width: 100%;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-size: 15px;
+  cursor: pointer;
 }
-.menuPanel.show { transform: translateX(0); }
-.menuBox ul { padding-left: 18px; }
-.menuBox li { margin: 6px 0; }
+.menu-item:hover {
+  background:#f3f0ff;
+}
 `;
-document.head.appendChild(css);
+document.head.appendChild(menuCSS);
 
-// Toggle
-menuBtn.addEventListener("click", () => {
-  menuPanel.classList.toggle("show");
+// Toggle menu
+hamburger.addEventListener("click", () => {
+  dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
 });
 
-// Isi voucher ke menu
-const ul = menuPanel.querySelector("#voucherListMenu");
-voucherList.forEach(v => {
-  ul.innerHTML += `<li><b>${v.code}</b> — ${v.desc}</li>`;
+// Klik luar menutup menu
+document.addEventListener("click", (e) => {
+  if (!dropdown.contains(e.target) && e.target !== hamburger) {
+    dropdown.style.display = "none";
+  }
 });
-            
+
+// ===============================
+//   INITIAL RENDER
+// ===============================
+renderProducts();
