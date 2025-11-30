@@ -246,15 +246,21 @@ toastStyle.innerHTML = `
 document.head.appendChild(toastStyle);
 
 // ===============================
-//   DRAWER MENU (SLIDE LEFT)
+//   FIXED HAMBURGER + DRAWER MENU
 // ===============================
+
+// Ambil topbar agar hamburger ditempatkan di dalamnya
+const topbar = document.querySelector(".topbar");
+
+// Tombol hamburger
 const hamburger = document.createElement("button");
 hamburger.innerHTML = "☰";
 hamburger.style.cssText = `
-  position: fixed;
+  position: absolute;
   left: 12px;
-  top: 12px;
-  font-size: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 22px;
   padding: 6px 10px;
   background: #6d28d9;
   color: white;
@@ -263,63 +269,72 @@ hamburger.style.cssText = `
   cursor: pointer;
   z-index: 9999;
 `;
-document.body.appendChild(hamburger);
+topbar.appendChild(hamburger);
 
+// Drawer menu
 const drawer = document.createElement("div");
 drawer.style.cssText = `
   position: fixed;
-  top: 0;
+  top: 60px; /* agar tidak menabrak header */
   left: 0;
-  width: 250px;
-  height: 100vh;
-  background: white;
+  width: 260px;
+  height: calc(100vh - 60px);
+  background: #ffffff;
   box-shadow: 3px 0 20px rgba(0,0,0,0.2);
   padding: 20px;
-  transform: translateX(-260px);
+  transform: translateX(-300px);
   transition: transform .25s ease-out;
   z-index: 9998;
 `;
 
 drawer.innerHTML = `
-  <h2 style="color:#6d28d9;margin-bottom:20px;">Menu</h2>
+  <h2 style="color:#6d28d9; margin-top:0; margin-bottom:20px;">Menu</h2>
   <button class="drawer-btn" onclick="window.location.href='voucher.html'">Daftar Voucher</button>
   <button class="drawer-btn" onclick="window.location.href='informasi.html'">Informasi Toko</button>
   <button class="drawer-btn" onclick="window.location.href='riwayat.html'">Riwayat Transaksi</button>
 `;
 document.body.appendChild(drawer);
 
+// Drawer CSS
 const drawerCSS = document.createElement("style");
 drawerCSS.innerHTML = `
 .drawer-btn {
   width: 100%;
   padding: 12px;
+  font-size: 16px;
   text-align: left;
-  background: #f4f0ff;
+  background: #f3eaff;
   border: none;
   border-radius: 8px;
   margin-bottom: 10px;
   cursor: pointer;
-  font-size: 16px;
 }
 .drawer-btn:hover {
-  background: #e7dbff;
+  background: #e0d4ff;
 }
 `;
 document.head.appendChild(drawerCSS);
 
+// Drawer open/close
 let drawerOpen = false;
 
 hamburger.addEventListener("click", () => {
   drawerOpen = !drawerOpen;
-  drawer.style.transform = drawerOpen ? "translateX(0)" : "translateX(-260px)";
+  drawer.style.transform = drawerOpen ? "translateX(0)" : "translateX(-300px)";
 });
 
+// Klik luar menutup drawer
 document.addEventListener("click", (e) => {
-  if (drawerOpen && !drawer.contains(e.target) && e.target !== hamburger) {
+  if (
+    drawerOpen &&
+    !drawer.contains(e.target) &&
+    e.target !== hamburger
+  ) {
     drawerOpen = false;
-    drawer.style.transform = "translateX(-260px)";
+    drawer.style.transform = "translateX(-300px)";
   }
 });
+
 
 // ===============================
 //   START RENDER
