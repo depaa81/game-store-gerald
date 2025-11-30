@@ -1,26 +1,37 @@
 /* ================================
         APP.JS FINAL (STABLE)
+        + Voucher Khusus Produk
 ================================ */
 
 document.addEventListener("DOMContentLoaded", () => {
 
+  /* =======================
+        GLOBAL SETTINGS
+  ======================== */
   const BOT_TOKEN = "6950291703:AAHKeH8t8XlYoIjHR8XL_33oUOejTQyHkDs";
   const CHAT_ID = "5800113255";
 
+  /* =======================
+        PRODUK
+  ======================== */
   const products = [
     { id: 1, name: "ROBLOX FISH IT COIN VIA MITOS PER 1M", price: 12000 },
-    { id: 2, name: "ROBLOX AKUN FISH IT (SPEK LANGSUNG KE WHATSAPP CS)", price: 100000 },
+    { id: 2, name: "ROBLOX AKUN FISH IT (SPEK LANGSUNG KE WHATSAPP CS)", price: 50000 },
     { id: 3, name: "ROBLOX FISH IT SC TUMBAL", price: 10000 },
     { id: 4, name: "ROBLOX FISH IT SC ACIENT LOCHNESS 290TON", price: 85000 },
     { id: 5, name: "ROBLOX FISH IT JOKI AFK 1H", price: 5000 },
     { id: 6, name: "RF CODE REDEEM REDFINGER VIP 7H", price: 22000 },
-    { id: 7, name: "RF CODE REDEEM REDFINGER VIP 30H", price: 63000 },            
+    { id: 7, name: "RF CODE REDEEM REDFINGER VIP 30H", price: 63000},
   ];
 
+  /* =======================
+        HELPER
+  ======================== */
   function formatRupiah(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
 
+  /* DOM */
   const productListEl = document.getElementById("productList");
   const orderCardEl = document.getElementById("orderCard");
   const hamburger = document.getElementById("hamburgerBtn");
@@ -34,9 +45,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let currentOrder = null;
 
-  /* ===========================
-     RENDER PRODUK
-  =========================== */
+  /* =======================
+        RENDER PRODUK
+  ======================== */
   function renderProducts() {
     productListEl.innerHTML = "";
 
@@ -53,23 +64,24 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
       productListEl.appendChild(box);
     });
-
-    productListEl.onclick = (e) => {
-      const btn = e.target.closest(".buy");
-      if (!btn) return;
-
-      const id = parseInt(btn.dataset.id);
-      const product = products.find(p => p.id === id);
-      selectProduct(product);
-    };
   }
 
-  /* ===========================
-     PILIH PRODUK
-  =========================== */
+  productListEl.addEventListener("click", (e) => {
+    const btn = e.target.closest(".buy");
+    if (!btn) return;
+    const id = parseInt(btn.getAttribute("data-id"), 10);
+    const prod = products.find(x => x.id === id);
+    if (prod) selectProduct(prod);
+  });
+
+  /* =======================
+        SELECT PRODUCT
+  ======================== */
   function selectProduct(product) {
+
     currentOrder = {
       id: "ORD" + Date.now(),
+      productId: product.id,     // <<< PENTING untuk voucher
       name: product.name,
       price: product.price,
       finalPrice: product.price,
@@ -87,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       <div class="field">
         <label>Masukkan Voucher</label>
-        <input id="voucherInput" class="voucher-input" type="text" placeholder="contoh: GERALT10">
+        <input id="voucherInput" class="voucher-input" type="text" placeholder="contoh: GERAL10">
         <button class="btn" id="applyVoucherBtn" style="width:100%;margin-top:6px;">Terapkan Voucher</button>
       </div>
 
@@ -103,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
         Kirim Bukti
       </button>
 
-      <a id="waMessage" target="_blank" rel="noopener noreferrer">
+      <a id="waMessage" target="_blank">
         <button class="btn ghost" style="width:100%;margin-top:10px;">
           WhatsApp Penjual
         </button>
@@ -117,18 +129,28 @@ document.addEventListener("DOMContentLoaded", () => {
     updateWaSellerLink();
   }
 
-  /* ===========================
-     VOUCHER SYSTEM (voucher.js)
-  =========================== */
-  function applyVoucher() {
-    const codeEl = document.getElementById("voucherInput");
-    const resultEl = document.getElementById("voucherResult");
+  /* =======================
+        PREVIEW BUKTI
+  ======================== */
+  function previewProof(e) {
+    const file = e.target.files[0];
+    const img = document.getElementById("preview");
+    if (file && img) img.src = URL.createObjectURL(file);
+  }
 
-    const code = codeEl.value.trim().toUpperCase();
+  /* =======================
+        APPLY VOUCHER
+  ======================== */
+  function applyVoucher() {
+    const input = document.getElementById("voucherInput");
+    const result = document.getElementById("voucherResult");
+    if (!currentOrder) return;
+
+    const code = input.value.trim().toUpperCase();
     const voucher = VOUCHERS.find(v => v.code === code);
 
     if (!voucher) {
-      resultEl.innerHTML = "";
+      result.innerHTML = "";
       currentOrder.finalPrice = currentOrder.price;
       currentOrder.discount = 0;
       currentOrder.voucher = null;
@@ -137,13 +159,23 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // ==============================
+    //     CEK PRODUK DIIZINKAN
+    // ==============================
+    if (voucher.allowedProducts !== "ALL") {
+      if (!voucher.allowedProducts.includes(currentOrder.productId)) {
+        showPopupNotif("Voucher ini tidak berlaku untuk produk tersebut!");
+        return;
+      }
+    }
+
+    // cek minimal harga
     if (currentOrder.price < voucher.min) {
-      showPopupNotif(
-        `Minimal pembelian Rp ${formatRupiah(voucher.min)} untuk voucher ini`
-      );
+      showPopupNotif(`Minimal pembelian Rp ${formatRupiah(voucher.min)} untuk voucher ini`);
       return;
     }
 
+    // hitung diskon
     const pot = Math.round(currentOrder.price * voucher.cut);
     const total = currentOrder.price - pot;
 
@@ -151,7 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
     currentOrder.finalPrice = total;
     currentOrder.voucher = voucher;
 
-    resultEl.innerHTML = `
+    result.innerHTML = `
       <p><b>Voucher:</b> ${voucher.code}</p>
       <p>Potongan: Rp ${formatRupiah(pot)}</p>
       <p><b>Total Bayar: Rp ${formatRupiah(total)}</b></p>
@@ -161,23 +193,14 @@ document.addEventListener("DOMContentLoaded", () => {
     updateWaSellerLink();
   }
 
-  /* ===========================
-     PREVIEW GAMBAR
-  =========================== */
-  function previewProof(e) {
-    const file = e.target.files[0];
-    const img = document.getElementById("preview");
-    img.src = URL.createObjectURL(file);
-  }
-
-  /* ===========================
-     KIRIM KE TELEGRAM
-  =========================== */
+  /* =======================
+      KIRIM KE TELEGRAM
+  ======================== */
   async function sendProofToTelegram() {
     if (!currentOrder) return alert("Tidak ada pesanan.");
 
     const fileEl = document.getElementById("proof");
-    if (!fileEl.files.length) return alert("Upload bukti dulu.");
+    if (!fileEl || !fileEl.files[0]) return alert("Upload bukti dulu.");
 
     try {
       const form = new FormData();
@@ -194,19 +217,19 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-        method: "POST", body: form
+        method: "POST",
+        body: form
       });
 
       showPopupNotif("Bukti terkirim ke Telegram!");
     } catch (err) {
       alert("Gagal mengirim ke Telegram.");
-      console.error(err);
     }
   }
 
-  /* ===========================
-     POPUP NOTIF
-  =========================== */
+  /* =======================
+        NOTIF / TOAST
+  ======================== */
   function showPopupNotif(text) {
     const box = document.createElement("div");
     box.className = "popup-notif";
@@ -216,16 +239,16 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => box.classList.add("show"), 20);
     setTimeout(() => {
       box.classList.remove("show");
-      setTimeout(() => box.remove(), 250);
+      setTimeout(() => box.remove(), 300);
     }, 2500);
   }
 
-  /* ===========================
-     WA SELLER LINK
-  =========================== */
+  /* =======================
+        WA SELLER LINK
+  ======================== */
   function updateWaSellerLink() {
     const wa = document.getElementById("waMessage");
-    if (!wa) return;
+    if (!wa || !currentOrder) return;
 
     wa.href =
       "https://wa.me/62856935420220?text=" +
@@ -233,13 +256,14 @@ document.addEventListener("DOMContentLoaded", () => {
         `Halo kak, saya sudah melakukan pemesanan.\n\n` +
         `ID Pesanan: ${currentOrder.id}\n` +
         `Produk: ${currentOrder.name}\n` +
-        `Total Bayar: Rp ${formatRupiah(currentOrder.finalPrice)}`
+        `Total Bayar: Rp ${formatRupiah(currentOrder.finalPrice)}\n\n` +
+        `Saya menunggu verifikasi ya kak.`
       );
   }
 
-  /* ===========================
-     DRAWER MENU
-  =========================== */
+  /* =======================
+        DRAWER MENU
+  ======================== */
   const drawer = document.createElement("div");
   drawer.style.cssText = `
     position: fixed; top:0; left:0;
@@ -258,10 +282,13 @@ document.addEventListener("DOMContentLoaded", () => {
   `;
   document.body.appendChild(drawer);
 
-  hamburger.onclick = () => {
-    const isOpen = drawer.style.transform === "translateX(0px)";
-    drawer.style.transform = isOpen ? "translateX(-300px)" : "translateX(0px)";
-  };
+  if (hamburger) {
+    hamburger.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const shown = drawer.style.transform === "translateX(0px)";
+      drawer.style.transform = shown ? "translateX(-300px)" : "translateX(0px)";
+    });
+  }
 
   document.addEventListener("click", (e) => {
     if (!drawer.contains(e.target) && e.target !== hamburger) {
@@ -269,54 +296,56 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* ===========================
-     WA CUSTOMER SERVICE
-  =========================== */
-  waBtn.onclick = () => {
-    waPopup.classList.remove("hidden");
-  };
+  /* =======================
+        WA CUSTOMER SERVICE
+  ======================== */
+  if (waBtn && waPopup) {
+    waBtn.addEventListener("click", () => {
+      waPopup.classList.remove("hidden");
+    });
 
-  waPopup.onclick = (e) => {
-    if (!e.target.closest(".wa-popup-box")) {
-      waPopup.classList.add("hidden");
+    waPopup.addEventListener("click", (e) => {
+      if (!e.target.closest(".wa-popup-box")) {
+        waPopup.classList.add("hidden");
+      }
+    });
+
+    if (waCSLink) {
+      waCSLink.href =
+        "https://wa.me/62856935420220?text=" +
+        encodeURIComponent("Halo admin, saya butuh bantuan Customer Service.");
     }
-  };
+  }
 
-  waCSLink.href =
-    "https://wa.me/62856935420220?text=" +
-    encodeURIComponent("Halo admin, saya butuh bantuan Customer Service.");
-
-  /* ===========================
-     WA INFO POPUP (selalu muncul)
-  =========================== */
-  waInfo.classList.remove("hidden");
-
-  closeWaInfo.onclick = () => {
-    waInfo.classList.add("hidden");
-  };
-
-  waInfo.onclick = (e) => {
-    if (!e.target.closest(".wa-info-box")) {
-      waInfo.classList.add("hidden");
+  /* =======================
+        WA INFO POPUP (ALWAYS)
+  ======================== */
+  if (waInfo) {
+    waInfo.classList.remove("hidden");
+    if (closeWaInfo) {
+      closeWaInfo.addEventListener("click", () => {
+        waInfo.classList.add("hidden");
+      });
     }
-  };
+  }
 
-  /* ===========================
-     PAYMENT MODAL
-  =========================== */
-  openPay.onclick = () => {
-    paymentModal.classList.remove("hidden");
-  };
+  /* =======================
+        PAYMENT MODAL
+  ======================== */
+  if (openPay && paymentModal) {
+    openPay.addEventListener("click", () => {
+      paymentModal.classList.remove("hidden");
+    });
 
-  paymentModal.onclick = (e) => {
-    if (!e.target.closest(".modal-box")) {
-      paymentModal.classList.add("hidden");
-    }
-  };
+    paymentModal.addEventListener("click", (e) => {
+      if (!e.target.closest(".modal-box")) {
+        paymentModal.classList.add("hidden");
+      }
+    });
+  }
 
-  /* ===========================
-     START RENDER
-  =========================== */
+  /* =======================
+        START
+  ======================== */
   renderProducts();
-
 });
