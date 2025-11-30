@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
   ======================== */
   const products = [
     { id: 1, name: "ROBLOX FISH IT COIN VIA MITOS PER 1M", price: 12000 },
-    { id: 2, name: "ROBLOX AKUN FISH IT (SPEK LANGSUNG KE WHATSAPP CS)", price: 50000 },
+    { id: 2, name: "ROBLOX AKUN FISH IT (SPEK LANGSUNG KE WHATSAPP CS)", price: 100000 },
     { id: 3, name: "ROBLOX FISH IT SC TUMBAL", price: 10000 },
     { id: 4, name: "ROBLOX FISH IT SC ACIENT LOCHNESS 290TON", price: 85000 },
     { id: 5, name: "ROBLOX FISH IT JOKI AFK 1H", price: 5000 },
