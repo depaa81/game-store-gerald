@@ -1,24 +1,6 @@
-// VOUCHERS.JS FINAL
-const VOUCHERS = [
-  {
-    code: "DISKON02",
-    cut: 0.02,        // 2%
-    min: 0,
-    allowedProducts: "ALL" 
-    //berlaku semua produk 
-  },
-  {
-    code: "MEGA04",
-    cut: 0.04,        // 4%
-    min: 35000,
-    allowedProducts: [2, 4]
-    // berlaku dengan produk id 2&4
-  },
-  {
-    code: "SUPER06",
-    cut: 0.06,        // 6%
-    min: 60000,
-    allowedProducts: [2, 4]
-    // belaku dengan produk id 2&4
-  }
+// Daftar voucher promo
+window.VOUCHERS = [
+  { code: "DISKON01", cut: 0.01, min: 0 },
+  { code: "MEGA03", cut: 0.03, min: 35000 },
+  { code: "SUPER5", cut: 0.05, min: 50000 },
 ];
