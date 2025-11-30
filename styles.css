@@ -86,20 +86,38 @@ input[type=file]{ padding:6px; }
 @keyframes popIn{ from{opacity:0; transform:scale(.8);} to{opacity:1; transform:scale(1);} }
 @keyframes pulse{ 0%{opacity:1;} 50%{opacity:.4;} 100%{opacity:1;} }
 
+/* Input Voucher Modern */
 .voucher-input {
   width: 100%;
   padding: 12px 14px;
-  border-radius: 14px;
+  border-radius: 12px;
   font-size: 1rem;
-  backdrop-filter: blur(8px);
-  background: rgba(255,255,255,0.55);
-  border: 1px solid rgba(255,255,255,0.35);
+  border: 2px solid #e9d5ff;
+  background: #faf5ff;
+  color: #4c1d95;
   outline: none;
   transition: .2s ease;
+  font-weight: 500;
 }
 
 .voucher-input:focus {
-  background: rgba(255,255,255,0.85);
   border-color: #c084fc;
-  box-shadow: 0 0 0 3px rgba(124,58,237,.25);
+  background: #f3e8ff;
+  box-shadow: 0 0 0 3px rgba(124,58,237,0.25);
+}
+
+#applyVoucherBtn {
+  background: #6d28d9;
+  color: white;
+  border-radius: 10px;
+  padding: 10px;
+  width: 100%;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  transition: .2s;
+}
+
+#applyVoucherBtn:hover {
+  background: #5b21b6;
 }
