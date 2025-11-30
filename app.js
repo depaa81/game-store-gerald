@@ -13,8 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
     { id: 3, name: "ROBLOX FISH IT SC TUMBAL", price: 10000 },
     { id: 4, name: "ROBLOX FISH IT SC ACIENT LOCHNESS 290TON", price: 85000 },
     { id: 5, name: "ROBLOX FISH IT JOKI AFK 1H", price: 5000 }
-    { id: 5, name: "REDFINGER CODE REDEEM REDFINGER VIP 7H", price: 22000 }
-    { id: 5, name: "REDFINGER CODE REDEEM REDFINGER VIP 30H", price: 63000 }              
+    { id: 6, name: "REDFINGER CODE REDEEM REDFINGER VIP 7H", price: 22000 }
+    { id: 7, name: "REDFINGER CODE REDEEM REDFINGER VIP 30H", price: 63000 }              
   ];
 
   function formatRupiah(x) {
