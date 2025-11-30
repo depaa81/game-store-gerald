@@ -8,397 +8,80 @@
 }
 
 /* Global */
-* {
-  box-sizing: border-box;
-  font-family: Inter, system-ui, Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-}
+* { box-sizing: border-box; font-family: Inter, system-ui, Arial, sans-serif; margin: 0; padding: 0; }
+body { background: linear-gradient(180deg, var(--bg), #eef2ff); color: #0f172a; min-height: 100vh; }
+.container { max-width: 920px; margin: 18px auto; padding: 14px; }
 
-body {
-  background: linear-gradient(180deg, var(--bg), #eef2ff);
-  color: #0f172a;
-  min-height: 100vh;
-}
+/* TOPBAR */
+.topbar { background: #6d28d9; color: white; padding: 15px; text-align: center; }
+.top-left { display: flex; align-items: center; gap: 10px; justify-content: center; }
+.storeName { font-size: 18px; font-weight: bold; }
+#hamburgerBtn { padding: 6px 12px; font-size: 20px; background: white; color: #6d28d9; border: none; border-radius: 6px; cursor: pointer; }
 
-.container {
-  max-width: 920px;
-  margin: 18px auto;
-  padding: 14px;
-}
+/* LAYOUT */
+.layout { display: grid; grid-template-columns: 1fr 360px; gap: 14px; }
+@media (max-width:780px){ .layout { grid-template-columns:1fr; } }
+.panel{ background:var(--card); padding:14px; border-radius:12px; box-shadow:0 8px 24px rgba(15,23,42,0.06); }
 
-/* ---------- TOPBAR ---------- */
-.topbar {
-  background: #6d28d9;
-  color: white;
-  padding: 15px;
-  text-align: center;
-}
+/* PRODUCT */
+.product-list{ display:flex; flex-direction:column; gap:10px; }
+.product{ display:flex; align-items:center; gap:10px; padding:10px; border-radius:10px; border:1px solid #eef2ff; }
+.thumb{ width:64px; height:44px; border-radius:8px; background:linear-gradient(180deg,#eef2ff,#e9d5ff); display:flex; justify-content:center; align-items:center; font-weight:700; color:var(--accent); }
+.pmeta{ flex:1; } .pmeta h3{ font-size:1rem; margin:0; } .pmeta p{ color:var(--muted); margin-top:6px; font-size:.9rem; }
+.buy{ background:var(--accent); color:white; padding:8px 10px; border-radius:8px; border:0; cursor:pointer; }
 
-.top-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.storeName {
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.menuLabel {
-  font-size: 14px;
-  opacity: 0.9;
-  margin-top: 4px;
-}
-
-#hamburgerBtn {
-  padding: 6px 12px;
-  font-size: 20px;
-  background: white;
-  color: #6d28d9;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-/* ---------- LAYOUT ---------- */
-.layout {
-  display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 14px;
-}
-
-@media (max-width:780px){
-  .layout { grid-template-columns:1fr; }
-}
-
-.panel{
-  background:var(--card);
-  padding:14px;
-  border-radius:12px;
-  box-shadow:0 8px 24px rgba(15,23,42,0.06);
-}
-
-/* ---------- PRODUCT LIST ---------- */
-.product-list{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-.product{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:10px;
-  border-radius:10px;
-  border:1px solid #eef2ff;
-}
-
-.thumb{
-  width:64px;
-  height:44px;
-  border-radius:8px;
-  background:linear-gradient(180deg,#eef2ff,#e9d5ff);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-weight:700;
-  color:var(--accent);
-}
-
-.pmeta{ flex:1; }
-
-.pmeta h3{
-  font-size:1rem;
-  margin:0;
-}
-
-.pmeta p{
-  color:var(--muted);
-  margin-top:6px;
-  font-size:.9rem;
-}
-
-.buy{
-  background:var(--accent);
-  color:white;
-  padding:8px 10px;
-  border-radius:8px;
-  border:0;
-  cursor:pointer;
-}
-
-/* ---------- ORDER PANEL ---------- */
-.card.empty{
-  min-height:120px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  color:var(--muted);
-}
-
-.order .field{
-  display:flex;
-  flex-direction:column;
-  margin-top:8px;
-}
-
-.field label{
-  font-size:.85rem;
-  color:var(--muted);
-  margin-bottom:6px;
-}
-
-input[type=file]{
-  padding:6px;
-}
-
-.proof-preview{
-  max-width:100%;
-  margin-top:8px;
-  border-radius:8px;
-}
-
-.actions{
-  display:flex;
-  gap:8px;
-  margin-top:10px;
-}
+/* ORDER */
+.card.empty{ min-height:120px; display:flex; justify-content:center; align-items:center; color:var(--muted); }
+.order .field{ display:flex; flex-direction:column; margin-top:8px; }
+.field label{ font-size:.85rem; color:var(--muted); margin-bottom:6px; }
+input[type=file]{ padding:6px; }
+.proof-preview{ max-width:100%; margin-top:8px; border-radius:8px; }
+.actions{ display:flex; gap:8px; margin-top:10px; }
 
 /* BUTTONS */
-.btn{
-  padding:8px 10px;
-  border-radius:10px;
-  border:0;
-  cursor:pointer;
-}
+.btn{ padding:8px 10px; border-radius:10px; border:0; cursor:pointer; }
+.btn.ghost{ background:transparent; border:1px solid rgba(15,23,42,0.06); }
+.btn.success{ background:var(--success); color:white; }
 
-.btn.ghost{
-  background:transparent;
-  border:1px solid rgba(15,23,42,0.06);
-}
+/* NOTE */
+.note{ margin-top:12px; color:var(--muted); font-size:.9rem; }
 
-.btn.success{
-  background:var(--success);
-  color:white;
-}
+/* WA FLOAT */
+.wa-floating-cs{ position:fixed; right:20px; bottom:20px; width:60px; height:60px; background:#25D366; display:flex; justify-content:center; align-items:center; border-radius:50%; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,0.25); z-index:9999; transition:transform .15s; }
+.wa-floating-cs img{ width:34px; height:34px; filter:brightness(0) invert(1); }
 
-/* NOTE FOOTER */
-.note{
-  margin-top:12px;
-  color:var(--muted);
-  font-size:.9rem;
-}
+/* WA CS POPUP */
+.wa-popup{ position:fixed; inset:0; background:rgba(0,0,0,.45); display:flex; justify-content:center; align-items:center; backdrop-filter:blur(4px); z-index:10000; animation:fadeIn .25s ease-out; }
+.hidden{ display:none !important; }
+.wa-popup-box{ background:white; width:90%; max-width:330px; padding:20px; border-radius:14px; text-align:center; animation:popIn .25s ease-out; box-shadow:0 8px 25px rgba(0,0,0,0.25); }
+.wa-avatar{ width:80px; border-radius:50%; margin-bottom:10px; }
+.wa-name{ font-size:1.1rem; font-weight:bold; }
+.wa-status{ margin:4px 0 16px; color:#10b981; font-weight:600; }
+.wa-status .dot{ width:10px; height:10px; border-radius:50%; background:#10b981; display:inline-block; margin-right:6px; animation:pulse 1s infinite ease-in-out; }
+.wa-btn{ width:100%; padding:12px; border-radius:8px; border:0; background:#25D366; color:white; cursor:pointer; }
 
-/* ---------- FLOATING WHATSAPP BUTTON ---------- */
-.wa-floating-cs{
-  position:fixed;
-  right:20px;
-  bottom:20px;
-  width:60px;
-  height:60px;
-  background:#25D366;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  border-radius:50%;
-  cursor:pointer;
-  box-shadow:0 6px 18px rgba(0,0,0,0.25);
-  z-index:9999;
-  transition:transform .15s ease-in-out;
-}
+/* WA INFO POPUP */
+.wa-info-bg{ position:fixed; inset:0; background:rgba(0,0,0,.55); display:flex; justify-content:center; align-items:center; z-index:20000; backdrop-filter:blur(4px); }
+.wa-info-box{ background:white; width:90%; max-width:380px; padding:22px; border-radius:14px; animation:popIn .25s ease-out; box-shadow:0 8px 25px rgba(0,0,0,0.25); text-align:center; }
+.wa-info-title{ color:#6d28d9; margin:0; font-weight:800; }
+.wa-info-text{ margin-top:10px; text-align:left; color:#1e293b; line-height:1.45rem; }
+.wa-info-btn{ margin-top:18px; width:100%; background:#6d28d9; color:white; padding:10px; border-radius:10px; cursor:pointer; border:none; font-size:1rem; }
 
-.wa-floating-cs:hover{
-  transform:scale(1.08);
-}
+/* MODAL PAYMENT */
+.modal-bg{ position:fixed; inset:0; background:rgba(0,0,0,.55); display:flex; justify-content:center; align-items:center; backdrop-filter:blur(4px); z-index:20000; }
+.modal-box{ width:90%; max-width:380px; background:white; border-radius:12px; padding:0; overflow:hidden; animation:popIn .25s ease-out; }
+.modal-frame{ width:100%; height:260px; border:none; }
+.modal-bg.hidden{ display:none; }
 
-.wa-floating-cs img{
-  width:34px;
-  height:34px;
-  filter:brightness(0) invert(1);
-}
+/* TOAST */
+.popup-notif{ position:fixed; bottom:-60px; left:50%; transform:translateX(-50%); background:var(--accent); color:white; padding:14px 20px; border-radius:12px; opacity:0; transition:.3s; z-index:999999; }
+.popup-notif.show{ bottom:30px; opacity:1; }
 
-/* ---------- POPUP WHATSAPP CUSTOMER SERVICE ---------- */
-.wa-popup{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.45);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  backdrop-filter:blur(4px);
-  z-index:10000;
-  animation:fadeIn .25s ease-out;
-}
+/* DRAWER BUTTONS */
+.drawer-item{ width:100%; background:#f3e8ff; border:1px solid #e9d5ff; padding:12px; border-radius:10px; font-size:1rem; color:#6d28d9; font-weight:600; text-align:left; cursor:pointer; transition:.15s ease; margin-bottom:12px; }
+.drawer-item:hover{ background:#e9d5ff; transform:translateX(4px); }
 
-.hidden{
-  display:none !important;
-}
-
-.wa-popup-box{
-  background:white;
-  width:90%;
-  max-width:330px;
-  padding:20px;
-  border-radius:14px;
-  text-align:center;
-  animation:popIn .25s ease-out;
-  box-shadow:0 8px 25px rgba(0,0,0,0.25);
-}
-
-.wa-title{ margin-bottom:12px; }
-
-.wa-avatar{
-  width:80px;
-  border-radius:50%;
-  margin-bottom:10px;
-}
-
-.wa-name{
-  font-size:1.1rem;
-  font-weight:bold;
-}
-
-.wa-status{
-  margin:4px 0 16px;
-  color:#10b981;
-  font-weight:600;
-}
-
-.wa-status .dot{
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  background:#10b981;
-  display:inline-block;
-  margin-right:6px;
-  animation:pulse 1s infinite ease-in-out;
-}
-
-.wa-btn{
-  width:100%;
-  padding:12px;
-  border-radius:8px;
-  border:0;
-  background:#25D366;
-  color:white;
-  cursor:pointer;
-}
-
-/* ---------- POPUP INFO (SELALU MUNCUL) ---------- */
-.wa-info-bg{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.55);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:20000;
-  backdrop-filter:blur(4px);
-}
-
-.wa-info-box{
-  background:white;
-  width:90%;
-  max-width:380px;
-  padding:22px;
-  border-radius:14px;
-  animation:popIn .25s ease-out;
-  box-shadow:0 8px 25px rgba(0,0,0,0.25);
-  text-align:center;
-}
-
-.wa-info-title{
-  color:#6d28d9;
-  margin:0;
-  font-weight:800;
-}
-
-.wa-info-text{
-  margin-top:10px;
-  text-align:left;
-  color:#1e293b;
-  line-height:1.45rem;
-}
-
-.wa-info-btn{
-  margin-top:18px;
-  width:100%;
-  background:#6d28d9;
-  color:white;
-  padding:10px;
-  border-radius:10px;
-  cursor:pointer;
-  border:none;
-  font-size:1rem;
-}
-
-/* ---------- MODAL PAYMENT ---------- */
-.modal-bg{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.55);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  backdrop-filter:blur(4px);
-  z-index:20000;
-}
-
-.modal-box{
-  width:90%;
-  max-width:380px;
-  background:white;
-  border-radius:12px;
-  padding:0;
-  overflow:hidden;
-  animation:popIn .25s ease-out;
-}
-
-.modal-frame{
-  width:100%;
-  height:260px;
-  border:none;
-}
-
-.modal-bg.hidden{
-  display:none;
-}
-
-/* ---------- TOAST MESSAGE ---------- */
-.popup-notif{
-  position:fixed;
-  bottom:-60px;
-  left:50%;
-  transform:translateX(-50%);
-  background:var(--accent);
-  color:white;
-  padding:14px 20px;
-  border-radius:12px;
-  opacity:0;
-  transition:.3s;
-  z-index:999999;
-}
-.popup-notif.show{
-  bottom:30px;
-  opacity:1;
-}
-
-/* ---------- ANIMATIONS ---------- */
-@keyframes fadeIn{
-  from{opacity:0;}
-  to{opacity:1;}
-}
-
-@keyframes popIn{
-  from{opacity:0; transform:scale(.8);}
-  to{opacity:1; transform:scale(1);}
-}
-
-@keyframes pulse{
-  0%{opacity:1;}
-  50%{opacity:.4;}
-  100%{opacity:1;}
-}
+/* Animations */
+@keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+@keyframes popIn{ from{opacity:0; transform:scale(.8);} to{opacity:1; transform:scale(1);} }
+@keyframes pulse{ 0%{opacity:1;} 50%{opacity:.4;} 100%{opacity:1;} }
