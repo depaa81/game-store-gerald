@@ -9,10 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const products = [
     { id: 1, name: "ROBLOX FISH IT COIN VIA MITOS PER 1M", price: 12000 },
-    { id: 2, name: "ROBLOX AKUN FISH IT (SPEK LANGSUNG KE WHATSAPP CS)", price: 50000 },
+    { id: 2, name: "ROBLOX AKUN FISH IT (SPEK LANGSUNG KE WHATSAPP CS)", price: 100000 },
     { id: 3, name: "ROBLOX FISH IT SC TUMBAL", price: 10000 },
     { id: 4, name: "ROBLOX FISH IT SC ACIENT LOCHNESS 290TON", price: 85000 },
-    { id: 5, name: "ROBLOX FISH IT JOKI AFK 1H", price: 5000 }
+    { id: 5, name: "ROBLOX FISH IT JOKI AFK 1H", price: 5000 },
   ];
 
   function formatRupiah(x) {
@@ -32,9 +32,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let currentOrder = null;
 
+  /* ===========================
+     RENDER PRODUK
+  =========================== */
   function renderProducts() {
-    if (!productListEl) return;
     productListEl.innerHTML = "";
+
     products.forEach(p => {
       const box = document.createElement("div");
       box.className = "product";
@@ -49,15 +52,19 @@ document.addEventListener("DOMContentLoaded", () => {
       productListEl.appendChild(box);
     });
 
-    productListEl.addEventListener("click", (e) => {
+    productListEl.onclick = (e) => {
       const btn = e.target.closest(".buy");
       if (!btn) return;
-      const id = parseInt(btn.getAttribute("data-id"), 10);
-      const prod = products.find(x => x.id === id);
-      if (prod) selectProduct(prod);
-    });
+
+      const id = parseInt(btn.dataset.id);
+      const product = products.find(p => p.id === id);
+      selectProduct(product);
+    };
   }
 
+  /* ===========================
+     PILIH PRODUK
+  =========================== */
   function selectProduct(product) {
     currentOrder = {
       id: "ORD" + Date.now(),
@@ -69,8 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
       date: new Date().toLocaleString("id-ID")
     };
 
-    if (!orderCardEl) return;
-
     orderCardEl.classList.remove("empty");
     orderCardEl.innerHTML = `
       <h3>Detail Pesanan</h3>
@@ -80,8 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       <div class="field">
         <label>Masukkan Voucher</label>
-        <input id="voucherInput" class="voucher-input" type="text" placeholder="contoh: geral10">
-
+        <input id="voucherInput" class="voucher-input" type="text" placeholder="contoh: GERALT10">
         <button class="btn" id="applyVoucherBtn" style="width:100%;margin-top:6px;">Terapkan Voucher</button>
       </div>
 
@@ -104,24 +108,19 @@ document.addEventListener("DOMContentLoaded", () => {
       </a>
     `;
 
-    document.getElementById("proof").onchange = previewProof;
     document.getElementById("applyVoucherBtn").onclick = applyVoucher;
+    document.getElementById("proof").onchange = previewProof;
     document.getElementById("sendProof").onclick = sendProofToTelegram;
 
     updateWaSellerLink();
   }
 
-  function previewProof(e) {
-    const file = e.target.files && e.target.files[0];
-    const img = document.getElementById("preview");
-    if (file && img) img.src = URL.createObjectURL(file);
-  }
-
+  /* ===========================
+     VOUCHER SYSTEM (voucher.js)
+  =========================== */
   function applyVoucher() {
     const codeEl = document.getElementById("voucherInput");
     const resultEl = document.getElementById("voucherResult");
-
-    if (!currentOrder || !codeEl) return;
 
     const code = codeEl.value.trim().toUpperCase();
     const voucher = VOUCHERS.find(v => v.code === code);
@@ -138,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (currentOrder.price < voucher.min) {
       showPopupNotif(
-        `Minimal pembelian Rp ${formatRupiah(voucher.min)} untuk menggunakan voucher ini`
+        `Minimal pembelian Rp ${formatRupiah(voucher.min)} untuk voucher ini`
       );
       return;
     }
@@ -160,10 +159,23 @@ document.addEventListener("DOMContentLoaded", () => {
     updateWaSellerLink();
   }
 
+  /* ===========================
+     PREVIEW GAMBAR
+  =========================== */
+  function previewProof(e) {
+    const file = e.target.files[0];
+    const img = document.getElementById("preview");
+    img.src = URL.createObjectURL(file);
+  }
+
+  /* ===========================
+     KIRIM KE TELEGRAM
+  =========================== */
   async function sendProofToTelegram() {
-    if (!currentOrder) { alert("Tidak ada pesanan."); return; }
+    if (!currentOrder) return alert("Tidak ada pesanan.");
+
     const fileEl = document.getElementById("proof");
-    if (!fileEl || !fileEl.files[0]) { alert("Upload bukti dulu."); return; }
+    if (!fileEl.files.length) return alert("Upload bukti dulu.");
 
     try {
       const form = new FormData();
@@ -179,38 +191,53 @@ document.addEventListener("DOMContentLoaded", () => {
         `📅 ${currentOrder.date}`
       );
 
-      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: "POST", body: form });
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+        method: "POST", body: form
+      });
+
       showPopupNotif("Bukti terkirim ke Telegram!");
     } catch (err) {
-      console.error(err);
       alert("Gagal mengirim ke Telegram.");
+      console.error(err);
     }
   }
 
+  /* ===========================
+     POPUP NOTIF
+  =========================== */
   function showPopupNotif(text) {
     const box = document.createElement("div");
     box.className = "popup-notif";
     box.innerText = text;
     document.body.appendChild(box);
+
     setTimeout(() => box.classList.add("show"), 20);
-    setTimeout(() => { box.classList.remove("show"); setTimeout(() => box.remove(), 300); }, 2500);
+    setTimeout(() => {
+      box.classList.remove("show");
+      setTimeout(() => box.remove(), 250);
+    }, 2500);
   }
 
+  /* ===========================
+     WA SELLER LINK
+  =========================== */
   function updateWaSellerLink() {
     const wa = document.getElementById("waMessage");
-    if (!wa || !currentOrder) return;
+    if (!wa) return;
+
     wa.href =
       "https://wa.me/62856935420220?text=" +
       encodeURIComponent(
         `Halo kak, saya sudah melakukan pemesanan.\n\n` +
         `ID Pesanan: ${currentOrder.id}\n` +
         `Produk: ${currentOrder.name}\n` +
-        `Total Bayar: Rp ${formatRupiah(currentOrder.finalPrice)}\n\n` +
-        `Saya menunggu verifikasi ya kak.`
+        `Total Bayar: Rp ${formatRupiah(currentOrder.finalPrice)}`
       );
   }
 
-  /* Drawer menu */
+  /* ===========================
+     DRAWER MENU
+  =========================== */
   const drawer = document.createElement("div");
   drawer.style.cssText = `
     position: fixed; top:0; left:0;
@@ -229,56 +256,64 @@ document.addEventListener("DOMContentLoaded", () => {
   `;
   document.body.appendChild(drawer);
 
-  if (hamburger) {
-    hamburger.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const shown = drawer.style.transform === "translateX(0px)";
-      drawer.style.transform = shown ? "translateX(-300px)" : "translateX(0px)";
-    });
-  }
+  hamburger.onclick = () => {
+    const isOpen = drawer.style.transform === "translateX(0px)";
+    drawer.style.transform = isOpen ? "translateX(-300px)" : "translateX(0px)";
+  };
 
   document.addEventListener("click", (e) => {
     if (!drawer.contains(e.target) && e.target !== hamburger) {
-      drawer.transform = "translateX(-300px)";
+      drawer.style.transform = "translateX(-300px)";
     }
   });
 
-  /* WA CS */
-  if (waBtn && waPopup) {
-    waBtn.addEventListener("click", () => {
-      waPopup.classList.remove("hidden");
-    });
-    waPopup.addEventListener("click", (e) => {
-      if (!e.target.closest(".wa-popup-box")) {
-        waPopup.classList.add("hidden");
-      }
-    });
-    if (waCSLink) {
-      waCSLink.href = "https://wa.me/62856935420220?text=" + encodeURIComponent("Halo admin, saya butuh bantuan Customer Service.");
+  /* ===========================
+     WA CUSTOMER SERVICE
+  =========================== */
+  waBtn.onclick = () => {
+    waPopup.classList.remove("hidden");
+  };
+
+  waPopup.onclick = (e) => {
+    if (!e.target.closest(".wa-popup-box")) {
+      waPopup.classList.add("hidden");
     }
-  }
+  };
 
-  /* WA Info popup (always show) */
-  if (waInfo) {
-    waInfo.classList.remove("hidden");
-    if (closeWaInfo) {
-      closeWaInfo.addEventListener("click", () => {
-        waInfo.classList.add("hidden");
-      });
+  waCSLink.href =
+    "https://wa.me/62856935420220?text=" +
+    encodeURIComponent("Halo admin, saya butuh bantuan Customer Service.");
+
+  /* ===========================
+     WA INFO POPUP (selalu muncul)
+  =========================== */
+  waInfo.classList.remove("hidden");
+
+  closeWaInfo.onclick = () => {
+    waInfo.classList.add("hidden");
+  };
+
+  waInfo.onclick = (e) => {
+    if (!e.target.closest(".wa-info-box")) {
+      waInfo.classList.add("hidden");
     }
-  }
+  };
 
-  /* Payment modal */
-  if (openPay && paymentModal) {
-    openPay.addEventListener("click", () => {
-      paymentModal.classList.remove("hidden");
-    });
-    paymentModal.addEventListener("click", (e) => {
-      if (!e.target.closest(".modal-box")) {
-        paymentModal.classList.add("hidden");
-      }
-    });
-  }
+  /* ===========================
+     PAYMENT MODAL
+  =========================== */
+  openPay.onclick = () => {
+    paymentModal.classList.remove("hidden");
+  };
 
+  paymentModal.onclick = (e) => {
+    if (!e.target.closest(".modal-box")) {
+      paymentModal.classList.add("hidden");
+    }
+  };
+
+  /* ===========================
+     START RENDER
+  =========================== */
   renderProducts();
 });
