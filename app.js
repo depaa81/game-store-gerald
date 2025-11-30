@@ -1,12 +1,12 @@
-// ===============================
-//   SETUP BOT TELEGRAM
-// ===============================
+/* ================================
+        SETTING BOT TELEGRAM
+================================ */
 const BOT_TOKEN = "6950291703:AAHKeH8t8XlYoIjHR8XL_33oUOejTQyHkDs";
 const CHAT_ID = "5800113255";
 
-// ===============================
-//   DATA PRODUK
-// ===============================
+/* ================================
+            DATA PRODUK
+================================ */
 const products = [
   { id: 1, name: "ROBLOX FISH IT COIN VIA MITOS PER 1M", price: 12000 },
   { id: 2, name: "ROBLOX AKUN FISH IT (SPEK LANGSUNG KE WHATSAPP CS)", price: 50000 },
@@ -15,25 +15,25 @@ const products = [
   { id: 5, name: "ROBLOX FISH IT JOKI AFK 1H", price: 5000 }
 ];
 
-// ===============================
-//   FORMAT RUPIAH
-// ===============================
-function formatRupiah(num) {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+/* ================================
+          FORMAT RUPIAH
+================================ */
+function formatRupiah(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-// ===============================
-//   RENDER PRODUK
-// ===============================
+/* ================================
+         RENDER PRODUK
+================================ */
 function renderProducts() {
   const list = document.getElementById("productList");
   list.innerHTML = "";
 
   products.forEach(p => {
-    const el = document.createElement("div");
-    el.className = "product";
+    const box = document.createElement("div");
+    box.className = "product";
 
-    el.innerHTML = `
+    box.innerHTML = `
       <div class="thumb">${p.name.split(" ")[0]}</div>
       <div class="pmeta">
         <h3>${p.name}</h3>
@@ -42,16 +42,20 @@ function renderProducts() {
       <button class="buy">Buy</button>
     `;
 
-    el.querySelector(".buy").addEventListener("click", () => selectProduct(p));
-    list.appendChild(el);
+    box.querySelector(".buy").onclick = () => selectProduct(p);
+
+    list.appendChild(box);
   });
 }
 
-// ===============================
-//   ORDER DATA
-// ===============================
+/* ================================
+          VAR PESANAN
+================================ */
 let currentOrder = null;
 
+/* ================================
+     SAAT PRODUK DITEKAN BUY
+================================ */
 function selectProduct(product) {
   currentOrder = {
     id: "ORD" + Date.now(),
@@ -68,15 +72,14 @@ function selectProduct(product) {
 
   card.innerHTML = `
     <h3>Detail Pesanan</h3>
-
-    <p><strong>ID Pesanan:</strong> ${currentOrder.id}</p>
-    <p><strong>Produk:</strong> ${currentOrder.name}</p>
-    <p><strong>Harga:</strong> Rp ${formatRupiah(currentOrder.price)}</p>
+    <p><b>ID:</b> ${currentOrder.id}</p>
+    <p><b>Produk:</b> ${currentOrder.name}</p>
+    <p><b>Harga:</b> Rp ${formatRupiah(currentOrder.price)}</p>
 
     <div class="field">
-      <label>Masukkan Kode Voucher</label>
-      <input type="text" id="voucherInput" placeholder="contoh: DISKON10">
-      <button class="btn" id="applyVoucherBtn" style="margin-top:6px;width:100%;">Terapkan Voucher</button>
+      <label>Masukkan Voucher</label>
+      <input id="voucherInput" type="text" placeholder="contoh: DISKON10">
+      <button class="btn" id="applyVoucherBtn" style="width:100%;margin-top:6px;">Terapkan Voucher</button>
     </div>
 
     <div id="voucherResult"></div>
@@ -87,80 +90,101 @@ function selectProduct(product) {
       <img id="preview" class="proof-preview"/>
     </div>
 
-    <button class="btn success" id="sendProof" style="width:100%;margin-top:10px;">Kirim Bukti</button>
+    <button class="btn success" id="sendProof" style="width:100%;margin-top:10px;">
+      Kirim Bukti
+    </button>
 
     <a id="waMessage" target="_blank">
-      <button class="btn ghost" style="margin-top:10px;width:100%;">WhatsApp Penjual</button>
+      <button class="btn ghost" style="width:100%;margin-top:10px;">
+        WhatsApp Penjual
+      </button>
     </a>
   `;
 
-  document.getElementById("proof").addEventListener("change", previewProof);
+  // preview gambar
+  document.getElementById("proof").onchange = previewProof;
 
-  document.getElementById("sendProof").addEventListener("click", sendProofToTelegram);
-
+  // WA seller link (harga setelah voucher)
   document.getElementById("waMessage").href =
     `https://wa.me/62856935420220?text=` +
     encodeURIComponent(
-      `Halo, saya membuat pesanan:\nID: ${currentOrder.id}\nProduk: ${currentOrder.name}\nHarga: Rp ${formatRupiah(currentOrder.finalPrice)}\nTanggal: ${currentOrder.date}`
+      `Halo, saya melakukan pesanan:\n` +
+      `ID: ${currentOrder.id}\n` +
+      `Produk: ${currentOrder.name}\n` +
+      `Total Bayar: Rp ${formatRupiah(currentOrder.finalPrice)}\n` +
+      `Tanggal: ${currentOrder.date}`
     );
 
-  // ===============================
-  //   LOGIKA VOUCHER MANUAL
-  // ===============================
-  document.getElementById("applyVoucherBtn").onclick = () => {
-    const code = document.getElementById("voucherInput").value.trim().toUpperCase();
-    let voucher = null;
+  // apply voucher
+  document.getElementById("applyVoucherBtn").onclick = applyVoucher;
 
-    if (code === "DISKON10") voucher = { cut: 0.1, code: "DISKON10", desc: "Diskon 10%" };
-    if (code === "MEGA50" && currentOrder.price >= 50000)
-        voucher = { cut: 0.5, code: "MEGA50", desc: "Diskon 50% (>= 50rb)" };
-
-    if (!voucher) {
-      showToast("Kode voucher tidak valid!");
-      document.getElementById("voucherResult").innerHTML = "";
-      currentOrder.finalPrice = currentOrder.price;
-      return;
-    }
-
-    const pot = currentOrder.price * voucher.cut;
-    const total = currentOrder.price - pot;
-
-    currentOrder.voucher = voucher;
-    currentOrder.discount = pot;
-    currentOrder.finalPrice = total;
-
-    document.getElementById("voucherResult").innerHTML = `
-        <p><strong>Voucher diterapkan:</strong> ${voucher.code}</p>
-        <p>Potongan: Rp ${formatRupiah(pot)}</p>
-        <p><b>Total Bayar: Rp ${formatRupiah(total)}</b></p>
-    `;
-
-    showToast("Voucher berhasil diterapkan!");
-  };
+  // kirim telegram
+  document.getElementById("sendProof").onclick = sendProofToTelegram;
 }
 
-// ===============================
-//   PREVIEW GAMBAR
-// ===============================
+/* ================================
+         LOGIKA VOUCHER
+================================ */
+function applyVoucher() {
+  const code = document.getElementById("voucherInput").value.trim().toUpperCase();
+  const result = document.getElementById("voucherResult");
+
+  let voucher = null;
+
+  if (code === "DISKON10")
+    voucher = { cut: 0.10, code: "DISKON10", desc: "Diskon 10%" };
+
+  if (code === "MEGA50" && currentOrder.price >= 50000)
+    voucher = { cut: 0.50, code: "MEGA50", desc: "Diskon 50% (>=50rb)" };
+
+  // jika voucher salah
+  if (!voucher) {
+    showToast("Kode voucher tidak valid!");
+    result.innerHTML = "";
+    currentOrder.finalPrice = currentOrder.price;
+    currentOrder.discount = 0;
+    currentOrder.voucher = null;
+    return;
+  }
+
+  // hitung voucher
+  const pot = currentOrder.price * voucher.cut;
+  const total = currentOrder.price - pot;
+
+  currentOrder.discount = pot;
+  currentOrder.finalPrice = total;
+  currentOrder.voucher = voucher;
+
+  result.innerHTML = `
+    <p><b>Voucher:</b> ${voucher.code}</p>
+    <p>Potongan: Rp ${formatRupiah(pot)}</p>
+    <p><b>Total Bayar: Rp ${formatRupiah(total)}</b></p>
+  `;
+
+  showToast("Voucher berhasil diterapkan!");
+}
+
+/* ================================
+           PREVIEW GAMBAR
+================================ */
 function previewProof(e) {
   const file = e.target.files[0];
   if (!file) return;
-  const img = document.getElementById("preview");
-  img.src = URL.createObjectURL(file);
+  document.getElementById("preview").src = URL.createObjectURL(file);
 }
 
-// ===============================
-//   KIRIM FOTO KE TELEGRAM
-// ===============================
+/* ================================
+      KIRIM BUKTI KE TELEGRAM
+================================ */
 async function sendProofToTelegram() {
   if (!currentOrder) return alert("Tidak ada pesanan.");
 
-  const fileInput = document.getElementById("proof");
-  if (!fileInput.files[0]) return alert("Upload bukti dulu.");
+  const input = document.getElementById("proof");
+  if (!input.files[0]) return alert("Upload bukti dulu.");
 
   const form = new FormData();
   form.append("chat_id", CHAT_ID);
-  form.append("photo", fileInput.files[0]);
+  form.append("photo", input.files[0]);
 
   form.append(
     "caption",
@@ -181,11 +205,11 @@ async function sendProofToTelegram() {
   showToast("Bukti terkirim ke Telegram!");
 }
 
-// ===============================
-//   TOAST NOTIFICATION
-// ===============================
+/* ================================
+          TOAST NOTIFIKASI
+================================ */
 function showToast(text) {
-  let t = document.createElement("div");
+  const t = document.createElement("div");
   t.className = "toastNotif";
   t.innerText = text;
   document.body.appendChild(t);
@@ -197,8 +221,8 @@ function showToast(text) {
   }, 2500);
 }
 
-const toastStyle = document.createElement("style");
-toastStyle.innerHTML = `
+const toastCSS = document.createElement("style");
+toastCSS.innerHTML = `
 .toastNotif {
   position: fixed;
   bottom: -60px;
@@ -207,6 +231,7 @@ toastStyle.innerHTML = `
   background: #6d28d9;
   color: white;
   padding: 12px 20px;
+  font-size: 14px;
   border-radius: 10px;
   box-shadow: 0 5px 18px rgba(0,0,0,0.25);
   opacity: 0;
@@ -215,260 +240,74 @@ toastStyle.innerHTML = `
 }
 .toastNotif.show { bottom: 30px; opacity: 1; }
 `;
-document.head.appendChild(toastStyle);
+document.head.appendChild(toastCSS);
 
-// ===============================
-//   MENU GARIS TIGA (DI BAWAH STORE NAME)
-// ===============================
-const topbar = document.querySelector(".topbar");
+/* ================================
+       DRAWER MENU GARIS TIGA
+================================ */
+const hamburger = document.getElementById("hamburgerBtn");
 
-const hamburger = document.createElement("button");
-hamburger.innerHTML = "☰";
-hamburger.style.cssText = `
-  margin-top: 6px;
-  padding: 6px 12px;
-  background: white;
-  color: #6d28d9;
-  border: none;
-  border-radius: 6px;
-  font-size: 20px;
-  cursor: pointer;
-`;
-topbar.appendChild(hamburger);
-
+// buat drawer
 const drawer = document.createElement("div");
 drawer.style.cssText = `
   position: fixed;
   top: 0;
   left: 0;
-  width: 260px;
+  width: 250px;
   height: 100vh;
-  background: #ffffff;
+  background: white;
   padding: 20px;
   box-shadow: 3px 0 20px rgba(0,0,0,0.25);
   transform: translateX(-300px);
-  transition: transform .25s ease-out;
+  transition: .25s;
   z-index: 9999;
 `;
 
 drawer.innerHTML = `
-  <h2 style="color:#6d28d9;">Menu</h2>
-  <button class="drawer-btn" onclick="window.location.href='voucher.html'">Daftar Voucher</button>
-  <button class="drawer-btn" onclick="window.location.href='informasi.html'">Informasi Toko</button>
-  <button class="drawer-btn" onclick="window.location.href='riwayat.html'">Riwayat Transaksi</button>
-`;
+  <h2 style="color:#6d28d9;margin-bottom:15px;">Menu</h2>
 
+  <button class="drawer-item" onclick="location.href='voucher.html'">Daftar Voucher</button>
+  <button class="drawer-item" onclick="location.href='informasi.html'">Informasi Toko</button>
+  <button class="drawer-item" onclick="location.href='riwayat.html'">Riwayat Transaksi</button>
+`;
 document.body.appendChild(drawer);
 
+// drawer CSS
 const drawerCSS = document.createElement("style");
 drawerCSS.innerHTML = `
-.drawer-btn {
+.drawer-item {
   width: 100%;
   padding: 12px;
-  background: #f3eaff;
+  background: #f4eaff;
   border: none;
   border-radius: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   text-align: left;
   font-size: 16px;
   cursor: pointer;
 }
-.drawer-btn:hover { background: #e5d6ff; }
+.drawer-item:hover {
+  background: #e7d7ff;
+}
 `;
 document.head.appendChild(drawerCSS);
 
-let drawerOpen = false;
-
+// toggle menu
+let open = false;
 hamburger.onclick = () => {
-  drawerOpen = !drawerOpen;
-  drawer.style.transform = drawerOpen ? "translateX(0)" : "translateX(-300px)";
+  open = !open;
+  drawer.style.transform = open ? "translateX(0)" : "translateX(-300px)";
 };
 
+// close jika klik di luar
 document.addEventListener("click", e => {
-  if (drawerOpen && !drawer.contains(e.target) && e.target !== hamburger) {
+  if (open && e.target !== hamburger && !drawer.contains(e.target)) {
     drawer.style.transform = "translateX(-300px)";
-    drawerOpen = false;
+    open = false;
   }
 });
 
-// ===============================
-//   START
-// ===============================
-renderProducts();
-popup.addEventListener("click", (e) => {
-  if (e.target === popup) popup.classList.add("hidden");
-});
-waCSLink.href = "https://wa.me/62856935420228?text=" + csText;
-
-// ===============================
-//   MODAL PEMBAYARAN
-// ===============================
-const paymentBtn = document.getElementById("openPaymentInfo");
-const paymentModal = document.getElementById("paymentModal");
-
-paymentBtn.addEventListener("click", () => {
-  paymentModal.classList.remove("hidden");
-});
-
-paymentModal.addEventListener("click", (e) => {
-  if (e.target === paymentModal) paymentModal.classList.add("hidden");
-});
-
-// ===============================
-//   POPUP INFO WA
-// ===============================
-const waInfoPopup = document.getElementById("waInfoPopup");
-const closeWaInfo = document.getElementById("closeWaInfo");
-
-setTimeout(() => waInfoPopup.classList.remove("hidden"), 600);
-closeWaInfo.addEventListener("click", () => waInfoPopup.classList.add("hidden"));
-waInfoPopup.addEventListener("click", (e) => {
-  const box = document.querySelector(".wa-info-box");
-  if (!box.contains(e.target)) waInfoPopup.classList.add("hidden");
-});
-
-// ===============================
-//   TOAST NOTIFICATION
-// ===============================
-function showToast(text) {
-  let t = document.createElement("div");
-  t.className = "toastNotif";
-  t.innerText = text;
-  document.body.appendChild(t);
-
-  setTimeout(() => t.classList.add("show"), 10);
-  setTimeout(() => {
-    t.classList.remove("show");
-    setTimeout(() => t.remove(), 300);
-  }, 2500);
-}
-
-const toastStyle = document.createElement("style");
-toastStyle.innerHTML = `
-.toastNotif {
-  position: fixed;
-  bottom: -60px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #6d28d9;
-  color: white;
-  padding: 12px 20px;
-  border-radius: 10px;
-  box-shadow: 0 5px 18px rgba(0,0,0,0.25);
-  opacity: 0;
-  transition: .3s;
-  z-index: 999999;
-}
-.toastNotif.show { bottom: 30px; opacity: 1; }
-`;
-document.head.appendChild(toastStyle);
-
-// ===============================
-//   FIXED HAMBURGER + DRAWER MENU
-// ===============================
-
-
-
-// Drawer menu
-const drawer = document.createElement("div");
-drawer.style.cssText = `
-  position: fixed;
-  top: 60px; /* agar tidak menabrak header */
-  left: 0;
-  width: 260px;
-  height: calc(100vh - 60px);
-  background: #ffffff;
-  box-shadow: 3px 0 20px rgba(0,0,0,0.2);
-  padding: 20px;
-  transform: translateX(-300px);
-  transition: transform .25s ease-out;
-  z-index: 9998;
-`;
-
-drawer.innerHTML = `
-  <h2 style="color:#6d28d9; margin-top:0; margin-bottom:20px;">Menu</h2>
-  <button class="drawer-btn" onclick="window.location.href='voucher.html'">Daftar Voucher</button>
-  <button class="drawer-btn" onclick="window.location.href='informasi.html'">Informasi Toko</button>
-  <button class="drawer-btn" onclick="window.location.href='riwayat.h// ===============================
-//   HAMBURGER DI BAWAH NAMA STORE
-// ===============================
-const topbar = document.querySelector(".topbar");
-
-const hamburger = document.createElement("button");
-hamburger.innerHTML = "☰";
-hamburger.style.cssText = `
-  margin-top: 6px;
-  padding: 6px 12px;
-  background: white;
-  color: #6d28d9;
-  border: none;
-  border-radius: 6px;
-  font-size: 20px;
-  cursor: pointer;
-`;
-
-topbar.appendChild(hamburger);
-tml'">Riwayat Transaksi</button>
-`;
-document.body.appendChild(drawer);
-
-// Drawer CSS
-const drawer = document.createElement("div");
-drawer.style.cssText = `
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 260px;
-  height: 100vh;
-  background: #ffffff;
-  padding: 20px;
-  box-shadow: 3px 0 20px rgba(0,0,0,0.25);
-  transform: translateX(-300px);
-  transition: transform .25s ease-out;
-  z-index: 9999;
-`;
-
-drawer.innerHTML = `
-  <h2 style="color:#6d28d9;">Menu</h2>
-  <button class="drawer-btn" onclick="window.location.href='voucher.html'">Daftar Voucher</button>
-  <button class="drawer-btn" onclick="window.location.href='informasi.html'">Informasi Toko</button>
-  <button class="drawer-btn" onclick="window.location.href='riwayat.html'">Riwayat Transaksi</button>
-`;
-
-document.body.appendChild(drawer);
-
-const css = document.createElement("style");
-css.innerHTML = `
-.drawer-btn {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  background: #f3eaff;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  text-align: left;
-  font-size: 16px;
-}
-.drawer-btn:hover { background: #e5d6ff; }
-`;
-document.head.appendChild(css);
-
-let drawerOpen = false;
-hamburger.onclick = () => {
-  drawerOpen = !drawerOpen;
-  drawer.style.transform = drawerOpen ? "translateX(0)" : "translateX(-300px)";
-};
-
-document.addEventListener("click", e => {
-  if (drawerOpen && !drawer.contains(e.target) && e.target !== hamburger) {
-    drawer.style.transform = "translateX(-300px)";
-    drawerOpen = false;
-  }
-});
-
-
-
-// ===============================
-//   START RENDER
-// ===============================
+/* ================================
+             INIT
+================================ */
 renderProducts();
