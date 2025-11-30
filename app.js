@@ -52,6 +52,17 @@ function renderProducts() {
 // ===============================
 let currentOrder = null;
 
+// fungsi voucher (diambil dari voucher.js)
+function getAutoVoucher(price) {
+  if (price >= 50000) return { code: "MEGA50", desc: "Diskon 50% di atas 50rb", cut: 0.5 };
+  return { code: "DISKON10", desc: "Diskon 10% untuk semua pengguna", cut: 0.1 };
+}
+
+function applyVoucher(price, voucher) {
+  const pot = price * voucher.cut;
+  return { finalPrice: price - pot, discount: pot };
+}
+
 function selectProduct(product) {
   currentOrder = {
     id: "ORD" + Date.now(),
@@ -60,6 +71,13 @@ function selectProduct(product) {
     date: new Date().toLocaleString("id-ID")
   };
 
+  const voucher = getAutoVoucher(product.price);
+  const hasil = applyVoucher(product.price, voucher);
+
+  currentOrder.voucher = voucher;
+  currentOrder.finalPrice = hasil.finalPrice;
+  currentOrder.discount = hasil.discount;
+
   const card = document.getElementById("orderCard");
   card.classList.remove("empty");
 
@@ -67,7 +85,13 @@ function selectProduct(product) {
     <h3>Detail Pesanan</h3>
     <p><strong>ID Pesanan:</strong> ${currentOrder.id}</p>
     <p><strong>Produk:</strong> ${currentOrder.name}</p>
-    <p><strong>Harga:</strong> Rp ${formatRupiah(currentOrder.price)}</p>
+    <p><strong>Harga Asli:</strong> Rp ${formatRupiah(product.price)}</p>
+
+    <p><strong>Voucher:</strong> ${voucher.code}</p>
+    <p><strong>Deskripsi Voucher:</strong> ${voucher.desc}</p>
+    <p><strong>Potongan:</strong> - Rp ${formatRupiah(currentOrder.discount)}</p>
+    <p><strong>Total Bayar:</strong> Rp ${formatRupiah(currentOrder.finalPrice)}</p>
+
     <p><strong>Tanggal:</strong> ${currentOrder.date}</p>
 
     <div class="field">
@@ -93,8 +117,10 @@ function selectProduct(product) {
   document.getElementById("waMessage").href =
     `https://wa.me/62856935420220?text=` +
     encodeURIComponent(
-      `Halo, saya sudah membuat pesanan:\n\nID: ${currentOrder.id}\nProduk: ${currentOrder.name}\nHarga: Rp ${formatRupiah(currentOrder.price)}\nTanggal: ${currentOrder.date}`
+      `Halo, saya sudah membuat pesanan:\n\nID: ${currentOrder.id}\nProduk: ${currentOrder.name}\nHarga: Rp ${formatRupiah(currentOrder.finalPrice)}\nTanggal: ${currentOrder.date}`
     );
+
+  showToast("Voucher diterapkan: " + voucher.code);
 }
 
 // ===============================
@@ -108,7 +134,7 @@ function previewProof(e) {
 }
 
 // ===============================
-//   KIRIM FOTO KE TELEGRAM
+//   KIRIM BUKTI KE TELEGRAM
 // ===============================
 async function sendProofToTelegram() {
   if (!currentOrder) return alert("Tidak ada pesanan.");
@@ -125,15 +151,16 @@ async function sendProofToTelegram() {
     `📦 *BUKTI TRANSFER*\n\n` +
     `🆔 ID: ${currentOrder.id}\n` +
     `📌 Produk: ${currentOrder.name}\n` +
-    `💰 Harga Asli: Rp ${formatRupiah(currentOrder.price)}\n` +
+    `💰 Total Bayar: Rp ${formatRupiah(currentOrder.finalPrice)}\n` +
     `🏷 Voucher: ${currentOrder.voucher.code}\n` +
-    `➖ Potongan: Rp ${formatRupiah(currentOrder.discount)}\n` +
-    `💳 Total Bayar: Rp ${formatRupiah(currentOrder.finalPrice)}\n` +
+    `➖ Potongan: Rp ${formatRupiah(currentOrder.discount)}\n\n` +
     `📅 ${currentOrder.date}`
   );
 
-  const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
-  await fetch(url, { method: "POST", body: form });
+  await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+    method: "POST",
+    body: form
+  });
 
   showToast("Bukti terkirim ke Telegram!");
 }
@@ -146,7 +173,7 @@ const popup = document.getElementById("waPopup");
 const waCSLink = document.getElementById("waCSLink");
 
 const csText = encodeURIComponent(
-  "Halo kak, saya ingin bertanya mengenai layanan Gerald Store.\n• Nama:\n• Pertanyaan:"
+  "Halo kak! Saya ingin bertanya mengenai layanan Gerald Market.\n• Nama:\n• Pertanyaan:"
 );
 
 waBtn.addEventListener("click", () => popup.classList.remove("hidden"));
@@ -198,7 +225,6 @@ function showToast(text) {
   }, 2500);
 }
 
-// CSS toast
 const toastStyle = document.createElement("style");
 toastStyle.innerHTML = `
 .toastNotif {
@@ -220,105 +246,82 @@ toastStyle.innerHTML = `
 document.head.appendChild(toastStyle);
 
 // ===============================
-//   VOUCHER SYSTEM (OVERRIDE)
+//   DRAWER MENU (SLIDE LEFT)
 // ===============================
-const _oldSelect = selectProduct;
-
-selectProduct = function (product) {
-  _oldSelect(product);
-
-  const voucher = getAutoVoucher(product.price);
-  currentOrder.voucher = voucher;
-
-  const hasil = applyVoucher(product.price, voucher);
-  currentOrder.finalPrice = hasil.finalPrice;
-  currentOrder.discount = hasil.discount;
-
-  const card = document.getElementById("orderCard");
-  card.innerHTML += `
-    <p><strong>Voucher:</strong> ${voucher.code}</p>
-    <p><strong>Deskripsi Voucher:</strong> ${voucher.desc}</p>
-    <p><strong>Potongan:</strong> - Rp ${formatRupiah(hasil.discount)}</p>
-    <p><strong>Total Bayar:</strong> Rp ${formatRupiah(hasil.finalPrice)}</p>
-  `;
-
-  showToast("Voucher diterapkan: " + voucher.code);
-};
-
-// ===============================
-//   MENU HAMBURGER (ATAS KIRI)
-// ===============================
-
-// Tombol menu
 const hamburger = document.createElement("button");
 hamburger.innerHTML = "☰";
 hamburger.style.cssText = `
-  position: absolute;
+  position: fixed;
   left: 12px;
-  top: 10px;
-  font-size: 22px;
+  top: 12px;
+  font-size: 24px;
   padding: 6px 10px;
+  background: #6d28d9;
+  color: white;
+  border: none;
   border-radius: 6px;
-  background:#6d28d9;
-  border:none;
-  color:white;
-  cursor:pointer;
-  z-index:9999;
+  cursor: pointer;
+  z-index: 9999;
 `;
 document.body.appendChild(hamburger);
 
-// Dropdown menu
-const dropdown = document.createElement("div");
-dropdown.style.cssText = `
-  position: absolute;
-  left: 12px;
-  top: 50px;
-  background:white;
-  width:180px;
-  border-radius:10px;
-  box-shadow:0 8px 20px rgba(0,0,0,.15);
-  padding:8px 0;
-  display:none;
-  z-index:9998;
+const drawer = document.createElement("div");
+drawer.style.cssText = `
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  background: white;
+  box-shadow: 3px 0 20px rgba(0,0,0,0.2);
+  padding: 20px;
+  transform: translateX(-260px);
+  transition: transform .25s ease-out;
+  z-index: 9998;
 `;
-dropdown.innerHTML = `
-  <button class="menu-item" onclick="alert('Daftar Voucher')">Daftar Voucher</button>
-  <button class="menu-item" onclick="alert('Informasi Toko')">Informasi Toko</button>
-  <button class="menu-item" onclick="alert('Riwayat Transaksi')">Riwayat Transaksi</button>
-`;
-document.body.appendChild(dropdown);
 
-// CSS menu
-const menuCSS = document.createElement("style");
-menuCSS.innerHTML = `
-.menu-item {
+drawer.innerHTML = `
+  <h2 style="color:#6d28d9;margin-bottom:20px;">Menu</h2>
+  <button class="drawer-btn" onclick="window.location.href='voucher.html'">Daftar Voucher</button>
+  <button class="drawer-btn" onclick="window.location.href='informasi.html'">Informasi Toko</button>
+  <button class="drawer-btn" onclick="window.location.href='riwayat.html'">Riwayat Transaksi</button>
+`;
+document.body.appendChild(drawer);
+
+const drawerCSS = document.createElement("style");
+drawerCSS.innerHTML = `
+.drawer-btn {
   width: 100%;
-  padding: 10px 16px;
-  background: transparent;
-  border: none;
+  padding: 12px;
   text-align: left;
-  font-size: 15px;
+  background: #f4f0ff;
+  border: none;
+  border-radius: 8px;
+  margin-bottom: 10px;
   cursor: pointer;
+  font-size: 16px;
 }
-.menu-item:hover {
-  background:#f3f0ff;
+.drawer-btn:hover {
+  background: #e7dbff;
 }
 `;
-document.head.appendChild(menuCSS);
+document.head.appendChild(drawerCSS);
 
-// Toggle menu
+let drawerOpen = false;
+
 hamburger.addEventListener("click", () => {
-  dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
+  drawerOpen = !drawerOpen;
+  drawer.style.transform = drawerOpen ? "translateX(0)" : "translateX(-260px)";
 });
 
-// Klik luar menutup menu
 document.addEventListener("click", (e) => {
-  if (!dropdown.contains(e.target) && e.target !== hamburger) {
-    dropdown.style.display = "none";
+  if (drawerOpen && !drawer.contains(e.target) && e.target !== hamburger) {
+    drawerOpen = false;
+    drawer.style.transform = "translateX(-260px)";
   }
 });
 
 // ===============================
-//   INITIAL RENDER
+//   START RENDER
 // ===============================
 renderProducts();
