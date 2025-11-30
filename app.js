@@ -1,11 +1,11 @@
 /* ================================
-        SETTING BOT TELEGRAM
+        TELEGRAM BOT
 ================================ */
 const BOT_TOKEN = "6950291703:AAHKeH8t8XlYoIjHR8XL_33oUOejTQyHkDs";
 const CHAT_ID = "5800113255";
 
 /* ================================
-            DATA PRODUK
+        DATA PRODUK
 ================================ */
 const products = [
   { id: 1, name: "ROBLOX FISH IT COIN VIA MITOS PER 1M", price: 12000 },
@@ -16,14 +16,14 @@ const products = [
 ];
 
 /* ================================
-          FORMAT RUPIAH
+      FORMAT RUPIAH
 ================================ */
 function formatRupiah(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
 /* ================================
-         RENDER PRODUK
+      RENDER PRODUK
 ================================ */
 function renderProducts() {
   const list = document.getElementById("productList");
@@ -43,19 +43,15 @@ function renderProducts() {
     `;
 
     box.querySelector(".buy").onclick = () => selectProduct(p);
-
     list.appendChild(box);
   });
 }
 
 /* ================================
-          VAR PESANAN
+      PILIH PRODUK
 ================================ */
 let currentOrder = null;
 
-/* ================================
-     SAAT PRODUK DITEKAN BUY
-================================ */
 function selectProduct(product) {
   currentOrder = {
     id: "ORD" + Date.now(),
@@ -101,29 +97,13 @@ function selectProduct(product) {
     </a>
   `;
 
-  // preview gambar
   document.getElementById("proof").onchange = previewProof;
-
-  // WA seller link (harga setelah voucher)
-  document.getElementById("waMessage").href =
-    `https://wa.me/62856935420220?text=` +
-    encodeURIComponent(
-      `Halo, saya melakukan pesanan:\n` +
-      `ID: ${currentOrder.id}\n` +
-      `Produk: ${currentOrder.name}\n` +
-      `Total Bayar: Rp ${formatRupiah(currentOrder.finalPrice)}\n` +
-      `Tanggal: ${currentOrder.date}`
-    );
-
-  // apply voucher
   document.getElementById("applyVoucherBtn").onclick = applyVoucher;
-
-  // kirim telegram
   document.getElementById("sendProof").onclick = sendProofToTelegram;
 }
 
 /* ================================
-         LOGIKA VOUCHER
+      APPLY VOUCHER
 ================================ */
 function applyVoucher() {
   const code = document.getElementById("voucherInput").value.trim().toUpperCase();
@@ -131,23 +111,17 @@ function applyVoucher() {
 
   let voucher = null;
 
-  if (code === "DISKON10")
-    voucher = { cut: 0.10, code: "DISKON10", desc: "Diskon 10%" };
-
+  if (code === "DISKON10") voucher = { cut: 0.10, code: "DISKON10" };
   if (code === "MEGA50" && currentOrder.price >= 50000)
-    voucher = { cut: 0.50, code: "MEGA50", desc: "Diskon 50% (>=50rb)" };
+    voucher = { cut: 0.50, code: "MEGA50" };
 
-  // jika voucher salah
   if (!voucher) {
-    showToast("Kode voucher tidak valid!");
+    showPopupNotif("Kode voucher tidak valid!");
     result.innerHTML = "";
     currentOrder.finalPrice = currentOrder.price;
-    currentOrder.discount = 0;
-    currentOrder.voucher = null;
     return;
   }
 
-  // hitung voucher
   const pot = currentOrder.price * voucher.cut;
   const total = currentOrder.price - pot;
 
@@ -161,33 +135,32 @@ function applyVoucher() {
     <p><b>Total Bayar: Rp ${formatRupiah(total)}</b></p>
   `;
 
-  showToast("Voucher berhasil diterapkan!");
+  showPopupNotif("Voucher berhasil diterapkan!");
 }
 
 /* ================================
-           PREVIEW GAMBAR
+      PREVIEW BUKTI TF
 ================================ */
 function previewProof(e) {
   const file = e.target.files[0];
-  if (!file) return;
-  document.getElementById("preview").src = URL.createObjectURL(file);
+  if (file) {
+    document.getElementById("preview").src = URL.createObjectURL(file);
+  }
 }
 
 /* ================================
-      KIRIM BUKTI KE TELEGRAM
+   KIRIM FOTO TF KE TELEGRAM
 ================================ */
 async function sendProofToTelegram() {
   if (!currentOrder) return alert("Tidak ada pesanan.");
-
-  const input = document.getElementById("proof");
-  if (!input.files[0]) return alert("Upload bukti dulu.");
+  const file = document.getElementById("proof").files[0];
+  if (!file) return alert("Upload bukti dulu.");
 
   const form = new FormData();
   form.append("chat_id", CHAT_ID);
-  form.append("photo", input.files[0]);
+  form.append("photo", file);
 
-  form.append(
-    "caption",
+  form.append("caption",
     `📦 *BUKTI TRANSFER*\n\n` +
     `🆔 ID: ${currentOrder.id}\n` +
     `📌 Produk: ${currentOrder.name}\n` +
@@ -202,112 +175,103 @@ async function sendProofToTelegram() {
     body: form
   });
 
-  showToast("Bukti terkirim ke Telegram!");
+  showPopupNotif("Bukti terkirim ke Telegram!");
 }
 
 /* ================================
-          TOAST NOTIFIKASI
+      POPUP NOTIFIKASI
 ================================ */
-function showToast(text) {
-  const t = document.createElement("div");
-  t.className = "toastNotif";
-  t.innerText = text;
-  document.body.appendChild(t);
+function showPopupNotif(text) {
+  const box = document.createElement("div");
+  box.className = "popup-notif";
+  box.innerText = text;
+  document.body.appendChild(box);
 
-  setTimeout(() => t.classList.add("show"), 10);
+  setTimeout(() => box.classList.add("show"), 20);
   setTimeout(() => {
-    t.classList.remove("show");
-    setTimeout(() => t.remove(), 300);
+    box.classList.remove("show");
+    setTimeout(() => box.remove(), 300);
   }, 2500);
 }
 
-const toastCSS = document.createElement("style");
-toastCSS.innerHTML = `
-.toastNotif {
-  position: fixed;
-  bottom: -60px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #6d28d9;
-  color: white;
-  padding: 12px 20px;
-  font-size: 14px;
-  border-radius: 10px;
-  box-shadow: 0 5px 18px rgba(0,0,0,0.25);
-  opacity: 0;
-  transition: .3s;
-  z-index: 999999;
-}
-.toastNotif.show { bottom: 30px; opacity: 1; }
-`;
-document.head.appendChild(toastCSS);
-
 /* ================================
-       DRAWER MENU GARIS TIGA
+      DRAWER MENU
 ================================ */
 const hamburger = document.getElementById("hamburgerBtn");
-
-// buat drawer
 const drawer = document.createElement("div");
+
 drawer.style.cssText = `
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 250px;
-  height: 100vh;
-  background: white;
-  padding: 20px;
-  box-shadow: 3px 0 20px rgba(0,0,0,0.25);
+  position: fixed; top:0; left:0;
+  width:250px; height:100vh;
+  background:white; padding:20px;
   transform: translateX(-300px);
   transition: .25s;
-  z-index: 9999;
+  z-index:9999;
+  box-shadow: 3px 0 20px rgba(0,0,0,0.25);
 `;
 
 drawer.innerHTML = `
   <h2 style="color:#6d28d9;margin-bottom:15px;">Menu</h2>
-
   <button class="drawer-item" onclick="location.href='voucher.html'">Daftar Voucher</button>
   <button class="drawer-item" onclick="location.href='informasi.html'">Informasi Toko</button>
   <button class="drawer-item" onclick="location.href='riwayat.html'">Riwayat Transaksi</button>
 `;
+
 document.body.appendChild(drawer);
 
-// drawer CSS
-const drawerCSS = document.createElement("style");
-drawerCSS.innerHTML = `
-.drawer-item {
-  width: 100%;
-  padding: 12px;
-  background: #f4eaff;
-  border: none;
-  border-radius: 8px;
-  margin-bottom: 12px;
-  text-align: left;
-  font-size: 16px;
-  cursor: pointer;
-}
-.drawer-item:hover {
-  background: #e7d7ff;
-}
-`;
-document.head.appendChild(drawerCSS);
-
-// toggle menu
-let open = false;
 hamburger.onclick = () => {
-  open = !open;
-  drawer.style.transform = open ? "translateX(0)" : "translateX(-300px)";
+  drawer.style.transform =
+    drawer.style.transform === "translateX(0px)"
+      ? "translateX(-300px)"
+      : "translateX(0px)";
 };
 
-// close jika klik di luar
 document.addEventListener("click", e => {
-  if (open && e.target !== hamburger && !drawer.contains(e.target)) {
+  if (e.target !== hamburger && !drawer.contains(e.target)) {
     drawer.style.transform = "translateX(-300px)";
-    open = false;
   }
 });
 
 /* ================================
-             INIT
+   POPUP CUSTOMER SERVICE
+================================ */
+const waBtn = document.getElementById("waFloatingBtn");
+const waPopup = document.getElementById("waPopup");
+const waCSLink = document.getElementById("waCSLink");
+
+waBtn.onclick = () => waPopup.classList.remove("hidden");
+waPopup.onclick = e => {
+  if (!e.target.closest(".wa-popup-box")) waPopup.classList.add("hidden");
+};
+
+waCSLink.href =
+  "https://wa.me/62856935420220?text=" +
+  encodeURIComponent("Halo admin, saya butuh bantuan Customer Service.");
+
+/* ================================
+   POPUP INFO — SELALU MUNCUL
+================================ */
+document.addEventListener("DOMContentLoaded", () => {
+
+  const waInfo = document.getElementById("waInfoPopup");
+  const closeWaInfo = document.getElementById("closeWaInfo");
+
+  // Popup selalu muncul
+  waInfo.classList.remove("hidden");
+
+  const closePopup = () => {
+    waInfo.classList.add("hidden");
+  };
+
+  closeWaInfo.onclick = closePopup;
+
+  waInfo.onclick = (e) => {
+    if (!e.target.closest(".wa-info-box")) closePopup();
+  };
+
+});
+
+/* ================================
+             START
 ================================ */
 renderProducts();
