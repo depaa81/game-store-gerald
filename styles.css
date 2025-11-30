@@ -13,11 +13,40 @@ body { background: linear-gradient(180deg, var(--bg), #eef2ff); color: #0f172a; 
 .container { max-width: 920px; margin: 18px auto; padding: 14px; }
 
 /* TOPBAR */
-.topbar { background: #6d28d9; color: white; padding: 15px; text-align: center; }
-.top-left { display: flex; align-items: center; gap: 10px; justify-content: center; }
-.storeName { font-size: 18px; font-weight: bold; }
-#hamburgerBtn { padding: 6px 12px; font-size: 20px; background: white; color: #6d28d9; border: none; border-radius: 6px; cursor: pointer; }
+.topbar {
+  background: #6d28d9;
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
 
+/* Container kiri untuk tombol + nama store */
+.top-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Nama store kecil dan kiri */
+.storeName {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+  padding-top: 2px;
+}
+
+/* Tombol menu */
+#hamburgerBtn {
+  padding: 6px 12px;
+  font-size: 20px;
+  background: white;
+  color: #6d28d9;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
 
 /* LAYOUT */
 .layout { display: grid; grid-template-columns: 1fr 360px; gap: 14px; }
