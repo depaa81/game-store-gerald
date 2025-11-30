@@ -1,6 +1,6 @@
 // Daftar voucher promo
 window.VOUCHERS = [
-  { code: "DISKON10", cut: 0.10, min: 0 },
-  { code: "MEGA50", cut: 0.50, min: 50000 },
-  { code: "SUPER20", cut: 0.20, min: 0 },
+  { code: "DISKON05", cut: 0.05, min: 0 },
+  { code: "WOW15", cut: 0.15, min: 35000 },
+  { code: "SUPER25", cut: 0.20, min: 100000 },
 ];
