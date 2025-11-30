@@ -200,3 +200,170 @@ waInfoPopup.addEventListener("click", (e) => {
     localStorage.setItem("waInfoSeen", "true");
   }
 });
+
+// ============ TOAST NOTIFICATION ============ //
+function showToast(text) {
+  let t = document.createElement("div");
+  t.className = "toastNotif";
+  t.innerText = text;
+  document.body.appendChild(t);
+
+  setTimeout(() => t.classList.add("show"), 10);
+  setTimeout(() => {
+    t.classList.remove("show");
+    setTimeout(() => t.remove(), 300);
+  }, 2500);
+}
+
+// Inject CSS toast
+const toastStyle = document.createElement("style");
+toastStyle.innerHTML = `
+.toastNotif {
+  position: fixed;
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #6d28d9;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 18px rgba(0,0,0,0.25);
+  font-size: 14px;
+  opacity: 0;
+  transition: all .3s ease;
+  z-index: 999999;
+}
+.toastNotif.show {
+  bottom: 30px;
+  opacity: 1;
+}
+`;
+document.head.appendChild(toastStyle);
+// ============================================
+// OVERRIDE selectProduct → Tambah voucher otomatis
+// ============================================
+const oldSelectProductFn = selectProduct;
+
+selectProduct = function(product) {
+
+  // Jalankan fungsi lama
+  oldSelectProductFn(product);
+
+  // Ambil voucher dari voucher.js
+  const voucher = getAutoVoucher(product.price);
+  currentOrder.voucher = voucher;
+
+  // Hitung diskon final
+  const calc = applyVoucher(product.price, voucher);
+  currentOrder.finalPrice = calc.finalPrice;
+  currentOrder.discount = calc.discount;
+
+  // Tambah info voucher di checkout box
+  const card = document.getElementById("orderCard");
+
+  card.innerHTML += `
+    <p><strong>Voucher:</strong> ${voucher.code}</p>
+    <p><strong>Deskripsi Voucher:</strong> ${voucher.desc}</p>
+    <p><strong>Potongan:</strong> - Rp ${formatRupiah(calc.discount)}</p>
+    <p><strong>Total Bayar:</strong> Rp ${formatRupiah(calc.finalPrice)}</p>
+  `;
+
+  showToast("Voucher diterapkan: " + voucher.code);
+};
+// ============================================
+// Override SEND TELEGRAM → total harga final
+// ============================================
+const oldSendProofFn = sendProofToTelegram;
+
+sendProofToTelegram = async function() {
+
+  showToast("Mengirim bukti ke Telegram...");
+
+  const fileInput = document.getElementById("proof");
+  if (!fileInput.files[0]) return alert("Upload bukti dulu.");
+
+  const form = new FormData();
+  form.append("chat_id", CHAT_ID);
+  form.append("photo", fileInput.files[0]);
+
+  form.append(
+    "caption",
+    `📦 *BUKTI TRANSFER*\n\n` +
+    `🆔 ID Pesanan: ${currentOrder.id}\n` +
+    `📌 Produk: ${currentOrder.name}\n` +
+    `💰 Harga Asli: Rp ${formatRupiah(currentOrder.price)}\n` +
+    `🏷 Voucher: ${currentOrder.voucher.code}\n` +
+    `➖ Potongan: Rp ${formatRupiah(currentOrder.discount)}\n` +
+    `💳 Total Dibayar: Rp ${formatRupiah(currentOrder.finalPrice)}\n` +
+    `📅 Tanggal: ${currentOrder.date}`
+  );
+
+  const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
+
+  await fetch(url, { method: "POST", body: form });
+
+  showToast("Bukti terkirim ke Telegram!");
+};
+// =======================
+// MENU GARIS TIGA
+// =======================
+
+// Buat tombol
+const menuBtn = document.createElement("div");
+menuBtn.innerHTML = "☰";
+menuBtn.style.cssText = `
+  position: fixed; top: 14px; right: 14px;
+  font-size: 28px; cursor: pointer;
+  z-index: 9999; font-weight: 700;
+`;
+document.body.appendChild(menuBtn);
+
+// Buat panel
+const menuPanel = document.createElement("div");
+menuPanel.className = "menuPanel";
+menuPanel.innerHTML = `
+  <div class="menuBox">
+    <h3>Menu</h3>
+
+    <h4>Daftar Voucher</h4>
+    <ul id="voucherListMenu"></ul>
+
+    <h4>Fitur Lain</h4>
+    <ul>
+      <li>Informasi Toko</li>
+      <li>Riwayat Transaksi</li>
+    </ul>
+  </div>
+`;
+document.body.appendChild(menuPanel);
+
+// CSS menu
+const css = document.createElement("style");
+css.innerHTML = `
+.menuPanel {
+  position: fixed;
+  right: 0; top: 0;
+  width: 260px; height: 100vh;
+  background: white;
+  box-shadow: -6px 0 20px rgba(0,0,0,0.2);
+  padding: 20px; z-index: 9998;
+  transform: translateX(100%);
+  transition: 0.25s ease;
+}
+.menuPanel.show { transform: translateX(0); }
+.menuBox ul { padding-left: 18px; }
+.menuBox li { margin: 6px 0; }
+`;
+document.head.appendChild(css);
+
+// Toggle
+menuBtn.addEventListener("click", () => {
+  menuPanel.classList.toggle("show");
+});
+
+// Isi voucher ke menu
+const ul = menuPanel.querySelector("#voucherListMenu");
+voucherList.forEach(v => {
+  ul.innerHTML += `<li><b>${v.code}</b> — ${v.desc}</li>`;
+});
+            
