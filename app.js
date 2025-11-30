@@ -82,27 +82,30 @@ function selectProduct(product) {
   card.classList.remove("empty");
 
   card.innerHTML = `
-    <h3>Detail Pesanan</h3>
-    <p><strong>ID Pesanan:</strong> ${currentOrder.id}</p>
-    <p><strong>Produk:</strong> ${currentOrder.name}</p>
-    <p><strong>Harga Asli:</strong> Rp ${formatRupiah(product.price)}</p>
+  card.innerHTML = `
+  <h3>Detail Pesanan</h3>
 
-    <p><strong>Voucher:</strong> ${voucher.code}</p>
-    <p><strong>Deskripsi Voucher:</strong> ${voucher.desc}</p>
-    <p><strong>Potongan:</strong> - Rp ${formatRupiah(currentOrder.discount)}</p>
-    <p><strong>Total Bayar:</strong> Rp ${formatRupiah(currentOrder.finalPrice)}</p>
+  <p><strong>ID:</strong> ${currentOrder.id}</p>
+  <p><strong>Produk:</strong> ${currentOrder.name}</p>
+  <p><strong>Harga:</strong> Rp ${formatRupiah(currentOrder.price)}</p>
 
-    <p><strong>Tanggal:</strong> ${currentOrder.date}</p>
+  <div class="field">
+    <label>Masukkan Kode Voucher</label>
+    <input type="text" id="voucherInput" placeholder="contoh: DISKON10">
+    <button class="btn" id="applyVoucherBtn" style="margin-top:6px;width:100%;">Terapkan Voucher</button>
+  </div>
 
-    <div class="field">
-      <label>Upload Bukti Transfer</label>
-      <input type="file" id="proof">
-      <img id="preview" class="proof-preview"/>
-    </div>
+  <div id="voucherResult"></div>
 
-    <div class="actions">
-      <button class="btn success" id="sendProof">Kirim Bukti</button>
-    </div>
+  <div class="field">
+    <label>Upload Bukti Transfer</label>
+    <input type="file" id="proof">
+    <img id="preview" class="proof-preview"/>
+  </div>
+
+  <button class="btn success" id="sendProof">Kirim Bukti</button>
+`;
+
 
     <a id="waMessage" target="_blank">
       <button class="btn ghost" style="margin-top:10px;width:100%;">WhatsApp Penjual</button>
