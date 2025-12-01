@@ -235,36 +235,65 @@ document.addEventListener("DOMContentLoaded", () => {
       );
   }
 
-  /* ===========================
-     DRAWER MENU
-  =========================== */
-  const drawer = document.createElement("div");
-  drawer.innerHTML = `
-    <h2 style="color:#6d28d9;margin-bottom:15px;">Menu</h2>
+/* ===========================
+    DRAWER MENU (FIXED)
+=========================== */
 
-    <button class="drawer-item" onclick="location.href='voucher.html'">Daftar Voucher</button>
-    <button class="drawer-item" onclick="location.href='informasi.html'">Informasi Toko</button>
-    <button class="drawer-item" onclick="location.href='riwayat.html'">Riwayat Transaksi</button>
+const drawer = document.createElement("div");
 
-    <h3 style="margin-top:20px;color:#6d28d9;">Sosial Media</h3>
-
-    <button class="drawer-item" onclick="window.open('https://instagram.com/USERNAME', '_blank')">Instagram</button>
-    <button class="drawer-item" onclick="window.open('https://tiktok.com/@USERNAME', '_blank')">TikTok</button>
-    <button class="drawer-item" onclick="window.open('https://youtube.com/@USERNAME', '_blank')">YouTube</button>
-    <button class="drawer-item" onclick="window.open('https://facebook.com/USERNAME', '_blank')">Facebook</button>
+drawer.style.cssText = `
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  background: white;
+  padding: 20px;
+  transform: translateX(-300px);
+  transition: .25s;
+  z-index: 9999;
+  box-shadow: 3px 0 20px rgba(0,0,0,0.25);
+  overflow-y: auto;
 `;
-  document.body.appendChild(drawer);
 
-  hamburger.onclick = () => {
-    const isOpen = drawer.style.transform === "translateX(0px)";
-    drawer.style.transform = isOpen ? "translateX(-300px)" : "translateX(0px)";
-  };
+drawer.innerHTML = `
+  <h2 style="color:#6d28d9;margin-bottom:15px;">Menu</h2>
 
-  document.addEventListener("click", (e) => {
-    if (!drawer.contains(e.target) && e.target !== hamburger) {
-      drawer.style.transform = "translateX(-300px)";
-    }
-  });
+  <button class="drawer-item" onclick="location.href='voucher.html'">Daftar Voucher</button>
+  <button class="drawer-item" onclick="location.href='informasi.html'">Informasi Toko</button>
+  <button class="drawer-item" onclick="location.href='riwayat.html'">Riwayat Transaksi</button>
+
+  <h3 style="margin-top:20px;color:#6d28d9;">Sosial Media</h3>
+
+  <button class="drawer-item" onclick="window.open('https://instagram.com/USERNAME','_blank')">
+    Instagram
+  </button>
+
+  <button class="drawer-item" onclick="window.open('https://tiktok.com/@USERNAME','_blank')">
+    TikTok
+  </button>
+
+  <button class="drawer-item" onclick="window.open('https://youtube.com/@USERNAME','_blank')">
+    YouTube
+  </button>
+
+  <button class="drawer-item" onclick="window.open('https://facebook.com/USERNAME','_blank')">
+    Facebook
+  </button>
+`;
+
+document.body.appendChild(drawer);
+
+hamburger.onclick = () => {
+  const isOpen = drawer.style.transform === "translateX(0px)";
+  drawer.style.transform = isOpen ? "translateX(-300px)" : "translateX(0px)";
+};
+
+document.addEventListener("click", (e) => {
+  if (!drawer.contains(e.target) && e.target !== hamburger) {
+    drawer.style.transform = "translateX(-300px)";
+  }
+});
 
   /* ===========================
      WA CUSTOMER SERVICE
