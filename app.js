@@ -253,12 +253,6 @@ document.addEventListener("DOMContentLoaded", () => {
     <button class="drawer-item" onclick="window.open('https://youtube.com/@USERNAME', '_blank')">YouTube</button>
     <button class="drawer-item" onclick="window.open('https://facebook.com/USERNAME', '_blank')">Facebook</button>
 `;
-  drawer.innerHTML = `
-    <h2 style="color:#6d28d9;margin-bottom:15px;">Menu</h2>
-    <button class="drawer-item" onclick="location.href='voucher.html'">Daftar Voucher</button>
-    <button class="drawer-item" onclick="location.href='informasi.html'">Informasi Toko</button>
-    <button class="drawer-item" onclick="location.href='riwayat.html'">Riwayat Transaksi</button>
-  `;
   document.body.appendChild(drawer);
 
   hamburger.onclick = () => {
