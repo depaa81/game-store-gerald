@@ -4,95 +4,112 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  const BOT_TOKEN = "xxx";
-  const CHAT_ID = "xxx";
+  const BOT_TOKEN = "6950291703:AAHKeH8t8XlYoIjHR8XL_33oUOejTQyHkDs";
+  const CHAT_ID = "5800113255";
 
   const products = [
     { id: 1, name: "ROBLOX FISH IT COIN VIA MITOS PER 1M", price: 12000 },
-    { id: 2, name: "ROBLOX AKUN FISH IT ELEMENT ROD", price: 100000 },
-    { id: 3, name: "ROBLOX AKUN FISH IT GHOSTFIN", price: 65000 },
+    { id: 2, name: "ROBLOX AKUN FISH IT ELEMENT ROD POLOSAN (SPEK KE WA CS)", price: 100000 },
+    { id: 3, name: "ROBLOX AKUN FISH IT GHOSTFIN ROD (SPEK KE WA CS)", price: 65000 },
+    { id: 4, name: "ROBLOX FISH IT SC TUMBAL", price: 10000 },
+    { id: 5, name: "ROBLOX FISH IT SC ACIENT LOCHNESS 290TON", price: 85000 },
+    { id: 6, name: "ROBLOX FISH IT JOKI AFK 1H", price: 5000 },
   ];
+
+  function formatRupiah(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
 
   const productListEl = document.getElementById("productList");
   const orderCardEl = document.getElementById("orderCard");
   const hamburger = document.getElementById("hamburgerBtn");
+  const waBtn = document.getElementById("waFloatingBtn");
+  const waPopup = document.getElementById("waPopup");
+  const waCSLink = document.getElementById("waCSLink");
+  const waInfo = document.getElementById("waInfoPopup");
+  const closeWaInfo = document.getElementById("closeWaInfo");
+  const openPay = document.getElementById("openPaymentInfo");
+  const paymentModal = document.getElementById("paymentModal");
 
-  function formatRupiah(x){
-    return x.toLocaleString("id-ID");
-  }
+  let currentOrder = null;
 
-  function renderProducts(){
+  /* ===========================
+     RENDER PRODUK
+  =========================== */
+  function renderProducts() {
     productListEl.innerHTML = "";
-    products.forEach(p=>{
-      const el = document.createElement("div");
-      el.className="product";
-      el.innerHTML = `
-        <div class="thumb">${p.name.split(" ")[1]}</div>
-        <div class="meta">
+
+    products.forEach(p => {
+      const box = document.createElement("div");
+      box.className = "product";
+      box.innerHTML = `
+        <div class="thumb">${p.name.split(" ")[0]}</div>
+        <div class="pmeta">
           <h3>${p.name}</h3>
           <p>Rp ${formatRupiah(p.price)}</p>
         </div>
         <button class="buy" data-id="${p.id}">Buy</button>
       `;
-      productListEl.appendChild(el);
+      productListEl.appendChild(box);
     });
 
-    productListEl.addEventListener("click", e=>{
+    productListEl.onclick = (e) => {
       const btn = e.target.closest(".buy");
-      if(!btn) return;
-      alert("Buy Clicked: ID " + btn.dataset.id);
-    });
+      if (!btn) return;
+
+      const id = parseInt(btn.dataset.id);
+      const product = products.find(p => p.id === id);
+      selectProduct(product);
+    };
   }
 
-  renderProducts();
+  /* ===========================
+     PILIH PRODUK
+  =========================== */
+  function selectProduct(product) {
+    currentOrder = {
+      id: "ORD" + Date.now(),
+      name: product.name,
+      price: product.price,
+      finalPrice: product.price,
+      discount: 0,
+      voucher: null,
+      date: new Date().toLocaleString("id-ID")
+    };
 
-  /* Drawer */
-  const drawer = document.createElement("div");
-  drawer.style.cssText = `
-    position:fixed; top:0; left:0; width:250px; height:100vh;
-    background:white; padding:20px;
-    transform:translateX(-300px);
-    transition:.25s; z-index:10000;
-    box-shadow:3px 0 20px rgba(0,0,0,.25);
-  `;
+    orderCardEl.classList.remove("empty");
+    orderCardEl.innerHTML = `
+      <h3>Detail Pesanan</h3>
+      <p><b>ID:</b> ${currentOrder.id}</p>
+      <p><b>Produk:</b> ${currentOrder.name}</p>
+      <p><b>Harga:</b> Rp ${formatRupiah(currentOrder.price)}</p>
 
-  drawer.innerHTML = `
-    <h2 style="color:#6d28d9;margin-bottom:15px;">Menu</h2>
+      <div class="field">
+        <label>Masukkan Voucher</label>
+        <input id="voucherInput" class="voucher-input" type="text" placeholder="Masukkan kode voucher...">
+        <button class="btn" id="applyVoucherBtn" style="width:100%;margin-top:6px;">Terapkan Voucher</button>
+      </div>
 
-    <button class="drawer-item" onclick="location.href='voucher.html'">Daftar Voucher</button>
-    <button class="drawer-item" onclick="location.href='informasi.html'">Informasi Toko</button>
-    <button class="drawer-item" onclick="location.href='riwayat.html'">Riwayat Transaksi</button>
+      <div id="voucherResult"></div>
 
-    <h3 class="dropdown-header" id="toggleSosmed">Sosial Media ▼</h3>
-    <div class="dropdown-sosmed">
-      <button class="drawer-item" onclick="window.open('https://instagram.com/','_blank')">Instagram</button>
-      <button class="drawer-item" onclick="window.open('https://tiktok.com/','_blank')">TikTok</button>
-      <button class="drawer-item" onclick="window.open('https://youtube.com/','_blank')">YouTube</button>
-      <button class="drawer-item" onclick="window.open('https://facebook.com/','_blank')">Facebook</button>
-    </div>
-  `;
+      <div class="field" style="margin-top:15px;">
+        <label>Upload Bukti Transfer</label>
+        <input type="file" id="proof">
+        <img id="preview" class="proof-preview" alt="preview"/>
+      </div>
 
-  document.body.appendChild(drawer);
+      <button class="btn success" id="sendProof" style="width:100%;margin-top:10px;">
+        Kirim Bukti
+      </button>
 
-  hamburger.onclick = () => {
-    const open = drawer.style.transform === "translateX(0px)";
-    drawer.style.transform = open ? "translateX(-300px)" : "translateX(0px)";
-  };
+      <a id="waMessage" target="_blank" rel="noopener noreferrer">
+        <button class="btn ghost" style="width:100%;margin-top:10px;">
+          WhatsApp Penjual
+        </button>
+      </a>
+    `;
 
-  /* Dropdown Sosmed Action */
-  const sosToggle = drawer.querySelector("#toggleSosmed");
-  const sosBox = drawer.querySelector(".dropdown-sosmed");
-  let sosOpen = false;
-
-  sosToggle.onclick = () => {
-    sosOpen = !sosOpen;
-    sosBox.style.maxHeight = sosOpen ? sosBox.scrollHeight + "px" : "0px";
-    sosToggle.innerHTML = sosOpen ?
-      "Sosial Media ▲" : "Sosial Media ▼";
-  };
-
-});
-
+    document.getElementById("applyVoucherBtn").onclick = applyVoucher;
     document.getElementById("proof").onchange = previewProof;
     document.getElementById("sendProof").onclick = sendProofToTelegram;
 
@@ -100,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ===========================
-     VOUCHER SYSTEM (voucher.js)
+     VOUCHER SYSTEM
   =========================== */
   function applyVoucher() {
     const codeEl = document.getElementById("voucherInput");
@@ -120,9 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (currentOrder.price < voucher.min) {
-      showPopupNotif(
-        `Minimal pembelian Rp ${formatRupiah(voucher.min)} untuk voucher ini`
-      );
+      showPopupNotif(`Minimal pembelian Rp ${formatRupiah(voucher.min)} untuk voucher ini`);
       return;
     }
 
@@ -203,7 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ===========================
-     WA SELLER LINK
+     WHATSAPP SELLER LINK
   =========================== */
   function updateWaSellerLink() {
     const wa = document.getElementById("waMessage");
@@ -219,76 +234,70 @@ document.addEventListener("DOMContentLoaded", () => {
       );
   }
 
-/* ===========================
-    DRAWER MENU (FIXED)
-=========================== */
+  /* ===========================
+     DRAWER MENU (FIXED + SOSMED DROPDOWN)
+  =========================== */
+  const drawer = document.createElement("div");
 
-const drawer = document.createElement("div");
+  drawer.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+    background: white;
+    padding: 20px;
+    transform: translateX(-300px);
+    transition: .25s;
+    z-index: 9999;
+    box-shadow: 3px 0 20px rgba(0,0,0,0.25);
+    overflow-y: auto;
+  `;
 
-drawer.style.cssText = `
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 250px;
-  height: 100vh;
-  background: white;
-  padding: 20px;
-  transform: translateX(-300px);
-  transition: .25s;
-  z-index: 9999;
-  box-shadow: 3px 0 20px rgba(0,0,0,0.25);
-  overflow-y: auto;
-`;
+  drawer.innerHTML = `
+    <h2 style="color:#6d28d9;margin-bottom:15px;">Menu</h2>
 
-drawer.innerHTML = `
-  <h2 style="color:#6d28d9;margin-bottom:15px;">Menu</h2>
+    <button class="drawer-item" onclick="location.href='voucher.html'">Daftar Voucher</button>
+    <button class="drawer-item" onclick="location.href='informasi.html'">Informasi Toko</button>
+    <button class="drawer-item" onclick="location.href='riwayat.html'">Riwayat Transaksi</button>
 
-  <button class="drawer-item" onclick="location.href='voucher.html'">Daftar Voucher</button>
-  <button class="drawer-item" onclick="location.href='informasi.html'">Informasi Toko</button>
-  <button class="drawer-item" onclick="location.href='riwayat.html'">Riwayat Transaksi</button>
+    <h3 class="dropdown-header" id="toggleSosmed">Sosial Media ▼</h3>
+    <div class="dropdown-sosmed">
+      <button class="drawer-item" onclick="window.open('https://instagram.com/','_blank')">Instagram</button>
+      <button class="drawer-item" onclick="window.open('https://tiktok.com/','_blank')">TikTok</button>
+      <button class="drawer-item" onclick="window.open('https://youtube.com/','_blank')">YouTube</button>
+      <button class="drawer-item" onclick="window.open('https://facebook.com/','_blank')">Facebook</button>
+    </div>
+  `;
 
-  <h3 class="dropdown-header" id="toggleSosmed">Sosial Media ▼</h3>
-<div class="dropdown-sosmed">
-  <button class="drawer-item" onclick="window.open('https://instagram.com/USERNAME','_blank')">
-    Instagram
-  </button>
-  <button class="drawer-item" onclick="window.open('https://tiktok.com/@USERNAME','_blank')">
-    TikTok
-  </button>
-  <button class="drawer-item" onclick="window.open('https://youtube.com/@USERNAME','_blank')">
-    YouTube
-  </button>
-  <button class="drawer-item" onclick="window.open('https://facebook.com/USERNAME','_blank')">
-    Facebook
-  </button>
-</div>
-`;
+  document.body.appendChild(drawer);
 
-document.body.appendChild(drawer);
+  hamburger.onclick = () => {
+    const isOpen = drawer.style.transform === "translateX(0px)";
+    drawer.style.transform = isOpen ? "translateX(-300px)" : "translateX(0px)";
+  };
 
-hamburger.onclick = () => {
-        const sosmedToggle = drawer.querySelector("#toggleSosmed");
-const sosmedContent = drawer.querySelector(".dropdown-sosmed");
+  // === Sosial Media Dropdown ===
+  const sosmedToggle = drawer.querySelector("#toggleSosmed");
+  const sosmedContent = drawer.querySelector(".dropdown-sosmed");
 
-sosmedContent.style.maxHeight = "0px";
-sosmedContent.style.overflow = "hidden";
-sosmedContent.style.transition = "max-height .4s ease";
+  sosmedContent.style.maxHeight = "0px";
+  sosmedContent.style.overflow = "hidden";
+  sosmedContent.style.transition = "max-height .4s ease";
 
-let sosmedOpen = false;
+  let sosmedOpen = false;
 
-sosmedToggle.onclick = () => {
-  sosmedOpen = !sosmedOpen;
-  sosmedContent.style.maxHeight = sosmedOpen ? sosmedContent.scrollHeight + "px" : "0px";
-  sosmedToggle.innerHTML = sosmedOpen ? "Sosial Media ▲" : "Sosial Media ▼";
-  const isOpen = drawer.style.transform === "translateX(0px)";
-  drawer.style.transform = isOpen ? "translateX(-300px)" : "translateX(0px)";
-};
+  sosmedToggle.onclick = () => {
+    sosmedOpen = !sosmedOpen;
+    sosmedContent.style.maxHeight = sosmedOpen ? sosmedContent.scrollHeight + "px" : "0px";
+    sosmedToggle.innerHTML = sosmedOpen ? "Sosial Media ▲" : "Sosial Media ▼";
+  };
 
-document.addEventListener("click", (e) => {
-  if (!drawer.contains(e.target) && e.target !== hamburger) {
-    drawer.style.transform = "translateX(-300px)";
-  }
-});
+  document.addEventListener("click", (e) => {
+    if (!drawer.contains(e.target) && e.target !== hamburger) {
+      drawer.style.transform = "translateX(-300px)";
+    }
+  });
 
   /* ===========================
      WA CUSTOMER SERVICE
@@ -308,7 +317,7 @@ document.addEventListener("click", (e) => {
     encodeURIComponent("Halo admin, saya butuh bantuan Customer Service.");
 
   /* ===========================
-     WA INFO POPUP (selalu muncul)
+     WA INFO (selalu muncul)
   =========================== */
   waInfo.classList.remove("hidden");
 
@@ -336,7 +345,7 @@ document.addEventListener("click", (e) => {
   };
 
   /* ===========================
-     START RENDER
+     START
   =========================== */
   renderProducts();
 });
