@@ -149,3 +149,17 @@ input[type=file]{ padding:6px; }
 #applyVoucherBtn:hover {
   background: #5b21b6;
 }
+.dropdown-header {
+  font-size: 1.1rem;
+  color: #6d28d9;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+}
+
+.dropdown-sosmed .drawer-item {
+  margin-bottom: 10px;
+  }
+  
