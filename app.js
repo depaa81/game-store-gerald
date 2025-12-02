@@ -264,28 +264,39 @@ drawer.innerHTML = `
   <button class="drawer-item" onclick="location.href='informasi.html'">Informasi Toko</button>
   <button class="drawer-item" onclick="location.href='riwayat.html'">Riwayat Transaksi</button>
 
-  <h3 style="margin-top:20px;color:#6d28d9;">Sosial Media</h3>
-
+  <h3 class="dropdown-header" id="toggleSosmed">Sosial Media ▼</h3>
+<div class="dropdown-sosmed">
   <button class="drawer-item" onclick="window.open('https://instagram.com/USERNAME','_blank')">
     Instagram
   </button>
-
   <button class="drawer-item" onclick="window.open('https://tiktok.com/@USERNAME','_blank')">
     TikTok
   </button>
-
   <button class="drawer-item" onclick="window.open('https://youtube.com/@USERNAME','_blank')">
     YouTube
   </button>
-
   <button class="drawer-item" onclick="window.open('https://facebook.com/USERNAME','_blank')">
     Facebook
   </button>
+</div>
 `;
 
 document.body.appendChild(drawer);
 
 hamburger.onclick = () => {
+        const sosmedToggle = drawer.querySelector("#toggleSosmed");
+const sosmedContent = drawer.querySelector(".dropdown-sosmed");
+
+sosmedContent.style.maxHeight = "0px";
+sosmedContent.style.overflow = "hidden";
+sosmedContent.style.transition = "max-height .4s ease";
+
+let sosmedOpen = false;
+
+sosmedToggle.onclick = () => {
+  sosmedOpen = !sosmedOpen;
+  sosmedContent.style.maxHeight = sosmedOpen ? sosmedContent.scrollHeight + "px" : "0px";
+  sosmedToggle.innerHTML = sosmedOpen ? "Sosial Media ▲" : "Sosial Media ▼";
   const isOpen = drawer.style.transform === "translateX(0px)";
   drawer.style.transform = isOpen ? "translateX(-300px)" : "translateX(0px)";
 };
