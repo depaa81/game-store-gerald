@@ -13,7 +13,18 @@ document.addEventListener("DOMContentLoaded", () => {
     { id: 3, name: "ROBLOX AKUN FISH IT GHOSTFIN ROD (SPEK KE WA CS)", price: 65000 },
     { id: 4, name: "ROBLOX FISH IT SC TUMBAL", price: 10000 },
     { id: 5, name: "ROBLOX FISH IT SC ACIENT LOCHNESS 290TON", price: 85000 },
-    { id: 6, name: "ROBLOX FISH IT JOKI AFK 1H", price: 5000 },
+    { id: 6, name: "ROBLOX FISH IT JOKI AFK 1D", price: 7000 },
+    { id: 7, name: "ROBLOX FISH IT JOKI GHOSTFIN ROD (WAJIB PUNYA HAZMAT ROD/ARES ROD)", price: 80000 },        
+    { id: 8, name: "ROBLOX FISH IT JOKI ELEMENT ROD (WAJIB PUNYA GHOSTFIN)", price: 100000 },
+    { id: 9, name: "ROBLOX FISH IT JOKI ARES ROD", price: 35000 },
+    { id: 10, name: "ROBLOX FISH IT JOKI HAZMAT ROD", price: 15000 },
+    { id: 11, name: "ROBLOX FISH IT JOKI ANGLER ROD", price: 50000 },
+    { id: 12, name: "ROBLOX FISH IT JOKI ROYAL BAIT", price: 10000 },
+    { id: 13, name: "ROBLOX FISH IT JOKI CORRUPT BAIT", price: 15000 },
+    { id: 14, name: "ROBLOX FISH IT JOKI AETHER BAIT", price: 23000 },
+    { id: 15, name: "ROBLOX FISH IT JOKI SINGULARITY BAIT", price: 50000 },
+    { id: 16, name: "ROBLOX FISH IT JOKI BOART MINI YATCH", price: 10000 },
+    { id: 17, name: "ROBLOX FISH IT JOKI MAP SECRED TEMPLE", price: 8000 },
   ];
 
   function formatRupiah(x) {
