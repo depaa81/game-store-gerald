@@ -266,7 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
   `;
 
   drawer.innerHTML = `
-    <h2 style="color:#6d28d9;margin-bottom:15px;">Menu</h2>
+    <h2 style="color:#0d6efd;margin-bottom:15px;">Menu</h2>
 
     <button class="drawer-item" onclick="location.href='voucher.html'">Daftar Voucher</button>
     <button class="drawer-item" onclick="location.href='informasi.html'">Informasi Toko</button>
