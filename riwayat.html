@@ -2,57 +2,71 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Riwayat Transaksi - Gerald Market</title>
+<title>Riwayat Transaksi</title>
 
 <style>
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  background: #f8f8f8;
-}
-
-.topbar {
-  background: #0d6efd;
-  color: white;
-  padding: 14px;
-  display: flex;
-  align-items: center;
-}
-
-.backBtn {
-  font-size: 20px;
-  padding: 6px 10px;
-  background: white;
-  color: #0d6efd;
-  border: none;
-  border-radius: 6px;
-  margin-right: 12px;
-  cursor: pointer;
-}
-
-.container {
-  padding: 20px;
-}
-
-.empty {
-  text-align: center;
-  margin-top: 50px;
-  color: #0d6efd;
-}
+body { font-family: Arial, sans-serif; background: #e9f1ff; margin: 0; }
+.topbar { background:#0d6efd; padding:15px; color:white; display:flex; align-items:center; }
+.backBtn { background:white;color:#0d6efd;padding:8px;border:0;border-radius:6px;margin-right:10px;font-weight:bold; }
+.container { padding:15px; }
+.card { background:white;padding:12px;border-radius:10px;margin-bottom:12px;border:1px solid #cde0ff; }
+h4{margin:2px 0;color:#0d6efd;}
+.deleteBtn { width:100%;padding:10px;background:#dc3545;color:white;border:0;border-radius:10px;margin-top:10px; }
+.empty { color:#0d6efd;text-align:center;margin-top:30px; }
 </style>
 </head>
 
 <body>
 
 <div class="topbar">
-  <button class="backBtn" onclick="window.location.href='index.html'">←</button>
-  <h2>Riwayat Transaksi</h2>
+ <button class="backBtn" onclick="location.href='index.html'">←</button>
+ <h2>Riwayat Transaksi</h2>
 </div>
 
 <div class="container">
-  <p class="empty">Belum ada riwayat transaksi.</p>
+ <p class="empty" id="emptyMsg">Belum ada riwayat transaksi.</p>
+ <div id="historyList"></div>
+ <button class="deleteBtn" id="clearBtn" style="display:none;">Hapus Semua</button>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+ let history = JSON.parse(localStorage.getItem("orderHistory")) || [];
+ const list = document.getElementById("historyList");
+ const empty = document.getElementById("emptyMsg");
+ const clearBtn = document.getElementById("clearBtn");
+
+ if(history.length === 0){
+   empty.style.display="block";
+   return;
+ }
+
+ empty.style.display="none";
+ clearBtn.style.display="block";
+
+ history.reverse().forEach(o=>{
+  const card=document.createElement("div");
+  card.className="card";
+  card.innerHTML=`
+    <h4>${o.name}</h4>
+    <p><b>ID:</b> ${o.id}</p>
+    <p><b>Total:</b> Rp ${o.finalPrice.toLocaleString("id-ID")}</p>
+    <p><b>Tanggal:</b> ${o.date}</p>
+    <p><b>Voucher:</b> ${o.voucher ? o.voucher.code : "Tidak ada"}</p>
+  `;
+  list.appendChild(card);
+ });
+
+ clearBtn.onclick = () =>{
+   if(confirm("Hapus semua riwayat?")){
+    localStorage.removeItem("orderHistory");
+    location.reload();
+   }
+ };
+
+});
+</script>
 
 </body>
 </html>
