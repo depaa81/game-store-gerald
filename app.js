@@ -179,6 +179,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ===========================
+     SIMPAN RIWAYAT (BARU)
+  =========================== */
+  function saveToHistory() {
+    let history = JSON.parse(localStorage.getItem("orderHistory")) || [];
+    history.push(currentOrder);
+    localStorage.setItem("orderHistory", JSON.stringify(history));
+  }
+
+  /* ===========================
      KIRIM KE TELEGRAM
   =========================== */
   async function sendProofToTelegram() {
@@ -205,7 +214,10 @@ document.addEventListener("DOMContentLoaded", () => {
         method: "POST", body: form
       });
 
+      saveToHistory(); // <-- Tambahan Penting!
+
       showPopupNotif("Bukti terkirim ke Telegram!");
+
     } catch (err) {
       alert("Gagal mengirim ke Telegram.");
       console.error(err);
@@ -246,7 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ===========================
-     DRAWER MENU (FIXED + SOSMED DROPDOWN)
+     DRAWER MENU + SOSMED
   =========================== */
   const drawer = document.createElement("div");
 
@@ -288,7 +300,6 @@ document.addEventListener("DOMContentLoaded", () => {
     drawer.style.transform = isOpen ? "translateX(-300px)" : "translateX(0px)";
   };
 
-  // === Sosial Media Dropdown ===
   const sosmedToggle = drawer.querySelector("#toggleSosmed");
   const sosmedContent = drawer.querySelector(".dropdown-sosmed");
 
@@ -328,7 +339,7 @@ document.addEventListener("DOMContentLoaded", () => {
     encodeURIComponent("Halo admin, saya butuh bantuan Customer Service.");
 
   /* ===========================
-     WA INFO (selalu muncul)
+     WA INFO POPUP
   =========================== */
   waInfo.classList.remove("hidden");
 
