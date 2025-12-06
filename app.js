@@ -25,7 +25,8 @@ document.addEventListener("DOMContentLoaded", () => {
     { id: 15, name: "ROBLOX FISH IT JOKI SINGULARITY BAIT", price: 50000 },
     { id: 16, name: "ROBLOX FISH IT JOKI BOART MINI YATCH", price: 10000 },
     { id: 17, name: "ROBLOX FISH IT JOKI MAP SECRED TEMPLE", price: 8000 },
-    { id: 18, name: "ROBLOX FISH IT JOKI FLORAL BAIT", price: 45000 }, 
+    { id: 18, name: "ROBLOX FISH IT JOKI FLORAL BAIT", price: 45000 },
+    { id: 19, name: "ROBLOX FISH IT IKAN LABA-LABA", price: 15000 },
   ];
 
   function formatRupiah(x) {
