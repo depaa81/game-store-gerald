@@ -286,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <button class="drawer-item" onclick="location.href='informasi.html'">Informasi Toko</button>
     <button class="drawer-item" onclick="location.href='riwayat.html'">Riwayat Transaksi</button>
 
-    <h3 class="dropdown-header" id="toggleSosmed">Sosial Media â–¼</h3>
+    <h3 class="dropdown-header" id="toggleSosmed">Sosial Media ▼</h3>
     <div class="dropdown-sosmed">
       <button class="drawer-item" onclick="window.open('https://instagram.com/','_blank')">Instagram</button>
       <button class="drawer-item" onclick="window.open('https://tiktok.com/','_blank')">TikTok</button>
