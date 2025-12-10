@@ -444,67 +444,72 @@ document.addEventListener("DOMContentLoaded", () => {
 
           /* ===========================
      DRAWER MENU + SOSMED
-  =========================== */
-  const drawer = document.createElement("div");
+=========================== */
 
-  drawer.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 250px;
-    height: 100vh;
-    background: white;
-    padding: 20px;
-    transform: translateX(-300px);
-    transition: .25s;
-    z-index: 9999;
-    box-shadow: 3px 0 20px rgba(0,0,0,0.25);
-    overflow-y: auto;
-  `;
+const hamburger = document.getElementById("hamburgerBtn");  // <-- FIX
 
-  drawer.innerHTML = `
-    <h2 style="color:#0d6efd;margin-bottom:15px;">Menu</h2>
+const drawer = document.createElement("div");
 
-    <button class="drawer-item" onclick="location.href='voucher.html'">Daftar Voucher</button>
-    <button class="drawer-item" onclick="location.href='informasi.html'">Informasi Toko</button>
-    <button class="drawer-item" onclick="location.href='riwayat.html'">Riwayat Transaksi</button>
+drawer.style.cssText = `
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  background: white;
+  padding: 20px;
+  transform: translateX(-300px);
+  transition: .25s;
+  z-index: 9999;
+  box-shadow: 3px 0 20px rgba(0,0,0,0.25);
+  overflow-y: auto;
+`;
 
-    <h3 class="dropdown-header" id="toggleSosmed">Sosial Media â–¼</h3>
-    <div class="dropdown-sosmed">
-      <button class="drawer-item" onclick="window.open('https://instagram.com/','_blank')">Instagram</button>
-      <button class="drawer-item" onclick="window.open('https://tiktok.com/','_blank')">TikTok</button>
-      <button class="drawer-item" onclick="window.open('https://youtube.com/','_blank')">YouTube</button>
-      <button class="drawer-item" onclick="window.open('https://facebook.com/','_blank')">Facebook</button>
-    </div>
-  `;
+drawer.innerHTML = `
+  <h2 style="color:#0d6efd;margin-bottom:15px;">Menu</h2>
 
-  document.body.appendChild(drawer);
+  <button class="drawer-item" onclick="location.href='voucher.html'">Daftar Voucher</button>
+  <button class="drawer-item" onclick="location.href='informasi.html'">Informasi Toko</button>
+  <button class="drawer-item" onclick="location.href='riwayat.html'">Riwayat Transaksi</button>
 
-  hamburger.onclick = () => {
-    const isOpen = drawer.style.transform === "translateX(0px)";
-    drawer.style.transform = isOpen ? "translateX(-300px)" : "translateX(0px)";
-  };
+  <h3 class="dropdown-header" id="toggleSosmed">Sosial Media ▼</h3>
 
-  const sosmedToggle = drawer.querySelector("#toggleSosmed");
-  const sosmedContent = drawer.querySelector(".dropdown-sosmed");
+  <div class="dropdown-sosmed">
+    <button class="drawer-item" onclick="window.open('https://instagram.com/','_blank')">Instagram</button>
+    <button class="drawer-item" onclick="window.open('https://tiktok.com/','_blank')">TikTok</button>
+    <button class="drawer-item" onclick="window.open('https://youtube.com/','_blank')">YouTube</button>
+    <button class="drawer-item" onclick="window.open('https://facebook.com/','_blank')">Facebook</button>
+  </div>
+`;
 
-  sosmedContent.style.maxHeight = "0px";
-  sosmedContent.style.overflow = "hidden";
-  sosmedContent.style.transition = "max-height .4s ease";
+document.body.appendChild(drawer);
 
-  let sosmedOpen = false;
+hamburger.onclick = () => {
+  const isOpen = drawer.style.transform === "translateX(0px)";
+  drawer.style.transform = isOpen ? "translateX(-300px)" : "translateX(0px)";
+};
 
-  sosmedToggle.onclick = () => {
-    sosmedOpen = !sosmedOpen;
-    sosmedContent.style.maxHeight = sosmedOpen ? sosmedContent.scrollHeight + "px" : "0px";
-    sosmedToggle.innerHTML = sosmedOpen ? "Sosial Media â–²" : "Sosial Media â–¼";
-  };
+const sosmedToggle = drawer.querySelector("#toggleSosmed");
+const sosmedContent = drawer.querySelector(".dropdown-sosmed");
 
-  document.addEventListener("click", (e) => {
-    if (!drawer.contains(e.target) && e.target !== hamburger) {
-      drawer.style.transform = "translateX(-300px)";
-    }
-  });
+sosmedContent.style.maxHeight = "0px";
+sosmedContent.style.overflow = "hidden";
+sosmedContent.style.transition = "max-height .4s ease";
+
+let sosmedOpen = false;
+
+sosmedToggle.onclick = () => {
+  sosmedOpen = !sosmedOpen;
+  sosmedContent.style.maxHeight = sosmedOpen ? sosmedContent.scrollHeight + "px" : "0px";
+  sosmedToggle.innerHTML = sosmedOpen ? "Sosial Media ▲" : "Sosial Media ▼";
+};
+
+document.addEventListener("click", (e) => {
+  if (!drawer.contains(e.target) && e.target !== hamburger) {
+    drawer.style.transform = "translateX(-300px)";
+  }
+});
+
         
 
   /* ===============================
