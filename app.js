@@ -442,6 +442,73 @@ document.addEventListener("DOMContentLoaded", () => {
   cartBtn.onclick = openCartPanel;
   document.body.appendChild(cartBtn);
 
+        /* ===============================
+   DRAWER / HAMBURGER MENU
+=============================== */
+
+const hamburgerBtn = document.getElementById("hamburgerBtn");
+const waPopup = document.getElementById("waInfoPopup");
+const closeWaInfo = document.getElementById("closeWaInfo");
+const waCSbtn = document.getElementById("waFloatingBtn");
+const waCSpopup = document.getElementById("waPopup");
+
+// === MENU SLIDE (drawer) ===
+let drawerOpen = false;
+
+// buat drawer elemen
+const drawer = document.createElement("div");
+drawer.id = "drawerMenu";
+drawer.style = `
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 220px;
+  height: 100%;
+  background:#fff;
+  box-shadow: 2px 0 12px rgba(0,0,0,.18);
+  transform: translateX(-100%);
+  transition: .25s;
+  z-index: 99999;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+`;
+drawer.innerHTML = `
+  <h3>Menu</h3>
+  <button class="btn" id="menuHome">Home</button>
+  <button class="btn" id="menuCS">Customer Service</button>
+  <button class="btn" id="menuPayment">Nomor Pembayaran</button>
+`;
+document.body.appendChild(drawer);
+
+// buka / tutup drawer saat tombol ☰ ditekan
+hamburgerBtn.addEventListener("click", () => {
+  drawerOpen = !drawerOpen;
+  drawer.style.transform = drawerOpen ? "translateX(0)" : "translateX(-100%)";
+});
+
+
+/* MENU ACTIONS */
+document.getElementById("menuHome").onclick = () => {
+  drawer.style.transform = "translateX(-100%)";
+  drawerOpen = false;
+  window.scrollTo(0,0);
+};
+
+document.getElementById("menuCS").onclick = () => {
+  drawer.style.transform = "translateX(-100%)";
+  drawerOpen = false;
+  waCSpopup.classList.remove("hidden");
+};
+
+document.getElementById("menuPayment").onclick = () => {
+  drawer.style.transform = "translateX(-100%)";
+  drawerOpen = false;
+  document.getElementById("paymentModal").classList.remove("hidden");
+};
+        
+
   /* ===============================
      START
   =============================== */
