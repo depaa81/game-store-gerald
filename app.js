@@ -54,10 +54,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const openPay = document.getElementById("openPaymentInfo");
   const paymentModal = document.getElementById("paymentModal");
 
+  let currentOrder = null;
+
   /* expose for inline onclick (qty buttons) */
   window.changeQtyItem = changeQtyItem;
-
-  let currentOrder = null;
 
   /* ===============================
      HELPERS
@@ -82,7 +82,10 @@ document.addEventListener("DOMContentLoaded", () => {
      RENDER PRODUCTS
   =============================== */
   function renderProducts() {
-    if (!productListEl) return console.error("productList element not found");
+    if (!productListEl) {
+      console.error("productList element not found");
+      return;
+    }
     productListEl.innerHTML = "";
 
     products.forEach(p => {
@@ -106,8 +109,9 @@ document.addEventListener("DOMContentLoaded", () => {
       productListEl.appendChild(box);
     });
 
-    // product click handling
-    productListEl.addEventListener("click", (e) => {
+    // ensure not to attach multiple times
+    productListEl.removeEventListener("_shop_click", productListEl._shop_handler);
+    const handler = (e) => {
       const btn = e.target.closest("button");
       if (!btn) return;
       if (btn.classList.contains("buy")) {
@@ -115,7 +119,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const prod = products.find(x => x.id === id);
         if (prod) selectProduct(prod);
       }
-    });
+    };
+    productListEl.addEventListener("click", handler);
+    productListEl._shop_handler = handler;
   }
 
   /* ===============================
@@ -207,20 +213,24 @@ document.addEventListener("DOMContentLoaded", () => {
       </a>
     `;
 
-    document.getElementById("applyVoucherBtn").onclick = applyVoucherCart;
-    document.getElementById("proof").onchange = previewProof;
-    document.getElementById("sendProofCart").onclick = sendProofToTelegramCart;
+    const applyBtn = document.getElementById("applyVoucherBtn");
+    const proofEl = document.getElementById("proof");
+    const sendBtn = document.getElementById("sendProofCart");
+
+    if (applyBtn) applyBtn.onclick = applyVoucherCart;
+    if (proofEl) proofEl.onchange = previewProof;
+    if (sendBtn) sendBtn.onclick = sendProofToTelegramCart;
 
     updateWaCartLink();
   }
 
   function applyVoucherCart() {
-    const code = document.getElementById("voucherInput").value.trim().toUpperCase();
-    const voucher = VOUCHERS.find(v => v.code === code);
+    const code = (document.getElementById("voucherInput") || {}).value || "";
+    const voucher = VOUCHERS.find(v => v.code === code.trim().toUpperCase());
     const resultEl = document.getElementById("voucherResult");
 
     if (!voucher) {
-      resultEl.innerHTML = "<p style='color:red;'>Voucher tidak valid.</p>";
+      if (resultEl) resultEl.innerHTML = "<p style='color:red;'>Voucher tidak valid.</p>";
       currentOrder.finalPrice = currentOrder.totalBefore;
       currentOrder.discount = 0;
       updateWaCartLink();
@@ -234,7 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
     currentOrder.discount = pot;
     currentOrder.finalPrice = total;
 
-    resultEl.innerHTML = `
+    if (resultEl) resultEl.innerHTML = `
       <p><b>Voucher:</b> ${voucher.code}</p>
       <p>Potongan: Rp ${formatRupiah(pot)}</p>
       <p><b>Total Bayar: Rp ${formatRupiah(total)}</b></p>
@@ -269,7 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateWaCartLink() {
     const wa = document.getElementById("waMessage");
-    if (!wa) return;
+    if (!wa || !currentOrder) return;
     let text = "Halo kak, saya ingin checkout keranjang.\n\n";
     currentOrder.items.forEach(i => { text += `• ${i.name} x${i.qty}\n`; });
     text += `\nTotal Bayar: Rp ${formatRupiah(currentOrder.finalPrice)}`;
@@ -290,6 +300,7 @@ document.addEventListener("DOMContentLoaded", () => {
       date: new Date().toLocaleString("id-ID")
     };
 
+    if (!orderCardEl) return;
     orderCardEl.classList.remove("empty");
     orderCardEl.innerHTML = `
       <h3>Detail Pesanan</h3>
@@ -318,20 +329,24 @@ document.addEventListener("DOMContentLoaded", () => {
       </a>
     `;
 
-    document.getElementById("applyVoucherBtn").onclick = applyVoucherSingle;
-    document.getElementById("proof").onchange = previewProof;
-    document.getElementById("sendProof").onclick = sendProofToTelegramSingle;
+    const applyBtn = document.getElementById("applyVoucherBtn");
+    const proofEl = document.getElementById("proof");
+    const sendBtn = document.getElementById("sendProof");
+
+    if (applyBtn) applyBtn.onclick = applyVoucherSingle;
+    if (proofEl) proofEl.onchange = previewProof;
+    if (sendBtn) sendBtn.onclick = sendProofToTelegramSingle;
 
     updateWaLinkSingle();
   }
 
   function applyVoucherSingle() {
-    const code = document.getElementById("voucherInput").value.trim().toUpperCase();
-    const v = VOUCHERS.find(x => x.code === code);
+    const code = (document.getElementById("voucherInput") || {}).value || "";
+    const v = VOUCHERS.find(x => x.code === code.trim().toUpperCase());
     const result = document.getElementById("voucherResult");
 
     if (!v) {
-      result.innerHTML = `<p style="color:red;">Voucher tidak valid</p>`;
+      if (result) result.innerHTML = `<p style="color:red;">Voucher tidak valid</p>`;
       currentOrder.finalPrice = currentOrder.price;
       currentOrder.discount = 0;
       return;
@@ -349,7 +364,7 @@ document.addEventListener("DOMContentLoaded", () => {
     currentOrder.discount = pot;
     currentOrder.finalPrice = total;
 
-    result.innerHTML = `
+    if (result) result.innerHTML = `
       <p><b>Voucher:</b> ${v.code}</p>
       <p>Potongan: Rp ${formatRupiah(pot)}</p>
       <p><b>Total Akhir: Rp ${formatRupiah(total)}</b></p>
@@ -391,7 +406,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateWaLinkSingle() {
     const wa = document.getElementById("waMessage");
-    if (!wa) return;
+    if (!wa || !currentOrder) return;
     wa.href =
       "https://wa.me/62856935420220?text=" +
       encodeURIComponent(
@@ -407,6 +422,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (waBtn && waPopup && waCSLink) {
     waBtn.onclick = () => {
       waPopup.classList.remove("hidden");
+      waPopup.setAttribute("aria-hidden","false");
       waCSLink.href =
         "https://wa.me/62856935420220?text=" +
         encodeURIComponent("Halo kak, saya butuh bantuan.");
@@ -415,6 +431,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("click", (e) => {
       if (!waPopup.contains(e.target) && e.target !== waBtn) {
         waPopup.classList.add("hidden");
+        waPopup.setAttribute("aria-hidden","true");
       }
     });
   }
@@ -423,6 +440,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (closeWaInfo && waInfo) {
     closeWaInfo.onclick = () => {
       waInfo.classList.add("hidden");
+      waInfo.setAttribute("aria-hidden","true");
     };
   }
 
@@ -430,10 +448,14 @@ document.addEventListener("DOMContentLoaded", () => {
   if (openPay && paymentModal) {
     openPay.onclick = () => {
       paymentModal.classList.remove("hidden");
+      paymentModal.setAttribute("aria-hidden","false");
     };
 
     paymentModal.onclick = (e) => {
-      if (e.target === paymentModal) paymentModal.classList.add("hidden");
+      if (e.target === paymentModal) {
+        paymentModal.classList.add("hidden");
+        paymentModal.setAttribute("aria-hidden","true");
+      }
     };
   }
 
