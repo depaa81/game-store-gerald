@@ -50,7 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
      ============  K E R A N J A N G   S Y S T E M  ============
      ========================================================== */
 
-  // === Tambahkan ke keranjang ===
   function addToCart(product) {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     let find = cart.findIndex(p => p.id === product.id);
@@ -67,17 +66,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     localStorage.setItem("cart", JSON.stringify(cart));
-    showPopupNotif("Berhasil ditambahkan ke keranjang!");
+    showPopupNotif("Berhasil masuk keranjang!");
   }
 
-  // === Tombol keranjang di header ===
   const cartBtn = document.createElement("button");
   cartBtn.innerText = "Keranjang";
   cartBtn.className = "btn";
   cartBtn.style = "position:fixed;bottom:90px;right:15px;z-index:9999;";
   cartBtn.onclick = () => window.location.href = "keranjang.html";
   document.body.appendChild(cartBtn);
-
 
   /* ===========================
      RENDER PRODUK
@@ -103,17 +100,14 @@ document.addEventListener("DOMContentLoaded", () => {
       productListEl.appendChild(box);
     });
 
-    // BUY → buka detail pesanan
     productListEl.onclick = (e) => {
       const btn = e.target.closest(".buy");
       if (!btn || btn.classList.contains("cartAdd")) return;
-
       const id = parseInt(btn.dataset.id);
       const product = products.find(p => p.id === id);
       selectProduct(product);
     };
 
-    // +Keranjang → addToCart
     productListEl.addEventListener("click", (e) => {
       const btn = e.target.closest(".cartAdd");
       if (!btn) return;
@@ -122,7 +116,6 @@ document.addEventListener("DOMContentLoaded", () => {
       addToCart(product);
     });
   }
-
 
   /* ===========================
      PILIH PRODUK (BUY)
@@ -177,22 +170,244 @@ document.addEventListener("DOMContentLoaded", () => {
     updateWaSellerLink();
   }
 
+  /* ===========================
+     VOUCHER SYSTEM
+  =========================== */
+  function applyVoucher() {
+    const codeEl = document.getElementById("voucherInput");
+    const resultEl = document.getElementById("voucherResult");
 
-  /* =======================================================
-     —————— BAGIAN DI BAWAH TIDAK DIUBAH (FUNGSI LAMA) ——————
-     ======================================================= */
+    const code = codeEl.value.trim().toUpperCase();
+    const voucher = VOUCHERS.find(v => v.code === code);
 
-  // Voucher system
-  function applyVoucher() { ... }  // (← tetap sama seperti file asli)
+    if (!voucher) {
+      resultEl.innerHTML = "";
+      currentOrder.finalPrice = currentOrder.price;
+      currentOrder.discount = 0;
+      currentOrder.voucher = null;
+      showPopupNotif("Kode voucher tidak ditemukan!");
+      updateWaSellerLink();
+      return;
+    }
 
-  function previewProof(e) { ... } // tetap sama
-  function saveToHistory() { ... } // tetap sama
-  async function sendProofToTelegram() { ... } // tetap sama
-  function showPopupNotif(text) { ... } // tetap sama
-  function updateWaSellerLink() { ... } // tetap sama
+    if (currentOrder.price < voucher.min) {
+      showPopupNotif(`Minimal pembelian Rp ${formatRupiah(voucher.min)} untuk voucher ini`);
+      return;
+    }
 
-  // Drawer, WA Popup, Modal pembayaran, dsb
-  // (seluruh blok kode lama tetap tidak diubah)
+    const pot = Math.round(currentOrder.price * voucher.cut);
+    const total = currentOrder.price - pot;
+
+    currentOrder.discount = pot;
+    currentOrder.finalPrice = total;
+    currentOrder.voucher = voucher;
+
+    resultEl.innerHTML = `
+      <p><b>Voucher:</b> ${voucher.code}</p>
+      <p>Potongan: Rp ${formatRupiah(pot)}</p>
+      <p><b>Total Bayar: Rp ${formatRupiah(total)}</b></p>
+    `;
+
+    showPopupNotif("Voucher berhasil diterapkan!");
+    updateWaSellerLink();
+  }
+
+  /* ===========================
+     PREVIEW GAMBAR
+  =========================== */
+  function previewProof(e) {
+    const file = e.target.files[0];
+    const img = document.getElementById("preview");
+    img.src = URL.createObjectURL(file);
+  }
+
+  /* ===========================
+     SIMPAN RIWAYAT
+  =========================== */
+  function saveToHistory() {
+    let history = JSON.parse(localStorage.getItem("orderHistory")) || [];
+    history.push(currentOrder);
+    localStorage.setItem("orderHistory", JSON.stringify(history));
+  }
+
+  /* ===========================
+     KIRIM BUKTI KE TELEGRAM
+  =========================== */
+  async function sendProofToTelegram() {
+    if (!currentOrder) return alert("Tidak ada pesanan.");
+
+    const fileEl = document.getElementById("proof");
+    if (!fileEl.files.length) return alert("Upload bukti dulu.");
+
+    try {
+      const form = new FormData();
+      form.append("chat_id", CHAT_ID);
+      form.append("photo", fileEl.files[0]);
+      form.append("caption",
+        `📦 *BUKTI TRANSFER*\n\n` +
+        `🆔 ID: ${currentOrder.id}\n` +
+        `📌 Produk: ${currentOrder.name}\n` +
+        `💰 Total Bayar: Rp ${formatRupiah(currentOrder.finalPrice)}\n` +
+        `🏷 Voucher: ${currentOrder.voucher ? currentOrder.voucher.code : "Tidak ada"}\n` +
+        `➖ Potongan: Rp ${formatRupiah(currentOrder.discount)}\n\n` +
+        `📅 ${currentOrder.date}`
+      );
+
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+        method: "POST", body: form
+      });
+
+      saveToHistory();
+
+      showPopupNotif("Bukti terkirim ke Telegram!");
+
+    } catch (err) {
+      alert("Gagal mengirim ke Telegram.");
+      console.error(err);
+    }
+  }
+
+  /* ===========================
+     POPUP NOTIF
+  =========================== */
+  function showPopupNotif(text) {
+    const box = document.createElement("div");
+    box.className = "popup-notif";
+    box.innerText = text;
+    document.body.appendChild(box);
+
+    setTimeout(() => box.classList.add("show"), 20);
+    setTimeout(() => {
+      box.classList.remove("show");
+      setTimeout(() => box.remove(), 250);
+    }, 2500);
+  }
+
+  /* ===========================
+     WHATSAPP
+  =========================== */
+  function updateWaSellerLink() {
+    const wa = document.getElementById("waMessage");
+    if (!wa) return;
+
+    wa.href =
+      "https://wa.me/62856935420220?text=" +
+      encodeURIComponent(
+        `Halo kak, saya sudah melakukan pemesanan.\n\n` +
+        `ID Pesanan: ${currentOrder.id}\n` +
+        `Produk: ${currentOrder.name}\n` +
+        `Total Bayar: Rp ${formatRupiah(currentOrder.finalPrice)}`
+      );
+  }
+
+  /* ===========================
+     DRAWER MENU
+  =========================== */
+  const drawer = document.createElement("div");
+
+  drawer.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+    background: white;
+    padding: 20px;
+    transform: translateX(-300px);
+    transition: .25s;
+    z-index: 9999;
+    box-shadow: 3px 0 20px rgba(0,0,0,0.25);
+    overflow-y: auto;
+  `;
+
+  drawer.innerHTML = `
+    <h2 style="color:#0d6efd;margin-bottom:15px;">Menu</h2>
+
+    <button class="drawer-item" onclick="location.href='voucher.html'">Daftar Voucher</button>
+    <button class="drawer-item" onclick="location.href='informasi.html'">Informasi Toko</button>
+    <button class="drawer-item" onclick="location.href='riwayat.html'">Riwayat Transaksi</button>
+
+    <h3 class="dropdown-header" id="toggleSosmed">Sosial Media ▼</h3>
+    <div class="dropdown-sosmed">
+      <button class="drawer-item" onclick="window.open('https://instagram.com/','_blank')">Instagram</button>
+      <button class="drawer-item" onclick="window.open('https://tiktok.com/','_blank')">TikTok</button>
+      <button class="drawer-item" onclick="window.open('https://youtube.com/','_blank')">YouTube</button>
+      <button class="drawer-item" onclick="window.open('https://facebook.com/','_blank')">Facebook</button>
+    </div>
+  `;
+
+  document.body.appendChild(drawer);
+
+  hamburger.onclick = () => {
+    const isOpen = drawer.style.transform === "translateX(0px)";
+    drawer.style.transform = isOpen ? "translateX(-300px)" : "translateX(0px)";
+  };
+
+  const sosmedToggle = drawer.querySelector("#toggleSosmed");
+  const sosmedContent = drawer.querySelector(".dropdown-sosmed");
+
+  sosmedContent.style.maxHeight = "0px";
+  sosmedContent.style.overflow = "hidden";
+  sosmedContent.style.transition = "max-height .4s ease";
+
+  let sosmedOpen = false;
+
+  sosmedToggle.onclick = () => {
+    sosmedOpen = !sosmedOpen;
+    sosmedContent.style.maxHeight = sosmedOpen ? sosmedContent.scrollHeight + "px" : "0px";
+    sosmedToggle.innerHTML = sosmedOpen ? "Sosial Media ▲" : "Sosial Media ▼";
+  };
+
+  document.addEventListener("click", (e) => {
+    if (!drawer.contains(e.target) && e.target !== hamburger) {
+      drawer.style.transform = "translateX(-300px)";
+    }
+  });
+
+  /* ===========================
+     WA CUSTOMER SERVICE
+  =========================== */
+  waBtn.onclick = () => {
+    waPopup.classList.remove("hidden");
+  };
+
+  waPopup.onclick = (e) => {
+    if (!e.target.closest(".wa-popup-box")) {
+      waPopup.classList.add("hidden");
+    }
+  };
+
+  waCSLink.href =
+    "https://wa.me/62856935420220?text=" +
+    encodeURIComponent("Halo admin, saya butuh bantuan Customer Service.");
+
+  /* ===========================
+     WA INFO POPUP
+  =========================== */
+  waInfo.classList.remove("hidden");
+
+  closeWaInfo.onclick = () => {
+    waInfo.classList.add("hidden");
+  };
+
+  waInfo.onclick = (e) => {
+    if (!e.target.closest(".wa-info-box")) {
+      waInfo.classList.add("hidden");
+    }
+  };
+
+  /* ===========================
+     PAYMENT MODAL
+  =========================== */
+  openPay.onclick = () => {
+    paymentModal.classList.remove("hidden");
+  };
+
+  paymentModal.onclick = (e) => {
+    if (!e.target.closest(".modal-box")) {
+      paymentModal.classList.add("hidden");
+    }
+  };
 
   /* ===========================
      START
