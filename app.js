@@ -74,6 +74,69 @@ document.addEventListener("DOMContentLoaded", () => {
     showPopupNotif("Keranjang diperbarui");
   }
 
+  /* ===========================================
+   FIX: WA CUSTOMER, PAYMENT, POPUP INFO
+=========================================== */
+
+const waBtn = document.getElementById("waFloatingBtn");
+const waPopup = document.getElementById("waPopup");
+const waCSLink = document.getElementById("waCSLink");
+
+const waInfo = document.getElementById("waInfoPopup");
+const closeWaInfo = document.getElementById("closeWaInfo");
+
+const openPay = document.getElementById("openPaymentInfo");
+const paymentModal = document.getElementById("paymentModal");
+
+/* =========================
+   1. WA CUSTOMER SERVICE
+========================= */
+
+// buka popup WA CS
+waBtn.onclick = () => {
+    waPopup.classList.remove("hidden");
+
+    // set nomor CS
+    waCSLink.href = "https://wa.me/62856935420220?text=" +
+        encodeURIComponent("Halo kak, saya ingin bertanya.");
+};
+
+// klik di luar = tutup
+document.addEventListener("click", (e) => {
+    if (!waPopup.contains(e.target) && e.target !== waBtn) {
+        waPopup.classList.add("hidden");
+    }
+});
+
+
+/* =========================
+   2. POPUP INFORMASI WHATSAPP
+========================= */
+
+// otomatis muncul sekali (opsional)
+// waInfo.classList.remove("hidden");
+
+// tombol mengerti → tutup popup
+closeWaInfo.onclick = () => {
+    waInfo.classList.add("hidden");
+};
+
+
+/* =========================
+   3. POPUP PEMBAYARAN
+========================= */
+
+openPay.onclick = () => {
+    paymentModal.classList.remove("hidden");
+};
+
+// klik luar popup → tutup
+paymentModal.onclick = (e) => {
+    if (e.target === paymentModal) {
+        paymentModal.classList.add("hidden");
+    }
+};      
+
   /* ===============================
      ADD TO CART
   =============================== */
