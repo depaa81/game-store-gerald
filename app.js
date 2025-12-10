@@ -203,14 +203,14 @@ document.addEventListener("DOMContentLoaded", () => {
       form.append("chat_id", CHAT_ID);
       form.append("photo", fileEl.files[0]);
       form.append("caption",
-        📦 *BUKTI TRANSFER*\n\n` +
-        🆔 ID: ${currentOrder.id}\n` +
-        📌 Produk: ${currentOrder.name}\n` +
-        💰 Total Bayar: Rp ${formatRupiah(currentOrder.finalPrice)}\n` +
-        🏷 Voucher: ${currentOrder.voucher ? currentOrder.voucher.code : "Tidak ada"}\n` +
-        ➖ Potongan: Rp ${formatRupiah(currentOrder.discount)}\n\n` +
-        📅 ${currentOrder.date}`
-      );
+  `📦 *BUKTI TRANSFER*\n\n` +
+  `🆔 ID: ${currentOrder.id}\n` +
+  `📄 Produk: ${currentOrder.name}\n` +
+  `💰 Total Bayar: Rp ${formatRupiah(currentOrder.finalPrice)}\n` +
+  `🏷 Voucher: ${currentOrder.voucher ? currentOrder.voucher.code : "Tidak ada"}\n` +
+  `➖ Potongan: Rp ${formatRupiah(currentOrder.discount)}\n\n` +
+  `📅 ${currentOrder.date}`
+);
 
       await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
         method: "POST", body: form
