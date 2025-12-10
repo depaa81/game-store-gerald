@@ -1,17 +1,22 @@
 /* ================================
-        APP.JS FINAL FIXED
+        APP.JS FINAL COMPLETED
 ================================ */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* GLOBAL EXPOSURE */
   window.changeQtyItem = changeQtyItem;
 
-  /* KONFIGURASI */
+  /* ===============================
+     KONFIGURASI
+  =============================== */
   const BOT_TOKEN = "6950291703:AAHKeH8t8XlYoIjHR8XL_33oUOejTQyHkDs";
   const CHAT_ID = "5800113255";
 
-  /* DATA PRODUK */
+  const VOUCHERS = [
+    { code: "DISC10", cut: 0.10, min: 0 },
+    { code: "DISC20", cut: 0.20, min: 50000 }
+  ];
+
   const products = [
     { id: 1, name: "ROBLOX FISH IT COIN VIA MITOS PER 1M", price: 12000 },
     { id: 2, name: "ROBLOX AKUN FISH IT ELEMENT ROD POLOSAN (SPEK KE WA CS)", price: 100000 },
@@ -19,8 +24,8 @@ document.addEventListener("DOMContentLoaded", () => {
     { id: 4, name: "ROBLOX FISH IT SC TUMBAL", price: 10000 },
     { id: 5, name: "ROBLOX FISH IT SC ACIENT LOCHNESS 290TON", price: 85000 },
     { id: 6, name: "ROBLOX FISH IT JOKI AFK 1D", price: 7000 },
-    { id: 7, name: "ROBLOX FISH IT JOKI GHOSTFIN ROD (WAJIB PUNYA HAZMAT ROD/ARES ROD)", price: 80000 },
-    { id: 8, name: "ROBLOX FISH IT JOKI ELEMENT ROD (WAJIB PUNYA GHOSTFIN)", price: 100000 },
+    { id: 7, name: "ROBLOX FISH IT JOKI GHOSTFIN ROD", price: 80000 },
+    { id: 8, name: "ROBLOX FISH IT JOKI ELEMENT ROD", price: 100000 },
     { id: 9, name: "ROBLOX FISH IT JOKI ARES ROD", price: 35000 },
     { id: 10, name: "ROBLOX FISH IT JOKI HAZMAT ROD", price: 15000 },
     { id: 11, name: "ROBLOX FISH IT JOKI ANGLER ROD", price: 50000 },
@@ -28,27 +33,94 @@ document.addEventListener("DOMContentLoaded", () => {
     { id: 13, name: "ROBLOX FISH IT JOKI CORRUPT BAIT", price: 15000 },
     { id: 14, name: "ROBLOX FISH IT JOKI AETHER BAIT", price: 23000 },
     { id: 15, name: "ROBLOX FISH IT JOKI SINGULARITY BAIT", price: 50000 },
-    { id: 16, name: "ROBLOX FISH IT JOKI BOART MINI YATCH", price: 10000 },
-    { id: 17, name: "ROBLOX FISH IT JOKI MAP SECRED TEMPLE", price: 8000 },
+    { id: 16, name: "ROBLOX FISH IT JOKI BOAT MINI YATCH", price: 10000 },
+    { id: 17, name: "ROBLOX FISH IT JOKI MAP TEMPLE", price: 8000 },
     { id: 18, name: "ROBLOX FISH IT JOKI FLORAL BAIT", price: 45000 },
     { id: 19, name: "ROBLOX FISH IT IKAN LABA-LABA", price: 15000 },
   ];
 
-  /* ELEMEN */
-  const productListEl = document.getElementById("productList");
-  const orderCardEl = document.getElementById("orderCard");
+  /* ===============================
+     ELEMENT HTML
+  =============================== */
+  const productList = document.getElementById("productList");
+  const orderCard = document.getElementById("orderCard");
+  const hamburger = document.getElementById("hamburgerBtn");
 
-  /* STATE */
+  const waBtn = document.getElementById("waFloatingBtn");
+  const waPopup = document.getElementById("waPopup");
+  const waCSLink = document.getElementById("waCSLink");
+
+  const waInfo = document.getElementById("waInfoPopup");
+  const closeWaInfo = document.getElementById("closeWaInfo");
+
+  const openPay = document.getElementById("openPaymentInfo");
+  const paymentModal = document.getElementById("paymentModal");
+
   let currentOrder = null;
 
-  /* FORMAT Rp */
+  /* ===============================
+     HELPER
+  =============================== */
   function formatRupiah(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
 
-  /* ==========================================
-     PERBAIKAN TERBESAR: FUNGSI DIPISAH GLOBAL
-  =========================================== */
+  function showPopupNotif(text) {
+    const box = document.createElement("div");
+    box.className = "popup-notif";
+    box.innerText = text;
+    document.body.appendChild(box);
+
+    setTimeout(() => box.classList.add("show"), 20);
+    setTimeout(() => {
+      box.classList.remove("show");
+      setTimeout(() => box.remove(), 250);
+    }, 2500);
+  }
+
+  /* ===============================
+     RENDER PRODUK
+  =============================== */
+  function renderProducts() {
+    productList.innerHTML = "";
+
+    products.forEach(p => {
+      const box = document.createElement("div");
+      box.className = "product";
+
+      box.innerHTML = `
+        <div class="thumb">${p.name.split(" ")[0]}</div>
+        <div class="pmeta">
+          <h3>${p.name}</h3>
+          <p>Rp ${formatRupiah(p.price)}</p>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:8px;">
+            <button class="qty-btn" onclick="changeQtyItem(${p.id}, -1)">−</button>
+            <span id="qty-${p.id}" class="qty-display">0</span>
+            <button class="qty-btn" onclick="changeQtyItem(${p.id}, 1)">+</button>
+
+            <button class="buy" data-id="${p.id}" style="margin-left:auto;">Buy</button>
+        </div>
+      `;
+
+      productList.appendChild(box);
+    });
+
+    productList.addEventListener("click", (e) => {
+      const btn = e.target.closest("button");
+      if (!btn) return;
+
+      const id = parseInt(btn.dataset.id);
+      const prod = products.find(p => p.id === id);
+
+      if (btn.classList.contains("buy")) selectProduct(prod);
+    });
+  }
+
+  /* ===============================
+     CHANGE QTY (GLOBAL)
+  =============================== */
   function changeQtyItem(id, change) {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     let item = cart.find(p => p.id === id);
@@ -61,9 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
       cart.push(item);
     } else {
       item.qty += change;
-      if (item.qty <= 0) {
-        cart = cart.filter(p => p.id !== id);
-      }
+      if (item.qty <= 0) cart = cart.filter(p => p.id !== id);
     }
 
     localStorage.setItem("cart", JSON.stringify(cart));
@@ -74,42 +144,245 @@ document.addEventListener("DOMContentLoaded", () => {
     showPopupNotif("Keranjang diperbarui");
   }
 
-  /* ===========================================
-   FIX: WA CUSTOMER, PAYMENT, POPUP INFO
-=========================================== */
+  /* ===============================
+     BUY PRODUK
+  =============================== */
+  function selectProduct(product) {
+    currentOrder = {
+      id: "ORD" + Date.now(),
+      name: product.name,
+      price: product.price,
+      finalPrice: product.price,
+      discount: 0,
+      voucher: null,
+      date: new Date().toLocaleString("id-ID")
+    };
 
-const waBtn = document.getElementById("waFloatingBtn");
-const waPopup = document.getElementById("waPopup");
-const waCSLink = document.getElementById("waCSLink");
+    orderCard.classList.remove("empty");
+    orderCard.innerHTML = `
+      <h3>Detail Pesanan</h3>
+      <p><b>ID:</b> ${currentOrder.id}</p>
+      <p><b>Produk:</b> ${currentOrder.name}</p>
+      <p><b>Harga:</b> Rp ${formatRupiah(product.price)}</p>
 
-const waInfo = document.getElementById("waInfoPopup");
-const closeWaInfo = document.getElementById("closeWaInfo");
+      <div class="field">
+        <label>Masukkan Voucher</label>
+        <input id="voucherInput" class="voucher-input" type="text">
+        <button class="btn" id="applyVoucherBtn" style="width:100%;margin-top:6px;">Terapkan Voucher</button>
+      </div>
 
-const openPay = document.getElementById("openPaymentInfo");
-const paymentModal = document.getElementById("paymentModal");
+      <div id="voucherResult"></div>
 
-/* =========================
-   1. WA CUSTOMER SERVICE
-========================= */
+      <div class="field" style="margin-top:15px;">
+        <label>Upload Bukti Transfer</label>
+        <input type="file" id="proof">
+        <img id="preview" class="proof-preview"/>
+      </div>
 
-// buka popup WA CS
-waBtn.onclick = () => {
-    waPopup.classList.remove("hidden");
+      <button class="btn success" id="sendProof" style="width:100%;margin-top:10px;">Kirim Bukti</button>
 
-    // set nomor CS
-    waCSLink.href = "https://wa.me/62856935420220?text=" +
-        encodeURIComponent("Halo kak, saya ingin bertanya.");
-};
+      <a id="waMessage" target="_blank">
+        <button class="btn ghost" style="width:100%;margin-top:10px;">WhatsApp Penjual</button>
+      </a>
+    `;
 
-// klik di luar = tutup
-document.addEventListener("click", (e) => {
-    if (!waPopup.contains(e.target) && e.target !== waBtn) {
-        waPopup.classList.add("hidden");
+    document.getElementById("applyVoucherBtn").onclick = applyVoucherSingle;
+    document.getElementById("proof").onchange = previewProof;
+    document.getElementById("sendProof").onclick = sendProofToTelegramSingle;
+
+    updateWaLinkSingle();
+  }
+
+  /* ===============================
+     VOUCHER SINGLE
+  =============================== */
+  function applyVoucherSingle() {
+    const code = document.getElementById("voucherInput").value.trim().toUpperCase();
+    const v = VOUCHERS.find(x => x.code === code);
+    const result = document.getElementById("voucherResult");
+
+    if (!v) {
+      result.innerHTML = `<p style="color:red;">Voucher tidak valid</p>`;
+      currentOrder.finalPrice = currentOrder.price;
+      currentOrder.discount = 0;
+      return;
     }
+
+    if (currentOrder.price < v.min) {
+      showPopupNotif(`Minimal belanja Rp ${formatRupiah(v.min)}`);
+      return;
+    }
+
+    let pot = Math.round(currentOrder.price * v.cut);
+    let total = currentOrder.price - pot;
+
+    currentOrder.voucher = v;
+    currentOrder.discount = pot;
+    currentOrder.finalPrice = total;
+
+    result.innerHTML = `
+      <p><b>Voucher:</b> ${v.code}</p>
+      <p>Potongan: Rp ${formatRupiah(pot)}</p>
+      <p><b>Total Akhir: Rp ${formatRupiah(total)}</b></p>
+    `;
+  }
+
+  /* ===============================
+     PREVIEW FOTO
+  =============================== */
+  function previewProof(e) {
+    document.getElementById("preview").src =
+      URL.createObjectURL(e.target.files[0]);
+  }
+
+  /* ===============================
+     SEND TELEGRAM SINGLE
+  =============================== */
+  async function sendProofToTelegramSingle() {
+    const fileEl = document.getElementById("proof");
+    if (!fileEl.files.length) return alert("Upload bukti dulu.");
+
+    let text =
+      `📌 *BUKTI TRANSFER*\n\n` +
+      `🆔 ID: ${currentOrder.id}\n` +
+      `📦 Produk: ${currentOrder.name}\n` +
+      `💰 Total Bayar: Rp ${formatRupiah(currentOrder.finalPrice)}\n` +
+      `🏷 Voucher: ${currentOrder.voucher ? currentOrder.voucher.code : "Tidak ada"}\n` +
+      `➖ Potongan: Rp ${formatRupiah(currentOrder.discount)}\n` +
+      `📅 ${currentOrder.date}`;
+
+    const form = new FormData();
+    form.append("chat_id", CHAT_ID);
+    form.append("photo", fileEl.files[0]);
+    form.append("caption", text);
+    form.append("parse_mode", "Markdown");
+
+    await fetch(
+      `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`,
+      { method: "POST", body: form }
+    );
+
+    showPopupNotif("Bukti terkirim!");
+  }
+
+  /* ===============================
+     WA LINK SINGLE
+  =============================== */
+  function updateWaLinkSingle() {
+    document.getElementById("waMessage").href =
+      "https://wa.me/62856935420220?text=" +
+      encodeURIComponent(
+        `Halo kak, saya ingin membeli:\n${currentOrder.name}\nTotal: Rp ${formatRupiah(currentOrder.finalPrice)}`
+      );
+  }
+
+  /* =========================================================
+      POPUP — CS, INFO WAG, PAYMENT
+  ========================================================= */
+
+  /* ========== WA CUSTOMER SERVICE ========== */
+  waBtn.onclick = () => {
+    waPopup.classList.remove("hidden");
+    waCSLink.href =
+      "https://wa.me/62856935420220?text=" +
+      encodeURIComponent("Halo kak, saya butuh bantuan.");
+  };
+
+  document.addEventListener("click", (e) => {
+    if (!waPopup.contains(e.target) && e.target !== waBtn) {
+      waPopup.classList.add("hidden");
+    }
+  });
+
+  /* ========== POPUP INFORMASI WA ========== */
+  closeWaInfo.onclick = () => {
+    waInfo.classList.add("hidden");
+  };
+
+  /* ========== POPUP PEMBAYARAN ========== */
+  openPay.onclick = () => {
+    paymentModal.classList.remove("hidden");
+  };
+
+  paymentModal.onclick = (e) => {
+    if (e.target === paymentModal) {
+      paymentModal.classList.add("hidden");
+    }
+  };
+
+  /* =========================================================
+      DRAWER LENGKAP + SOSMED DROPDOWN (VERSI KAMU)
+  ========================================================= */
+
+  const drawer = document.createElement("div");
+
+  drawer.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+    background: white;
+    padding: 20px;
+    transform: translateX(-300px);
+    transition: .25s;
+    z-index: 9999;
+    box-shadow: 3px 0 20px rgba(0,0,0,0.25);
+    overflow-y: auto;
+  `;
+
+  drawer.innerHTML = `
+    <h2 style="color:#0d6efd;margin-bottom:15px;">Menu</h2>
+
+    <button class="drawer-item" onclick="location.href='voucher.html'">Daftar Voucher</button>
+    <button class="drawer-item" onclick="location.href='informasi.html'">Informasi Toko</button>
+    <button class="drawer-item" onclick="location.href='riwayat.html'">Riwayat Transaksi</button>
+
+    <h3 class="dropdown-header" id="toggleSosmed">Sosial Media ▼</h3>
+    
+    <div class="dropdown-sosmed">
+      <button class="drawer-item" onclick="window.open('https://instagram.com/', '_blank')">Instagram</button>
+      <button class="drawer-item" onclick="window.open('https://tiktok.com/', '_blank')">TikTok</button>
+      <button class="drawer-item" onclick="window.open('https://youtube.com/', '_blank')">YouTube</button>
+      <button class="drawer-item" onclick="window.open('https://facebook.com/', '_blank')">Facebook</button>
+    </div>
+  `;
+
+  document.body.appendChild(drawer);
+
+  hamburger.onclick = () => {
+    const isOpen = drawer.style.transform === "translateX(0px)";
+    drawer.style.transform = isOpen ? "translateX(-300px)" : "translateX(0px)";
+  };
+
+  const sosToggle = drawer.querySelector("#toggleSosmed");
+  const sosContent = drawer.querySelector(".dropdown-sosmed");
+
+  sosContent.style.maxHeight = "0px";
+  sosContent.style.overflow = "hidden";
+  sosContent.style.transition = "max-height .4s ease";
+
+  let sosOpen = false;
+
+  sosToggle.onclick = () => {
+    sosOpen = !sosOpen;
+    sosContent.style.maxHeight = sosOpen ? sosContent.scrollHeight + "px" : "0px";
+    sosToggle.innerHTML = sosOpen ? "Sosial Media ▲" : "Sosial Media ▼";
+  };
+
+  document.addEventListener("click", (e) => {
+    if (!drawer.contains(e.target) && e.target !== hamburger) {
+      drawer.style.transform = "translateX(-300px)";
+    }
+  });
+
+  /* ===============================
+         START APP
+  =============================== */
+  renderProducts();
+
 });
-
-
-/* =========================
+p/* =========================
    2. POPUP INFORMASI WHATSAPP
 ========================= */
 
