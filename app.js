@@ -442,71 +442,69 @@ document.addEventListener("DOMContentLoaded", () => {
   cartBtn.onclick = openCartPanel;
   document.body.appendChild(cartBtn);
 
-        /* ===============================
-   DRAWER / HAMBURGER MENU
-=============================== */
+          /* ===========================
+     DRAWER MENU + SOSMED
+  =========================== */
+  const drawer = document.createElement("div");
 
-const hamburgerBtn = document.getElementById("hamburgerBtn");
-const waPopup = document.getElementById("waInfoPopup");
-const closeWaInfo = document.getElementById("closeWaInfo");
-const waCSbtn = document.getElementById("waFloatingBtn");
-const waCSpopup = document.getElementById("waPopup");
+  drawer.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+    background: white;
+    padding: 20px;
+    transform: translateX(-300px);
+    transition: .25s;
+    z-index: 9999;
+    box-shadow: 3px 0 20px rgba(0,0,0,0.25);
+    overflow-y: auto;
+  `;
 
-// === MENU SLIDE (drawer) ===
-let drawerOpen = false;
+  drawer.innerHTML = `
+    <h2 style="color:#0d6efd;margin-bottom:15px;">Menu</h2>
 
-// buat drawer elemen
-const drawer = document.createElement("div");
-drawer.id = "drawerMenu";
-drawer.style = `
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 220px;
-  height: 100%;
-  background:#fff;
-  box-shadow: 2px 0 12px rgba(0,0,0,.18);
-  transform: translateX(-100%);
-  transition: .25s;
-  z-index: 99999;
-  padding:20px;
-  display:flex;
-  flex-direction:column;
-  gap:15px;
-`;
-drawer.innerHTML = `
-  <h3>Menu</h3>
-  <button class="btn" id="menuHome">Home</button>
-  <button class="btn" id="menuCS">Customer Service</button>
-  <button class="btn" id="menuPayment">Nomor Pembayaran</button>
-`;
-document.body.appendChild(drawer);
+    <button class="drawer-item" onclick="location.href='voucher.html'">Daftar Voucher</button>
+    <button class="drawer-item" onclick="location.href='informasi.html'">Informasi Toko</button>
+    <button class="drawer-item" onclick="location.href='riwayat.html'">Riwayat Transaksi</button>
 
-// buka / tutup drawer saat tombol ☰ ditekan
-hamburgerBtn.addEventListener("click", () => {
-  drawerOpen = !drawerOpen;
-  drawer.style.transform = drawerOpen ? "translateX(0)" : "translateX(-100%)";
-});
+    <h3 class="dropdown-header" id="toggleSosmed">Sosial Media â–¼</h3>
+    <div class="dropdown-sosmed">
+      <button class="drawer-item" onclick="window.open('https://instagram.com/','_blank')">Instagram</button>
+      <button class="drawer-item" onclick="window.open('https://tiktok.com/','_blank')">TikTok</button>
+      <button class="drawer-item" onclick="window.open('https://youtube.com/','_blank')">YouTube</button>
+      <button class="drawer-item" onclick="window.open('https://facebook.com/','_blank')">Facebook</button>
+    </div>
+  `;
 
+  document.body.appendChild(drawer);
 
-/* MENU ACTIONS */
-document.getElementById("menuHome").onclick = () => {
-  drawer.style.transform = "translateX(-100%)";
-  drawerOpen = false;
-  window.scrollTo(0,0);
-};
+  hamburger.onclick = () => {
+    const isOpen = drawer.style.transform === "translateX(0px)";
+    drawer.style.transform = isOpen ? "translateX(-300px)" : "translateX(0px)";
+  };
 
-document.getElementById("menuCS").onclick = () => {
-  drawer.style.transform = "translateX(-100%)";
-  drawerOpen = false;
-  waCSpopup.classList.remove("hidden");
-};
+  const sosmedToggle = drawer.querySelector("#toggleSosmed");
+  const sosmedContent = drawer.querySelector(".dropdown-sosmed");
 
-document.getElementById("menuPayment").onclick = () => {
-  drawer.style.transform = "translateX(-100%)";
-  drawerOpen = false;
-  document.getElementById("paymentModal").classList.remove("hidden");
-};
+  sosmedContent.style.maxHeight = "0px";
+  sosmedContent.style.overflow = "hidden";
+  sosmedContent.style.transition = "max-height .4s ease";
+
+  let sosmedOpen = false;
+
+  sosmedToggle.onclick = () => {
+    sosmedOpen = !sosmedOpen;
+    sosmedContent.style.maxHeight = sosmedOpen ? sosmedContent.scrollHeight + "px" : "0px";
+    sosmedToggle.innerHTML = sosmedOpen ? "Sosial Media â–²" : "Sosial Media â–¼";
+  };
+
+  document.addEventListener("click", (e) => {
+    if (!drawer.contains(e.target) && e.target !== hamburger) {
+      drawer.style.transform = "translateX(-300px)";
+    }
+  });
         
 
   /* ===============================
