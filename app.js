@@ -59,6 +59,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
     localStorage.setItem("cart", JSON.stringify(cart));
     showPopupNotif("Masuk ke keranjang!");
+          function changeQtyItem(id, change) {
+
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let item = cart.find(p => p.id === id);
+
+  if (!item && change === -1) return; // kalau item belum ada dan user klik minus
+
+  if (!item) {
+    // item pertama kali masuk keranjang
+    const p = products.find(x => x.id === id);
+    item = { ...p, qty: 1 };
+    cart.push(item);
+  } else {
+    // tambah / kurang qty
+    item.qty += change;
+
+    if (item.qty <= 0) {
+      cart = cart.filter(p => p.id !== id);
+    }
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+
+  // update tampilan qty per produk
+  const show = document.getElementById(`qty-${id}`);
+  show.innerText = item ? item.qty : 0;
+
+  showPopupNotif("Keranjang diperbarui");
+
+          }
+          
   }
 
   // BUTTON KERANJANG DIBUAT ULANG (TIDAK KE HALAMAN BARU)
@@ -223,10 +254,18 @@ document.addEventListener("DOMContentLoaded", () => {
           <p>Rp ${formatRupiah(p.price)}</p>
         </div>
 
-        <div style="display:flex;gap:6px;">
-          <button class="buy" data-id="${p.id}">Buy</button>
-          <button class="buy cartAdd" data-id="${p.id}">+Keranjang</button>
-        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+
+    <button class="qty-btn" onclick="changeQtyItem(${p.id}, -1)">−</button>
+
+    <span id="qty-${p.id}" class="qty-display">0</span>
+
+    <button class="qty-btn" onclick="changeQtyItem(${p.id}, 1)">+</button>
+
+    <button class="buy" data-id="${p.id}" style="margin-left:auto;">Buy</button>
+
+</div>
+
       `;
 
       productListEl.appendChild(box);
