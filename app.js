@@ -3,6 +3,8 @@
 ================================ */
 
 document.addEventListener("DOMContentLoaded", () => {
+        window.changeQtyItem = changeQtyItem;
+        
 
   const BOT_TOKEN = "6950291703:AAHKeH8t8XlYoIjHR8XL_33oUOejTQyHkDs";
   const CHAT_ID = "5800113255";
