@@ -314,7 +314,7 @@ document.addEventListener("DOMContentLoaded", () => {
   sosmedToggle.onclick = () => {
     sosmedOpen = !sosmedOpen;
     sosmedContent.style.maxHeight = sosmedOpen ? sosmedContent.scrollHeight + "px" : "0px";
-    sosmedToggle.innerHTML = sosmedOpen ? "Sosial Media ▼" : "Sosial Media ";
+    sosmedToggle.innerHTML = sosmedOpen ? "Sosial Media ▼" : "Sosial Media ▲";
   };
 
   document.addEventListener("click", (e) => {
