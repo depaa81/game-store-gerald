@@ -261,67 +261,73 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ===========================
      DRAWER MENU + SOSMED
-  =========================== */
-  const drawer = document.createElement("div");
+=========================== */
+const drawer = document.createElement("div");
 
-  drawer.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 250px;
-    height: 100vh;
-    background: white;
-    padding: 20px;
-    transform: translateX(-300px);
-    transition: .25s;
-    z-index: 9999;
-    box-shadow: 3px 0 20px rgba(0,0,0,0.25);
-    overflow-y: auto;
-  `;
+drawer.style.cssText = `
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  background: white;
+  padding: 20px;
+  transform: translateX(-300px);
+  transition: .25s;
+  z-index: 9999;
+  box-shadow: 3px 0 20px rgba(0,0,0,0.25);
+  overflow-y: auto;
+`;
 
-  drawer.innerHTML = `
-    <h2 style="color:#0d6efd;margin-bottom:15px;">Menu</h2>
+drawer.innerHTML = `
+  <h2 style="color:#0d6efd;margin-bottom:15px;">Menu</h2>
 
-    <button class="drawer-item" onclick="location.href='voucher.html'">Daftar Voucher</button>
-    <button class="drawer-item" onclick="location.href='informasi.html'">Informasi Toko</button>
-    <button class="drawer-item" onclick="location.href='riwayat.html'">Riwayat Transaksi</button>
+  <button class="drawer-item" onclick="location.href='voucher.html'">Daftar Voucher</button>
+  <button class="drawer-item" onclick="location.href='informasi.html'">Informasi Toko</button>
+  <button class="drawer-item" onclick="location.href='riwayat.html'">Riwayat Transaksi</button>
 
-    <h3 class="dropdown-header" id="toggleSosmed">Sosial Media ▼</h3>
-    <div class="dropdown-sosmed">
-      <button class="drawer-item" onclick="window.open('https://instagram.com/','_blank')">Instagram</button>
-      <button class="drawer-item" onclick="window.open('https://tiktok.com/','_blank')">TikTok</button>
-      <button class="drawer-item" onclick="window.open('https://youtube.com/','_blank')">YouTube</button>
-      <button class="drawer-item" onclick="window.open('https://facebook.com/','_blank')">Facebook</button>
-    </div>
-  `;
+  <h3 class="dropdown-header" id="toggleSosmed">
+    Sosial Media &#9660;
+  </h3>
 
-  document.body.appendChild(drawer);
+  <div class="dropdown-sosmed">
+    <button class="drawer-item" onclick="window.open('https://instagram.com/','_blank')">Instagram</button>
+    <button class="drawer-item" onclick="window.open('https://tiktok.com/','_blank')">TikTok</button>
+    <button class="drawer-item" onclick="window.open('https://youtube.com/','_blank')">YouTube</button>
+    <button class="drawer-item" onclick="window.open('https://facebook.com/','_blank')">Facebook</button>
+  </div>
+`;
 
-  hamburger.onclick = () => {
-    const isOpen = drawer.style.transform === "translateX(0px)";
-    drawer.style.transform = isOpen ? "translateX(-300px)" : "translateX(0px)";
-  };
+document.body.appendChild(drawer);
 
-  const sosmedToggle = drawer.querySelector("#toggleSosmed");
-  const sosmedContent = drawer.querySelector(".dropdown-sosmed");
+hamburger.onclick = () => {
+  const isOpen = drawer.style.transform === "translateX(0px)";
+  drawer.style.transform = isOpen ? "translateX(-300px)" : "translateX(0px)";
+};
 
-  sosmedContent.style.maxHeight = "0px";
-  sosmedContent.style.overflow = "hidden";
-  sosmedContent.style.transition = "max-height .4s ease";
+const sosmedToggle = drawer.querySelector("#toggleSosmed");
+const sosmedContent = drawer.querySelector(".dropdown-sosmed");
 
-  let sosmedOpen = false;
+sosmedContent.style.maxHeight = "0px";
+sosmedContent.style.overflow = "hidden";
+sosmedContent.style.transition = "max-height .4s ease";
 
-  sosmedToggle.onclick = () => {
-    sosmedOpen = !sosmedOpen;
-    sosmedContent.style.maxHeight = sosmedOpen ? sosmedContent.scrollHeight + "px" : "0px";
-    sosmedToggle.innerHTML = sosmedOpen ? "Sosial Media ▼" : "Sosial Media ▲";
-  };
+let sosmedOpen = false;
 
-  document.addEventListener("click", (e) => {
-    if (!drawer.contains(e.target) && e.target !== hamburger) {
-      drawer.style.transform = "translateX(-300px)";
-    }
-  });
+sosmedToggle.onclick = () => {
+  sosmedOpen = !sosmedOpen;
+  sosmedContent.style.maxHeight = sosmedOpen ? sosmedContent.scrollHeight + "px" : "0px";
+  sosmedToggle.innerHTML = sosmedOpen
+    ? "Sosial Media &#9650;"   // ▲
+    : "Sosial Media &#9660;";  // ▼
+};
+
+document.addEventListener("click", (e) => {
+  if (!drawer.contains(e.target) && e.target !== hamburger) {
+    drawer.style.transform = "translateX(-300px)";
+  }
+});
+
 
   /* ===========================
      WA CUSTOMER SERVICE
